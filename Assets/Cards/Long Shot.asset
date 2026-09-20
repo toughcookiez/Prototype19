@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27002913179da164a811215a75444831, type: 3}
+  m_Name: Long Shot
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: Long Shot
+  stats:
+  - description: More bullet speed
+    keyword: More
+    polarity: 0
+    target: 0
+    modifierMode: 0
+    amount: 0
+  - description: Lower ATKSPD
+    keyword: Lower
+    polarity: 1
+    target: 9
+    modifierMode: 1
+    amount: 50
+  - description: +0.25s reload time
+    keyword: +0.25s
+    polarity: 1
+    target: 13
+    modifierMode: 0
+    amount: 0.25
+  abilities: []

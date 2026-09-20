@@ -1,0 +1,87 @@
+:root {
+}
+
+.cards-ui-root {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.CardButton {
+    width: 118px;
+    height: 190px;
+    margin-right: 32px;
+    background-color: rgb(255, 255, 255);
+    background-image: none;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    padding-right: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 6px;
+    transform-origin: center;
+}
+
+.CardButton:hover {
+}
+
+.card-info {
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+    justify-content: flex-start;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.card-title {
+    color: rgb(10, 10, 10);
+    -unity-font-style: bold;
+    font-size: 12px;
+    margin-bottom: 6px;
+    -unity-text-align: middle-center;
+}
+
+.card-stat-row {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.card-stat-text {
+    color: rgb(20, 20, 20);
+    font-size: 10px;
+    white-space: nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.card-stat-keyword-good {
+    color: rgb(34, 150, 64);
+    -unity-font-style: bold;
+    margin-right: 2px;
+}
+
+.card-stat-keyword-bad {
+    color: rgb(190, 42, 42);
+    -unity-font-style: bold;
+    margin-right: 2px;
+}
+
+.card-ability-description {
+    color: rgb(35, 35, 35);
+    font-size: 9px;
+    white-space: normal;
+}

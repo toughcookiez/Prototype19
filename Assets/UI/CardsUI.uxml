@@ -1,0 +1,20 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/CardButton.uss?fileID=7433441132597879392&amp;guid=d8a0bc54fa5d35641b06997a98023f98&amp;type=3#CardButton"/>
+    <ui:VisualElement class="cards-ui-root">
+        <ui:Button text="" name="Card1" class="CardButton" style="background-image: url(&quot;project://database/Assets/UI/Method%20Draw%20Image%20(8).png?fileID=21300000&amp;guid=aa39d06f94da41d4d877e28e17edbe8d&amp;type=3#Method Draw Image (8)&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop;">
+            <ui:VisualElement name="Info" class="card-info" style="display: none; height: 90%; top: 9px;"/>
+        </ui:Button>
+        <ui:Button text="" name="Card2" class="CardButton" style="background-image: url(&quot;project://database/Assets/UI/Method%20Draw%20Image%20(8).png?fileID=21300000&amp;guid=aa39d06f94da41d4d877e28e17edbe8d&amp;type=3#Method Draw Image (8)&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop;">
+            <ui:VisualElement name="Info" class="card-info" style="display: none; height: 90%; top: 9px;"/>
+        </ui:Button>
+        <ui:Button text="" name="Card3" class="CardButton" style="background-image: url(&quot;project://database/Assets/UI/Method%20Draw%20Image%20(8).png?fileID=21300000&amp;guid=aa39d06f94da41d4d877e28e17edbe8d&amp;type=3#Method Draw Image (8)&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop;">
+            <ui:VisualElement name="Info" class="card-info" style="display: none; height: 90%; top: 9px;"/>
+        </ui:Button>
+        <ui:Button text="" name="Card4" class="CardButton" style="background-image: url(&quot;project://database/Assets/UI/Method%20Draw%20Image%20(8).png?fileID=21300000&amp;guid=aa39d06f94da41d4d877e28e17edbe8d&amp;type=3#Method Draw Image (8)&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop;">
+            <ui:VisualElement name="Info" class="card-info" style="display: none; height: 90%; top: 9px;"/>
+        </ui:Button>
+        <ui:Button text="" name="Card5" class="CardButton" style="background-image: url(&quot;project://database/Assets/UI/Method%20Draw%20Image%20(8).png?fileID=21300000&amp;guid=aa39d06f94da41d4d877e28e17edbe8d&amp;type=3#Method Draw Image (8)&quot;); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; background-color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop;">
+            <ui:VisualElement name="Info" class="card-info" style="display: none; height: 90%; top: 9px;"/>
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>
