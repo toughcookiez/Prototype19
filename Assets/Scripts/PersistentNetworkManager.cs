@@ -13,6 +13,15 @@ public class PersistentNetworkManager : MonoBehaviour
 
         if (NetworkManager.Singleton != null && NetworkManager.Singleton != localNetworkManager)
         {
+            // The duplicate's transport may live on a separate GameObject; remove it as well.
+            NetworkTransport duplicateTransport = GetTransport(localNetworkManager);
+
+            if (duplicateTransport != null && duplicateTransport.gameObject != gameObject
+                && duplicateTransport != GetTransport(NetworkManager.Singleton))
+            {
+                DestroyImmediate(duplicateTransport.gameObject);
+            }
+
             // DestroyImmediate prevents the sibling NetworkManager.Awake from running
             // on this duplicate GameObject, which would otherwise clobber the live UDP socket.
             DestroyImmediate(gameObject);
@@ -20,6 +29,27 @@ public class PersistentNetworkManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+
+        // The transport owns the UDP socket. If it sits on its own root GameObject it would be
+        // destroyed with the scene on a single-mode scene switch, killing the socket.
+        NetworkTransport transport = GetTransport(localNetworkManager);
+
+        if (transport != null && transport.gameObject != gameObject)
+        {
+            if (transport.transform.parent != null)
+            {
+                transport.transform.SetParent(null);
+            }
+
+            DontDestroyOnLoad(transport.gameObject);
+        }
+    }
+
+    private static NetworkTransport GetTransport(NetworkManager networkManager)
+    {
+        return networkManager != null && networkManager.NetworkConfig != null
+            ? networkManager.NetworkConfig.NetworkTransport
+            : null;
     }
 
     private void OnEnable()
@@ -72,6 +102,14 @@ public class PersistentNetworkManager : MonoBehaviour
         {
             if (networkManager != null && networkManager != NetworkManager.Singleton)
             {
+                NetworkTransport duplicateTransport = GetTransport(networkManager);
+
+                if (duplicateTransport != null && duplicateTransport.gameObject != networkManager.gameObject
+                    && duplicateTransport != GetTransport(NetworkManager.Singleton))
+                {
+                    Destroy(duplicateTransport.gameObject);
+                }
+
                 Destroy(networkManager.gameObject);
             }
         }
