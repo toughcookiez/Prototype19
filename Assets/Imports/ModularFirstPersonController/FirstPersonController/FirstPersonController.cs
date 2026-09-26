@@ -2128,14 +2128,19 @@ public class FirstPersonController : NetworkBehaviour
 
             if (availableScenes.Count > 0)
             {
-                // Scene switch will handle player respawn via OnNetworkSpawn
+                // Player objects persist across a single-mode scene load (NGO moves them to DontDestroyOnLoad),
+                // so OnNetworkSpawn does not run again. Players are reset once every client finished loading.
                 int chosen = availableScenes[UnityEngine.Random.Range(0, availableScenes.Count)];
                 StartCoroutine(LoadSceneDelayed(chosen));
                 return;
             }
         }
 
-        // No scene switch - reset players in place
+        ResetAllPlayersForNextRound();
+    }
+
+    private static void ResetAllPlayersForNextRound()
+    {
         FirstPersonController[] controllers = FindObjectsOfType<FirstPersonController>(true);
         foreach (FirstPersonController controller in controllers)
         {
@@ -2160,13 +2165,38 @@ public class FirstPersonController : NetworkBehaviour
         if (!string.IsNullOrEmpty(sceneName))
         {
             Debug.Log($"[MapPool] Loading scene '{sceneName}' for all clients.", this);
-            var loadStatus = NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            NetworkSceneManager networkSceneManager = NetworkManager.Singleton.SceneManager;
+            networkSceneManager.OnLoadEventCompleted += OnMapPoolSceneLoadEventCompleted;
+            SceneEventProgressStatus loadStatus = networkSceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             Debug.Log($"[MapPool] Scene load status: {loadStatus}", this);
+
+            if (loadStatus != SceneEventProgressStatus.Started)
+            {
+                networkSceneManager.OnLoadEventCompleted -= OnMapPoolSceneLoadEventCompleted;
+                ResetAllPlayersForNextRound();
+            }
         }
         else
         {
             Debug.LogError($"[MapPool] Failed to get scene name for index {sceneIndex}", this);
+            ResetAllPlayersForNextRound();
         }
+    }
+
+    private static void OnMapPoolSceneLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+        {
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnMapPoolSceneLoadEventCompleted;
+        }
+
+        if (clientsTimedOut != null && clientsTimedOut.Count > 0)
+        {
+            Debug.LogWarning($"[MapPool] Clients timed out loading '{sceneName}': {string.Join(", ", clientsTimedOut)}");
+        }
+
+        // All clients are now in the new scene, so reset RPCs reach every player.
+        ResetAllPlayersForNextRound();
     }
 
     private void ResetPlayerForNextRound()
