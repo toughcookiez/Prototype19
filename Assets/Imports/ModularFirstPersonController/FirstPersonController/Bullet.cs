@@ -25,6 +25,39 @@ public class Bullet : NetworkBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        IgnoreOtherBullets();
+    }
+
+    private void IgnoreOtherBullets()
+    {
+        Collider[] myColliders = GetComponentsInChildren<Collider>();
+        Bullet[] allBullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
+
+        foreach (Bullet otherBullet in allBullets)
+        {
+            if (otherBullet == this || otherBullet == null)
+            {
+                continue;
+            }
+
+            Collider[] otherColliders = otherBullet.GetComponentsInChildren<Collider>();
+
+            foreach (Collider myCollider in myColliders)
+            {
+                if (myCollider == null)
+                {
+                    continue;
+                }
+
+                foreach (Collider otherCollider in otherColliders)
+                {
+                    if (otherCollider != null)
+                    {
+                        Physics.IgnoreCollision(myCollider, otherCollider, true);
+                    }
+                }
+            }
+        }
     }
 
     private void Start()
@@ -153,6 +186,11 @@ public class Bullet : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (NetworkManager.Singleton != null && IsSpawned && !IsServer)
+        {
+            return;
+        }
+
+        if (collision.collider.GetComponentInParent<Bullet>() != null)
         {
             return;
         }

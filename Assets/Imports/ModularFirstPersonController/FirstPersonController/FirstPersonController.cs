@@ -67,6 +67,11 @@ public class FirstPersonController : NetworkBehaviour
     private const int CardsUiCardsPerRound = 5;
     private const float CardsUiFlipDuration = .35f;
     private const float CardsUiSelectedScale = 1.1f;
+    private const float CardsUiPickGrowDuration = .15f;
+    private const float CardsUiPickShrinkDuration = .25f;
+    private const float CardsUiPickGrowScale = 1.3f;
+    private const float CardsUiDismissOthersDuration = .35f;
+    private const float CardsUiPostPickDelay = .1f;
     private static readonly Dictionary<ulong, WeaponSettings> savedWeaponSettingsByPlayer = new Dictionary<ulong, WeaponSettings>();
     private static readonly Dictionary<ulong, PlayerSettings> savedPlayerSettingsByPlayer = new Dictionary<ulong, PlayerSettings>();
     private static readonly Dictionary<ulong, int> roundWinsByPlayer = new Dictionary<ulong, int>();
@@ -144,6 +149,7 @@ public class FirstPersonController : NetworkBehaviour
     private readonly HashSet<int> flippedCardsUiCardIndexes = new HashSet<int>();
     private readonly HashSet<int> appliedCardsUiCardIndexes = new HashSet<int>();
     private readonly HashSet<VisualElement> animatingCardsUiCards = new HashSet<VisualElement>();
+    private bool isCardsUiPickAnimationPlaying;
 
     #endregion
 
@@ -1778,6 +1784,8 @@ public class FirstPersonController : NetworkBehaviour
                 continue;
             }
 
+            cardElement.transform.position = Vector3.zero;
+            SetCardsUiCardScale(cardElement, 1f);
             cardElement.style.display = hasRoundCard ? DisplayStyle.Flex : DisplayStyle.None;
             cardElement.SetEnabled(hasRoundCard);
 
@@ -1923,7 +1931,11 @@ public class FirstPersonController : NetworkBehaviour
 
     private void ProcessCardsUiKeyboardSelection()
     {
-        if (!CanLocalClientInteractWithCardsUi() || cardsUiDocument == null || !cardsUiDocument.gameObject.activeInHierarchy || animatingCardsUiCards.Count > 0)
+        if (!CanLocalClientInteractWithCardsUi()
+            || cardsUiDocument == null
+            || !cardsUiDocument.gameObject.activeInHierarchy
+            || animatingCardsUiCards.Count > 0
+            || isCardsUiPickAnimationPlaying)
         {
             return;
         }
@@ -1931,6 +1943,7 @@ public class FirstPersonController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             int cardIndexToPick = selectedCardsUiCardIndex >= 0 ? selectedCardsUiCardIndex : 0;
+            isCardsUiPickAnimationPlaying = true;
             RequestCardsUiCardPickServerRpc(cardIndexToPick);
             return;
         }
@@ -1973,6 +1986,7 @@ public class FirstPersonController : NetworkBehaviour
         flippedCardsUiCardIndexes.Clear();
         animatingCardsUiCards.Clear();
         selectedCardsUiCardIndex = -1;
+        isCardsUiPickAnimationPlaying = false;
 
         if (cardsUiDocument == null || cardsUiDocument.rootVisualElement == null)
         {
@@ -1991,6 +2005,7 @@ public class FirstPersonController : NetworkBehaviour
                 continue;
             }
 
+            card.transform.position = Vector3.zero;
             SetCardsUiCardScale(card, 1f);
 
             VisualElement infoElement = card.Q<VisualElement>(CardsUiInfoElementName);
@@ -2085,7 +2100,7 @@ public class FirstPersonController : NetworkBehaviour
             losingController.ApplyPickedCard(currentRoundCards[cardIndex]);
         }
 
-        ResetLevelAfterCardPick();
+        BroadcastCardsUiCardPick(cardIndex);
     }
 
     private void ApplyPickedCard(Card cardData)
@@ -2297,6 +2312,7 @@ public class FirstPersonController : NetworkBehaviour
         cardsUiLosingClientId = ulong.MaxValue;
         selectedCardsUiCardIndex = -1;
         cardsUiWasActive = false;
+        isCardsUiPickAnimationPlaying = false;
         flippedCardsUiCards.Clear();
         flippedCardsUiCardIndexes.Clear();
         appliedCardsUiCardIndexes.Clear();
@@ -2307,7 +2323,27 @@ public class FirstPersonController : NetworkBehaviour
             currentRoundCards[i] = null;
         }
 
+        ResetCardsUiCardTransforms();
         SetCardsUiActive(false);
+    }
+
+    private void ResetCardsUiCardTransforms()
+    {
+        if (cardsUiDocument == null || cardsUiDocument.rootVisualElement == null)
+        {
+            return;
+        }
+
+        List<VisualElement> cards = cardsUiDocument.rootVisualElement.Query<VisualElement>(className: CardsUiCardClassName).ToList();
+        for (int i = 0; i < cards.Count; i++)
+        {
+            VisualElement card = cards[i];
+            if (card != null)
+            {
+                card.transform.position = Vector3.zero;
+                SetCardsUiCardScale(card, 1f);
+            }
+        }
     }
 
     private void ApplyCardStatModifiers(Card cardData)
@@ -2417,6 +2453,151 @@ public class FirstPersonController : NetworkBehaviour
     private void ApplyCardsUiCardSelectionClientRpc(int cardIndex)
     {
         ApplyCardsUiCardSelection(cardIndex);
+    }
+
+    private void BroadcastCardsUiCardPick(int cardIndex)
+    {
+        PlayCardsUiCardPickAnimation(cardIndex);
+
+        if (IsSpawned)
+        {
+            PlayCardsUiCardPickAnimationClientRpc(cardIndex);
+        }
+    }
+
+    [ClientRpc]
+    private void PlayCardsUiCardPickAnimationClientRpc(int cardIndex)
+    {
+        if (IsServer)
+        {
+            return;
+        }
+
+        PlayCardsUiCardPickAnimation(cardIndex);
+    }
+
+    private void PlayCardsUiCardPickAnimation(int cardIndex)
+    {
+        isCardsUiPickAnimationPlaying = true;
+        if (cardsUiDocument != null && cardsUiDocument.rootVisualElement != null)
+        {
+            SetCardsUiInputBlocked(true);
+        }
+        StartCoroutine(AnimateCardsUiPickSequence(cardIndex));
+    }
+
+    private IEnumerator AnimateCardsUiPickSequence(int chosenIndex)
+    {
+        if (cardsUiDocument == null || cardsUiDocument.rootVisualElement == null)
+        {
+            isCardsUiPickAnimationPlaying = false;
+            if (IsServer)
+            {
+                ResetLevelAfterCardPick();
+            }
+            yield break;
+        }
+
+        VisualElement chosenCard = GetCardsUiCardByIndex(chosenIndex);
+        List<VisualElement> otherCards = new List<VisualElement>();
+        int totalCards = GetCardsUiCardCount();
+
+        for (int i = 0; i < totalCards; i++)
+        {
+            if (i != chosenIndex)
+            {
+                VisualElement otherCard = GetCardsUiCardByIndex(i);
+                if (otherCard != null)
+                {
+                    otherCards.Add(otherCard);
+                }
+            }
+        }
+
+        // 1. Chosen Card Animation: Gets a little bigger and then scales down to nothing.
+        if (chosenCard != null)
+        {
+            animatingCardsUiCards.Add(chosenCard);
+            EnableCardsUiCardInfo(chosenCard);
+
+            float startScale = chosenCard.transform.scale.x > 0.01f ? chosenCard.transform.scale.x : CardsUiSelectedScale;
+            float popScale = CardsUiPickGrowScale;
+
+            // Phase 1A: Grow slightly bigger
+            float elapsedGrow = 0f;
+            while (elapsedGrow < CardsUiPickGrowDuration)
+            {
+                float t = elapsedGrow / CardsUiPickGrowDuration;
+                float currentScale = Mathf.SmoothStep(startScale, popScale, t);
+                SetCardsUiCardScale(chosenCard, currentScale);
+                elapsedGrow += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            SetCardsUiCardScale(chosenCard, popScale);
+
+            // Phase 1B: Scale down to nothing
+            float elapsedShrink = 0f;
+            while (elapsedShrink < CardsUiPickShrinkDuration)
+            {
+                float t = elapsedShrink / CardsUiPickShrinkDuration;
+                float currentScale = Mathf.Lerp(popScale, 0f, t * t);
+                SetCardsUiCardScale(chosenCard, currentScale);
+                elapsedShrink += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            SetCardsUiCardScale(chosenCard, 0f);
+            chosenCard.style.display = DisplayStyle.None;
+            animatingCardsUiCards.Remove(chosenCard);
+        }
+
+        // 2. Other Cards Move Down and Out of the Screen afterwards
+        if (otherCards.Count > 0)
+        {
+            foreach (VisualElement card in otherCards)
+            {
+                animatingCardsUiCards.Add(card);
+            }
+
+            float rootHeight = cardsUiDocument.rootVisualElement.layout.height > 0
+                ? cardsUiDocument.rootVisualElement.layout.height
+                : Screen.height;
+            float dropDistance = Mathf.Max(rootHeight, Screen.height) + 500f;
+
+            float elapsedDrop = 0f;
+            while (elapsedDrop < CardsUiDismissOthersDuration)
+            {
+                float t = elapsedDrop / CardsUiDismissOthersDuration;
+                // Quadratic ease-in to simulate accelerating downwards off screen
+                float currentY = Mathf.Lerp(0f, dropDistance, t * t);
+
+                foreach (VisualElement card in otherCards)
+                {
+                    card.transform.position = new Vector3(0f, currentY, 0f);
+                }
+
+                elapsedDrop += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            foreach (VisualElement card in otherCards)
+            {
+                card.transform.position = new Vector3(0f, dropDistance, 0f);
+                card.style.display = DisplayStyle.None;
+                animatingCardsUiCards.Remove(card);
+            }
+        }
+
+        if (CardsUiPostPickDelay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(CardsUiPostPickDelay);
+        }
+
+        isCardsUiPickAnimationPlaying = false;
+
+        if (IsServer)
+        {
+            ResetLevelAfterCardPick();
+        }
     }
 
     private void ApplyCardsUiCardSelection(int cardIndex)
