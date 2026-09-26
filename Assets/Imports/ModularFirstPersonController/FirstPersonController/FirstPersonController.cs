@@ -464,6 +464,13 @@ public class FirstPersonController : NetworkBehaviour
             currentHealth.Value = Mathf.Max(1f, maxHealth);
         }
 
+        if (SpawnPoint.TryGetSpawnPoint((int)OwnerClientId, out Vector3 spawnPos, out Quaternion spawnRot))
+        {
+            spawnPosition = spawnPos;
+            transform.position = spawnPos;
+            transform.rotation = spawnRot;
+        }
+
         // Reset player state on spawn (handles scene changes after death)
         controlsDisabledAfterDeath = false;
         playerCanMove = true;
@@ -2228,6 +2235,14 @@ public class FirstPersonController : NetworkBehaviour
         bulletsInMagazine = magazineSize;
         currentHealth.Value = Mathf.Max(1f, maxHealth);
         SetRagdollState(false);
+
+        if (SpawnPoint.TryGetSpawnPoint((int)OwnerClientId, out Vector3 pos, out Quaternion rot))
+        {
+            spawnPosition = pos;
+            transform.position = pos;
+            transform.rotation = rot;
+        }
+
         ApplyRespawnPosition(spawnPosition);
         ClearCardsUiRoundState();
 
