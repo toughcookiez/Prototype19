@@ -49,11 +49,15 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Networking\OwnerNetworkTransform.cs" />
     <Compile Include="Assets\Scripts\Cards\Card.cs" />
+    <Compile Include="Assets\Scripts\Networking\LobbyManager.cs" />
+    <Compile Include="Assets\Scripts\Networking\LobbyCharacterPreview.cs" />
     <Compile Include="Assets\Scripts\PersistentNetworkManager.cs" />
     <Compile Include="Assets\Scripts\Networking\OwnerNetworkAnimator.cs" />
     <Compile Include="Assets\Scripts\Networking\SpawnPoint.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Networking\LobbyUI.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\Bullet.cs" />
+    <Compile Include="Assets\Scripts\Networking\LobbyPlayerDisabler.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Networking\MultiplayerLauncher.cs" />
     <Reference Include="UnityEngine">
