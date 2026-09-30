@@ -96,6 +96,7 @@ public class LobbyManager : MonoBehaviour
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
             IsLobbyActive = false;
+            OnLobbyEnded?.Invoke();
             NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
         }
     }

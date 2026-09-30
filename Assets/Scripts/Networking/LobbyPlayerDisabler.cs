@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
 public class LobbyPlayerDisabler : NetworkBehaviour
@@ -8,54 +9,90 @@ public class LobbyPlayerDisabler : NetworkBehaviour
     private Rigidbody rb;
     private Collider playerCollider;
 
-    public override void OnNetworkSpawn()
+    private void OnEnable()
     {
-        base.OnNetworkSpawn();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        if (LobbyManager.Instance != null)
+        {
+            LobbyManager.Instance.OnLobbyStarted += DisablePlayerControls;
+            LobbyManager.Instance.OnLobbyEnded += EnablePlayerControls;
+        }
+    }
 
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (LobbyManager.Instance != null)
+        {
+            LobbyManager.Instance.OnLobbyStarted -= DisablePlayerControls;
+            LobbyManager.Instance.OnLobbyEnded -= EnablePlayerControls;
+        }
+    }
+
+    private void Start()
+    {
         fpController = GetComponent<FirstPersonController>();
         playerCamera = GetComponentInChildren<Camera>(true);
         rb = GetComponent<Rigidbody>();
         playerCollider = GetComponent<Collider>();
 
-        if (LobbyManager.Instance != null)
+        if (LobbyManager.Instance != null && LobbyManager.Instance.IsLobbyActive)
         {
-            LobbyManager.Instance.OnLobbyStarted += DisablePlayerControls;
-            LobbyManager.Instance.OnLobbyEnded += EnablePlayerControls;
-
-            if (LobbyManager.Instance.IsLobbyActive)
+            DisablePlayerControls();
+        }
+        else
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            if (currentScene.name != "MainMenu" && currentScene.name != "MainMenuScene")
             {
-                DisablePlayerControls();
+                EnablePlayerControls();
+                SpawnAtSpawnPoint();
             }
         }
+    }
 
-        // Ensure player prefab spawns off camera in the lobby
-        if (IsOwner && LobbyManager.Instance != null && LobbyManager.Instance.IsLobbyActive)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // When entering a gameplay scene (not the main menu)
+        if (scene.name != "MainMenu" && scene.name != "MainMenuScene")
         {
-            transform.position = new Vector3(0f, -100f, 0f);
+            EnablePlayerControls();
+            SpawnAtSpawnPoint();
+        }
+        else if (LobbyManager.Instance != null && LobbyManager.Instance.IsLobbyActive)
+        {
+            DisablePlayerControls();
         }
     }
 
-    public override void OnNetworkDespawn()
+    public void SpawnAtSpawnPoint()
     {
-        base.OnNetworkDespawn();
-        if (LobbyManager.Instance != null)
+        if (IsOwner)
         {
-            LobbyManager.Instance.OnLobbyStarted -= DisablePlayerControls;
-            LobbyManager.Instance.OnLobbyEnded -= EnablePlayerControls;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (LobbyManager.Instance != null)
-        {
-            LobbyManager.Instance.OnLobbyStarted -= DisablePlayerControls;
-            LobbyManager.Instance.OnLobbyEnded -= EnablePlayerControls;
+            if (SpawnPoint.TryGetSpawnPoint((int)OwnerClientId, out Vector3 spawnPos, out Quaternion spawnRot))
+            {
+                if (rb != null)
+                {
+                    rb.isKinematic = true;
+                    transform.position = spawnPos;
+                    transform.rotation = spawnRot;
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = false;
+                }
+                else
+                {
+                    transform.position = spawnPos;
+                    transform.rotation = spawnRot;
+                }
+            }
         }
     }
 
     private void DisablePlayerControls()
     {
+        if (!IsOwner) return;
+
         // Unlock cursor so player can interact with UI
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -87,12 +124,14 @@ public class LobbyPlayerDisabler : NetworkBehaviour
             playerCollider.enabled = false;
         }
 
-        // Move off camera
+        // Move off camera during lobby
         transform.position = new Vector3(0f, -100f, 0f);
     }
 
     private void EnablePlayerControls()
     {
+        if (!IsOwner) return;
+
         // Re-enable collider
         if (playerCollider != null)
         {
