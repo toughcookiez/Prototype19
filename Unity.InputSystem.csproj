@@ -338,8 +338,8 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\Internal\AdvancedDropdown\AdvancedDropdownGUI.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\InputActionAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\XInput\XInputController.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\UI\TrackedDeviceRaycaster.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\Debugger\InputDeviceDebuggerWindow.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\UI\TrackedDeviceRaycaster.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\PropertyDrawers\InputActionReferencePropertyDrawer.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\CSharpCodeHelpers.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\UITKAssetEditor\Views\ViewBase.cs" />

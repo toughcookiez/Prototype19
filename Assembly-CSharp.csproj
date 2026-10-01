@@ -1053,13 +1053,13 @@
       <Project>{c309081b-d8aa-be56-36d9-352cf709f85b}</Project>
       <Name>Unity.RenderPipelines.Universal.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.Timeline.csproj">
-      <Project>{2f34a87f-afd1-71f2-554e-a0b1dd83285a}</Project>
-      <Name>Unity.Timeline</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.AI.Navigation.Updater.csproj">
       <Project>{5e67b926-610d-7300-8a0e-3e39867fcfc4}</Project>
       <Name>Unity.AI.Navigation.Updater</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.csproj">
+      <Project>{2f34a87f-afd1-71f2-554e-a0b1dd83285a}</Project>
+      <Name>Unity.Timeline</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.AI.Navigation.Editor.csproj">
       <Project>{c40a7547-cc58-c504-6939-88a24119abf9}</Project>
@@ -1073,6 +1073,10 @@
       <Project>{a1f8eba9-2a14-e7d8-5bec-451e65448a1a}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.FilmInternalUtilities.csproj">
+      <Project>{48f5e93e-fd0e-4526-ffca-3a8a9cb5e59b}</Project>
+      <Name>Unity.FilmInternalUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Universal.2D.Runtime.csproj">
       <Project>{70b1f587-8a71-122d-1d2f-0070cc7cb990}</Project>
       <Name>Unity.RenderPipelines.Universal.2D.Runtime</Name>
@@ -1080,10 +1084,6 @@
     <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
       <Project>{16b68fb8-c3ce-e6fb-8fbe-ed6cc8dc9ca2}</Project>
       <Name>Unity.VisualScripting.Shared.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Searcher.Editor.csproj">
-      <Project>{32ac441b-d896-c915-2b3c-b3feec341972}</Project>
-      <Name>Unity.Searcher.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.PlasticSCM.Editor.csproj">
       <Project>{e45bb989-a7b4-458b-a058-e96edaf0545a}</Project>
@@ -1093,9 +1093,9 @@
       <Project>{13573dc2-9139-809e-67b8-99d63a5024a5}</Project>
       <Name>Unity.Toonshader</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.FilmInternalUtilities.csproj">
-      <Project>{48f5e93e-fd0e-4526-ffca-3a8a9cb5e59b}</Project>
-      <Name>Unity.FilmInternalUtilities</Name>
+    <ProjectReference Include="Unity.Searcher.Editor.csproj">
+      <Project>{32ac441b-d896-c915-2b3c-b3feec341972}</Project>
+      <Name>Unity.Searcher.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Burst.Editor.csproj">
       <Project>{29b5cced-d275-36ca-1b8e-af480b975477}</Project>
@@ -1125,10 +1125,6 @@
       <Project>{68f94a9a-3016-8de3-f30f-5a414b1bbe3c}</Project>
       <Name>Unity.AI.Navigation.Editor.ConversionSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj">
-      <Project>{6d303b0a-489a-997d-e725-0d59582c1874}</Project>
-      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
       <Project>{991bb069-ac23-ec07-4301-131cdbdf4451}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime</Name>
@@ -1148,6 +1144,10 @@
     <ProjectReference Include="Unity.Netcode.PackageChecker.Editor.csproj">
       <Project>{230194d6-6211-cd9a-4a25-8af655959f81}</Project>
       <Name>Unity.Netcode.PackageChecker.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj">
+      <Project>{6d303b0a-489a-997d-e725-0d59582c1874}</Project>
+      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
       <Project>{ba573fc8-69a8-b5c2-b060-1baca3246030}</Project>

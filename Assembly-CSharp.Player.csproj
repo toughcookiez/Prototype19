@@ -707,6 +707,10 @@
       <Project>{1b6732e3-fcc9-7f53-4b6c-8e9c56bd2b79}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Shared.Player</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.FilmInternalUtilities.Player.csproj">
+      <Project>{a4f98d85-04c9-fee2-ff5c-408069873809}</Project>
+      <Name>Unity.FilmInternalUtilities.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Universal.2D.Runtime.Player.csproj">
       <Project>{b170a5b2-c4b7-8b84-0b36-05bcac533ee2}</Project>
       <Name>Unity.RenderPipelines.Universal.2D.Runtime.Player</Name>
@@ -714,10 +718,6 @@
     <ProjectReference Include="Unity.Toonshader.Player.csproj">
       <Project>{03626a85-3cc1-07dc-8dfc-7f57c85f5615}</Project>
       <Name>Unity.Toonshader.Player</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.FilmInternalUtilities.Player.csproj">
-      <Project>{a4f98d85-04c9-fee2-ff5c-408069873809}</Project>
-      <Name>Unity.FilmInternalUtilities.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.Core.Player.csproj">
       <Project>{3b9736b6-5772-7533-6c3d-ea15ab249efb}</Project>
@@ -727,10 +727,6 @@
       <Project>{ecbdeb6f-8db8-0e4a-4fcd-ad2d41c65c5e}</Project>
       <Name>Unity.UnifiedRayTracing.Runtime.Player</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player.csproj">
-      <Project>{7c303b8d-4173-0619-c9f5-82ab1cd0a314}</Project>
-      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
       <Project>{aeb78677-7118-c7ce-ca68-f6d563080bea}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
@@ -738,6 +734,10 @@
     <ProjectReference Include="Unity.VisualScripting.Flow.Player.csproj">
       <Project>{4e6dded4-ce1f-b0f0-f515-d143595f00af}</Project>
       <Name>Unity.VisualScripting.Flow.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player.csproj">
+      <Project>{7c303b8d-4173-0619-c9f5-82ab1cd0a314}</Project>
+      <Name>Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Collections.Player.csproj">
       <Project>{18af21bd-29a3-dc2a-776d-f9fe0a0c78de}</Project>
