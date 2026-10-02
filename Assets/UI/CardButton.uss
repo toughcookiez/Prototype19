@@ -63,9 +63,9 @@
 .card-stat-text {
     color: rgb(20, 20, 20);
     font-size: 10px;
-    white-space: nowrap;
-    flex-grow: 0;
-    flex-shrink: 0;
+    white-space: normal;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .card-stat-keyword-good {

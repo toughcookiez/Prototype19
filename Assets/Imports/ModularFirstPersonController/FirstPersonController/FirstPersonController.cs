@@ -304,6 +304,7 @@ public class FirstPersonController : NetworkBehaviour
     public string isReloadingParameter = "IsReloading";
     public string lookValueParameter = "LookValue";
     public string jumpTriggerParameter = "Jump";
+    public string shootTriggerParameter = "Shoot";
 
     // Internal Variables
     private readonly HashSet<string> animatorParameters = new HashSet<string>();
@@ -805,7 +806,7 @@ public class FirstPersonController : NetworkBehaviour
         bulletsInMagazine -= bulletsToFire;
     }
 
-    private IEnumerator FireBulletBurst(Vector3 shootDirection, float ignoreGravityDistance, ulong shooterClientId, int bulletsToFire)
+    private IEnumerator FireBulletBurst(Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
     {
         int clampedBulletsToFire = Mathf.Max(1, bulletsToFire);
 
@@ -816,7 +817,11 @@ public class FirstPersonController : NetworkBehaviour
                 yield break;
             }
 
-            SpawnBullet(shootPoint.position, shootDirection, ignoreGravityDistance, shooterClientId);
+            Vector3 currentCrosshairPoint = GetCrosshairPoint();
+            Vector3 currentShootDirection = GetShootDirection(currentCrosshairPoint);
+            float currentIgnoreGravityDistance = Vector3.Distance(shootPoint.position, currentCrosshairPoint);
+
+            SpawnBullet(shootPoint.position, currentShootDirection, currentIgnoreGravityDistance, shooterClientId);
 
             if (i < clampedBulletsToFire - 1)
             {
@@ -866,6 +871,11 @@ public class FirstPersonController : NetworkBehaviour
                 spawnedBullet.AddComponent<BulletGravity>().SetGravity(bulletGravity, ignoreGravityDistance);
             }
         }
+
+        SetAnimatorTrigger(shootTriggerParameter);
+
+        // Trigger shoot animation
+        SetAnimatorTrigger(shootTriggerParameter);
     }
 
     [ServerRpc]
@@ -1858,27 +1868,31 @@ public class FirstPersonController : NetworkBehaviour
         string keyword = stat.keyword;
         int keywordIndex = !string.IsNullOrEmpty(keyword) ? description.IndexOf(keyword, System.StringComparison.Ordinal) : -1;
 
+        Label statLabel;
+
         if (keywordIndex < 0)
         {
-            Label statLabel = new Label(description);
+            // No keyword - simple label
+            statLabel = new Label(description);
             statLabel.AddToClassList(CardsUiStatTextClassName);
-            statRow.Add(statLabel);
         }
         else
         {
+            // Use rich text to format keyword within a single label
             string textBeforeKeyword = description.Substring(0, keywordIndex);
-            string textAfterKeyword = description.Substring(keywordIndex + keyword.Length).TrimStart();
+            string textAfterKeyword = description.Substring(keywordIndex + keyword.Length);
 
-            AddCardsUiInlineLabel(statRow, textBeforeKeyword, CardsUiStatTextClassName);
+            // Determine color based on polarity (convert RGB to hex)
+            string colorHex = stat.polarity == CardStatPolarity.Good ? "#229640" : "#be2a2a";
 
-            Label keywordLabel = new Label(keyword);
-            keywordLabel.AddToClassList(CardsUiStatTextClassName);
-            keywordLabel.AddToClassList(stat.polarity == CardStatPolarity.Good ? CardsUiStatKeywordGoodClassName : CardsUiStatKeywordBadClassName);
-            statRow.Add(keywordLabel);
+            // Build rich text string
+            string richText = $"{textBeforeKeyword}<color={colorHex}><b>{keyword}</b></color>{textAfterKeyword}";
 
-            AddCardsUiInlineLabel(statRow, textAfterKeyword, CardsUiStatTextClassName);
+            statLabel = new Label(richText);
+            statLabel.AddToClassList(CardsUiStatTextClassName);
         }
 
+        statRow.Add(statLabel);
         infoElement.Add(statRow);
     }
 
@@ -3763,6 +3777,7 @@ public class FirstPersonController : NetworkBehaviour
         fpc.isReloadingParameter = EditorGUILayout.TextField(new GUIContent("Is Reloading", "Animator bool parameter for reload state."), fpc.isReloadingParameter);
         fpc.lookValueParameter = EditorGUILayout.TextField(new GUIContent("Look Value", "Animator float parameter for normalized vertical look direction."), fpc.lookValueParameter);
         fpc.jumpTriggerParameter = EditorGUILayout.TextField(new GUIContent("Jump Trigger", "Animator trigger parameter fired when the player jumps."), fpc.jumpTriggerParameter);
+        fpc.shootTriggerParameter = EditorGUILayout.TextField(new GUIContent("Shoot Trigger", "Animator trigger parameter fired when the player shoots."), fpc.shootTriggerParameter);
         GUI.enabled = true;
 
         #endregion
