@@ -17,15 +17,15 @@ MonoBehaviour:
   - description: More bullet speed
     keyword: More
     polarity: 0
-    target: 0
-    modifierMode: 0
-    amount: 0
+    target: 6
+    modifierMode: 1
+    amount: 20
   - description: Lower ATKSPD
     keyword: Lower
     polarity: 1
     target: 9
     modifierMode: 1
-    amount: 50
+    amount: -50
   - description: +0.25s reload time
     keyword: +0.25s
     polarity: 1

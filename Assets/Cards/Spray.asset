@@ -31,7 +31,7 @@ MonoBehaviour:
     polarity: 1
     target: 5
     modifierMode: 1
-    amount: 75
+    amount: -85
   - description: +0.25s reload time
     keyword: +0.25s
     polarity: 1
