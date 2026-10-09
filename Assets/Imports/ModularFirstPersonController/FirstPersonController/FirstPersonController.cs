@@ -266,6 +266,12 @@ public class FirstPersonController : NetworkBehaviour
     public float bulletGravity = 9.81f;
     public int bulletBounces;
     public float fireRate = 5f;
+    public bool hasFlintknock;
+    public float flintknockForce = 15f;
+    public bool hasPayload;
+    public GameObject explosionPrefab;
+    public float explosionRadius = 5f;
+    public float explosionForce = 10f;
     public float holdToFireRateThreshold = 5f;
     public int bulletsPerShot = 1;
     public float bulletBurstInterval = .03f;
@@ -799,11 +805,13 @@ public class FirstPersonController : NetworkBehaviour
         {
             ShootServerRpc(shootDirection, ignoreGravityDistance, bulletsToFire);
             bulletsInMagazine -= bulletsToFire;
+            ApplyFlintknock(shootDirection);
             return;
         }
 
         StartCoroutine(FireBulletBurst(shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, bulletsToFire));
         bulletsInMagazine -= bulletsToFire;
+        ApplyFlintknock(shootDirection);
     }
 
     private IEnumerator FireBulletBurst(Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
@@ -847,6 +855,13 @@ public class FirstPersonController : NetworkBehaviour
             bullet.damage = bulletDamage;
             bullet.SetBounces(bulletBounces);
             bullet.SetShooter(shooterClientId, this);
+            bullet.hasPayload = hasPayload;
+            if (explosionPrefab != null)
+            {
+                bullet.explosionPrefab = explosionPrefab;
+            }
+            bullet.explosionRadius = explosionRadius;
+            bullet.explosionForce = explosionForce;
         }
 
         if (NetworkManager.Singleton != null && IsServer && spawnedBullet.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
@@ -887,6 +902,17 @@ public class FirstPersonController : NetworkBehaviour
         }
 
         StartCoroutine(FireBulletBurst(shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, bulletsToFire));
+        ApplyFlintknock(shootDirection.normalized);
+    }
+
+    private void ApplyFlintknock(Vector3 shootDirection)
+    {
+        if (!hasFlintknock || rb == null || flintknockForce <= 0f)
+        {
+            return;
+        }
+
+        rb.AddForce(-shootDirection * flintknockForce, ForceMode.Impulse);
     }
 
     public WeaponSettings GetWeaponSettings()
@@ -2132,8 +2158,56 @@ public class FirstPersonController : NetworkBehaviour
         }
 
         ApplyCardStatModifiers(cardData);
+
+        if (cardData.abilities != null)
+        {
+            foreach (CardAbility ability in cardData.abilities)
+            {
+                if (ability.abilityName == "Flintknock")
+                {
+                    hasFlintknock = true;
+                    if (IsSpawned && IsServer)
+                    {
+                        ApplyFlintknockAbilityClientRpc(new ClientRpcParams
+                        {
+                            Send = new ClientRpcSendParams
+                            {
+                                TargetClientIds = new[] { OwnerClientId }
+                            }
+                        });
+                    }
+                }
+                else if (ability.abilityName == "Payload")
+                {
+                    hasPayload = true;
+                    if (IsSpawned && IsServer)
+                    {
+                        ApplyPayloadAbilityClientRpc(new ClientRpcParams
+                        {
+                            Send = new ClientRpcSendParams
+                            {
+                                TargetClientIds = new[] { OwnerClientId }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
         SyncWeaponSettings(GetWeaponSettings(), false);
         SyncPlayerSettings(GetPlayerSettings());
+    }
+
+    [ClientRpc]
+    private void ApplyFlintknockAbilityClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        hasFlintknock = true;
+    }
+
+    [ClientRpc]
+    private void ApplyPayloadAbilityClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        hasPayload = true;
     }
 
     private void ResetLevelAfterCardPick()

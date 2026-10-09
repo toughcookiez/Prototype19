@@ -123,7 +123,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &-2314225121890763757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +166,10 @@ MonoBehaviour:
   damage: 25
   selfCollisionGraceTime: 0.25
   maxBounces: 0
+  hasPayload: 0
+  explosionPrefab: {fileID: 1742013225946848, guid: b3d8264aa7d2d824a8a503e45291ddf4, type: 3}
+  explosionRadius: 1
+  explosionForce: 10
   impactEffectPrefab: {fileID: 5691721180125310873, guid: 1f25f7c7795f7e942995f6f853c755ef, type: 3}
 --- !u!65 &172640019996688229
 BoxCollider:
@@ -186,7 +190,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.78885, y: 1.70128, z: 2}
+  m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-4294414526018755194
 MonoBehaviour:

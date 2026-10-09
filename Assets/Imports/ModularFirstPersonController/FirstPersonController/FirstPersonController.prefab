@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2153281172
+  GlobalObjectIdHash: 3319823941
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -329,6 +329,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 48184c6f4e198d44db7e09ea55579a3a, type: 2}
   - {fileID: 11400000, guid: bc99722be3e7d964badb1e7af7459f65, type: 2}
   - {fileID: 11400000, guid: deaeb8e52b26c7c498eb6879c57219da, type: 2}
+  - {fileID: 11400000, guid: 9848502f7c3a4db4db8188abd62abf51, type: 2}
   enableRagdollOnDeath: 1
   normalCollider: {fileID: 4459864850019384737}
   ragdollRoot: {fileID: 7331321506881327905}
@@ -388,6 +389,10 @@ MonoBehaviour:
   bulletGravity: 10
   bulletBounces: 0
   fireRate: 2
+  hasFlintknock: 0
+  flintknockForce: 15
+  hasPayload: 0
+  explosionPrefab: {fileID: 0}
   holdToFireRateThreshold: 7
   bulletsPerShot: 1
   bulletBurstInterval: 0.03

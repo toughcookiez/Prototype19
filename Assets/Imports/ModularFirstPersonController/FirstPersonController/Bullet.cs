@@ -10,6 +10,10 @@ public class Bullet : NetworkBehaviour
     public float damage = 25f;
     public float selfCollisionGraceTime = .25f;
     public int maxBounces;
+    public bool hasPayload;
+    public GameObject explosionPrefab;
+    public float explosionRadius = 5f;
+    public float explosionForce = 10f;
 
     public GameObject impactEffectPrefab;
     
@@ -253,29 +257,87 @@ public class Bullet : NetworkBehaviour
 
     private void DespawnOrDestroy()
     {
+        if (hasPayload)
+        {
+            ApplyExplosion();
+        }
+
+        GameObject effectToSpawn = hasPayload && explosionPrefab != null ? explosionPrefab : impactEffectPrefab;
+        Vector3 effectPosition = transform.position;
+
         if (NetworkManager.Singleton != null && IsSpawned && TryGetComponent<NetworkObject>(out NetworkObject networkObject))
         {
-            if (impactEffectPrefab != null)
+            if (effectToSpawn != null)
             {
-                GameObject impactEffect = Instantiate(impactEffectPrefab, transform.position, Quaternion.identity);
-                if (impactEffect.TryGetComponent<NetworkObject>(out NetworkObject impactNetworkObject))
-                {
-                    impactNetworkObject.Spawn();
-                }
+                SpawnEffectClientRpc(effectPosition, hasPayload);
             }
-            
+
             networkObject.Despawn();
             return;
         }
 
-        
-        if (impactEffectPrefab != null)
+        if (effectToSpawn != null)
         {
-            Instantiate(impactEffectPrefab, transform.position, Quaternion.identity);
+            Instantiate(effectToSpawn, effectPosition, Quaternion.identity);
         }
-        
+
         Destroy(gameObject);
-        
+    }
+
+    [ClientRpc]
+    private void SpawnEffectClientRpc(Vector3 position, bool isExplosion)
+    {
+        GameObject effectToSpawn = isExplosion && explosionPrefab != null ? explosionPrefab : impactEffectPrefab;
+
+        if (effectToSpawn != null)
+        {
+            Instantiate(effectToSpawn, position, Quaternion.identity);
+        }
+    }
+
+    private void ApplyExplosion()
+    {
+        if (NetworkManager.Singleton != null && IsSpawned && !IsServer)
+        {
+            return;
+        }
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
+        float explosionDamage = damage * 0.5f;
+
+        foreach (Collider hitCollider in colliders)
+        {
+            if (hitCollider == null)
+            {
+                continue;
+            }
+
+            FirstPersonController hitPlayer = hitCollider.GetComponentInParent<FirstPersonController>();
+            if (hitPlayer != null)
+            {
+                if (isIgnoringShooter && hitPlayer.IsSpawned && hitPlayer.OwnerClientId == shooterClientId)
+                {
+                    continue;
+                }
+
+                hitPlayer.TryApplyDamage(explosionDamage, shooterClientId);
+            }
+
+            Rigidbody hitRb = hitCollider.GetComponentInParent<Rigidbody>();
+            if (hitRb != null && hitRb != rb)
+            {
+                hitRb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (hasPayload)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, explosionRadius);
+        }
     }
 }
 

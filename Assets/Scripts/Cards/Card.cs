@@ -25,6 +25,7 @@ public struct CardAbility
 {
     [TextArea]
     public string description;
+    public string abilityName;
 }
 
 public enum CardStatPolarity

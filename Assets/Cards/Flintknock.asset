@@ -28,3 +28,4 @@ MonoBehaviour:
     amount: 0.5
   abilities:
   - description: Shooting fires you backward in the opposite direction.
+    abilityName: Flintknock
