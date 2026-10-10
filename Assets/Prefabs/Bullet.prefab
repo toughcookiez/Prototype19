@@ -171,6 +171,8 @@ MonoBehaviour:
   explosionRadius: 1
   explosionForce: 10
   impactEffectPrefab: {fileID: 5691721180125310873, guid: 1f25f7c7795f7e942995f6f853c755ef, type: 3}
+  bounceBounciness: 1.2
+  minNormalBounce: 3
 --- !u!65 &172640019996688229
 BoxCollider:
   m_ObjectHideFlags: 0

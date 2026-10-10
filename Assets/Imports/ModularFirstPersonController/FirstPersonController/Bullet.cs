@@ -16,7 +16,10 @@ public class Bullet : NetworkBehaviour
     public float explosionForce = 10f;
 
     public GameObject impactEffectPrefab;
-    
+
+    public float bounceBounciness = 1.0f;
+    public float minNormalBounce = 3.0f;
+
     private Rigidbody rb;
     private float gravityForce = 9.81f;
     private float gravityDelayDistance;
@@ -25,10 +28,13 @@ public class Bullet : NetworkBehaviour
     private ulong shooterClientId = ulong.MaxValue;
     private bool isIgnoringShooter;
     private int bouncesRemaining;
+    private Vector3 lastVelocity;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        if (bounceBounciness <= 0f) bounceBounciness = 1.2f;
+        if (minNormalBounce <= 0f) minNormalBounce = 3.0f;
         IgnoreOtherBullets();
     }
 
@@ -128,6 +134,11 @@ public class Bullet : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if (rb != null && !rb.isKinematic)
+        {
+            lastVelocity = rb.linearVelocity;
+        }
+
         if (!Mathf.Approximately(gravityForce, 0f) && rb != null && !rb.isKinematic)
         {
             if (isGravityDelayed)
@@ -238,20 +249,54 @@ public class Bullet : NetworkBehaviour
             return false;
         }
 
-        Vector3 currentVelocity = rb.linearVelocity;
+        Vector3 incomingVelocity = lastVelocity.sqrMagnitude > 0.0001f ? lastVelocity : rb.linearVelocity;
 
-        if (currentVelocity.sqrMagnitude <= 0.0001f)
+        if (incomingVelocity.sqrMagnitude <= 0.0001f)
         {
             return false;
         }
 
         ContactPoint contact = collision.GetContact(0);
-        Vector3 reflectedVelocity = Vector3.Reflect(currentVelocity, contact.normal);
+        Vector3 normal = contact.normal;
+
+        // Reflect incoming velocity across the normal
+        Vector3 reflectedVelocity = Vector3.Reflect(incomingVelocity, normal);
+
+        // Ensure minimum normal bounce so shallow angles bounce out forcefully
+        float normalComponent = Vector3.Dot(reflectedVelocity, normal);
+        if (normalComponent < minNormalBounce)
+        {
+            Vector3 tangentialVelocity = reflectedVelocity - (normal * normalComponent);
+            reflectedVelocity = tangentialVelocity + (normal * Mathf.Max(normalComponent, minNormalBounce));
+        }
+
+        // Apply bounciness multiplier to speed magnitude
+        float incomingSpeed = incomingVelocity.magnitude;
+        float outgoingSpeed = Mathf.Max(incomingSpeed * bounceBounciness, incomingSpeed);
+        reflectedVelocity = reflectedVelocity.normalized * outgoingSpeed;
+
         bouncesRemaining--;
-        rb.position += contact.normal * 0.02f;
+        rb.position += normal * 0.05f;
         rb.linearVelocity = reflectedVelocity;
+
+        if (reflectedVelocity.sqrMagnitude > 0.0001f)
+        {
+            transform.rotation = Quaternion.LookRotation(reflectedVelocity);
+        }
+
+        if (rb != null)
+        {
+            rb.angularVelocity = Random.insideUnitSphere * 15f;
+        }
+
+        if (impactEffectPrefab != null)
+        {
+            Instantiate(impactEffectPrefab, contact.point, Quaternion.LookRotation(normal));
+        }
+
         launchPosition = rb.position;
         isGravityDelayed = false;
+        lastVelocity = reflectedVelocity;
         return true;
     }
 
