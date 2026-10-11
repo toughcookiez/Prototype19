@@ -263,13 +263,15 @@ public class FirstPersonController : NetworkBehaviour
     public bool enableBlock = true;
     public KeyCode blockKey = KeyCode.Mouse1;
     public GameObject shieldObject;
-    public float blockDuration = 0.2f;
+    public float blockDuration = 5f;
     public float blockCooldown = 1f;
 
     // Internal Variables
     private bool isBlocking = false;
     private bool isBlockCooldown = false;
     private Coroutine blockCoroutine;
+    private Renderer[] shieldRenderers;
+    private Coroutine shieldOpacityCoroutine;
 
     #endregion
 
@@ -410,6 +412,7 @@ public class FirstPersonController : NetworkBehaviour
 
         if (shieldObject != null)
         {
+            shieldRenderers = shieldObject.GetComponentsInChildren<Renderer>(true);
             shieldObject.SetActive(false);
         }
     }
@@ -3252,6 +3255,14 @@ public class FirstPersonController : NetworkBehaviour
         if (shieldObject != null)
         {
             shieldObject.SetActive(newValue);
+            if (newValue)
+            {
+                if (shieldOpacityCoroutine != null)
+                {
+                    StopCoroutine(shieldOpacityCoroutine);
+                }
+                shieldOpacityCoroutine = StartCoroutine(ShieldOpacityRoutine());
+            }
         }
     }
 
@@ -3311,6 +3322,11 @@ public class FirstPersonController : NetworkBehaviour
         if (shieldObject != null)
         {
             shieldObject.SetActive(true);
+            if (shieldOpacityCoroutine != null)
+            {
+                StopCoroutine(shieldOpacityCoroutine);
+            }
+            shieldOpacityCoroutine = StartCoroutine(ShieldOpacityRoutine());
         }
 
         yield return new WaitForSeconds(blockDuration);
@@ -3321,6 +3337,111 @@ public class FirstPersonController : NetworkBehaviour
         }
         isBlocking = false;
         blockCoroutine = null;
+    }
+
+    private IEnumerator ShieldOpacityRoutine()
+    {
+        if (shieldRenderers == null || shieldRenderers.Length == 0)
+        {
+            if (shieldObject != null)
+            {
+                shieldRenderers = shieldObject.GetComponentsInChildren<Renderer>(true);
+            }
+        }
+
+        string[] candidateNames = new string[] {
+            "opacity (Total)",
+            "_OpacityTotal",
+            "_Opacity_Total",
+            "_opacity_Total",
+            "Opacity_Total",
+            "OpacityTotal",
+            "_Opacity"
+        };
+
+        float elapsed = 0f;
+        while (elapsed < blockDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / blockDuration);
+            float opacity = Mathf.Sin(t * Mathf.PI);
+
+            if (shieldRenderers != null)
+            {
+                foreach (Renderer rend in shieldRenderers)
+                {
+                    if (rend != null && rend.material != null)
+                    {
+                        Material mat = rend.material;
+                        foreach (string name in candidateNames)
+                        {
+                            if (mat.HasProperty(name))
+                            {
+                                mat.SetFloat(name, opacity);
+                            }
+                        }
+
+                        Shader shader = mat.shader;
+                        if (shader != null)
+                        {
+                            int propCount = shader.GetPropertyCount();
+                            for (int i = 0; i < propCount; i++)
+                            {
+                                string propName = shader.GetPropertyName(i);
+                                if (!string.IsNullOrEmpty(propName))
+                                {
+                                    string lower = propName.ToLower();
+                                    if (lower.Contains("opacity") || lower.Contains("total"))
+                                    {
+                                        mat.SetFloat(propName, opacity);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
+        if (shieldRenderers != null)
+        {
+            foreach (Renderer rend in shieldRenderers)
+            {
+                if (rend != null && rend.material != null)
+                {
+                    Material mat = rend.material;
+                    foreach (string name in candidateNames)
+                    {
+                        if (mat.HasProperty(name))
+                        {
+                            mat.SetFloat(name, 0f);
+                        }
+                    }
+
+                    Shader shader = mat.shader;
+                    if (shader != null)
+                    {
+                        int propCount = shader.GetPropertyCount();
+                        for (int i = 0; i < propCount; i++)
+                        {
+                            string propName = shader.GetPropertyName(i);
+                            if (!string.IsNullOrEmpty(propName))
+                            {
+                                string lower = propName.ToLower();
+                                if (lower.Contains("opacity") || lower.Contains("total"))
+                                {
+                                    mat.SetFloat(propName, 0f);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        shieldOpacityCoroutine = null;
     }
 
     private bool IsAlive()

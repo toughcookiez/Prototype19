@@ -82,6 +82,7 @@ Material:
     - _Opacity_Global: 1
     - _Opacity_On_Centre: 0.641
     - _Opacity_On_Side: 1
+    - _Opacity_Total: 1
     - _Power: 1
     - _QueueControl: 0
     - _QueueOffset: 0

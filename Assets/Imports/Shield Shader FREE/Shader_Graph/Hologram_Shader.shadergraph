@@ -916,7 +916,7 @@
     "m_ObjectId": "0e2d944eed6e413a9534f9b7014a3621",
     "m_Title": "Alpha FINAL",
     "m_Position": {
-        "x": -450.0000305175781,
+        "x": -450.0,
         "y": -295.0
     }
 }
@@ -2616,7 +2616,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "677b4d307fd0494fa1dd69dea02602af",
     "m_Id": 0,
-    "m_DisplayName": "Opacity (On Centre)",
+    "m_DisplayName": "InsideAlpha",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -2900,7 +2900,7 @@
     "m_ObjectId": "78a0c0671d9b42959c816220978a41fc",
     "m_Title": "Texture 2 Opacity",
     "m_Position": {
-        "x": -116.00003051757813,
+        "x": -116.0,
         "y": -927.0
     }
 }
@@ -3372,10 +3372,10 @@
     "promotedFromAssetID": "",
     "promotedFromCategoryName": "",
     "promotedOrdering": -1,
-    "m_Name": "Opacity (On Centre)",
+    "m_Name": "InsideAlpha",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Opacity (On Centre)",
-    "m_DefaultReferenceName": "_Opacity_On_Centre",
+    "m_RefNameGeneratedByDisplayName": "InsideAlpha",
+    "m_DefaultReferenceName": "_InsideAlpha",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -3528,7 +3528,7 @@
     "m_Title": "Texture 1 Opacity FULL",
     "m_Position": {
         "x": -692.0,
-        "y": 127.00005340576172
+        "y": 127.0
     }
 }
 
