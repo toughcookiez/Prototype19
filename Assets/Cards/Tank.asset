@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27002913179da164a811215a75444831, type: 3}
-  m_Name: Flintknock
+  m_Name: Tank
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  cardName: Flintknock
+  cardName: Tank
   stats:
-  - description: -2 AMMO
-    keyword: -2
-    polarity: 1
-    target: 10
+  - description: 'A lot more Health '
+    keyword: A lot more
+    polarity: 0
+    target: 0
     modifierMode: 0
-    amount: -2
-  - description: +0.5s reload time
-    keyword: +0.5s
+    amount: 100
+  - description: Lower ATKSPD
+    keyword: Lower
     polarity: 1
-    target: 13
-    modifierMode: 0
-    amount: 0.5
-  abilities:
-  - description: Shooting fires you backward in the opposite direction.
-    abilityName: Flintknock
+    target: 9
+    modifierMode: 1
+    amount: -25
+  abilities: []

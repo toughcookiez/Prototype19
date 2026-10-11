@@ -219,6 +219,14 @@ public class Bullet : NetworkBehaviour
 
         if (hitPlayer != null)
         {
+            if (hitPlayer.IsBlocking() && hitPlayer.IsShieldCollider(collision.collider))
+            {
+                if (TryReflectAcrossShield(collision))
+                {
+                    return;
+                }
+            }
+
             bool damageApplied = hitPlayer.TryApplyDamage(damage, shooterClientId);
 
             if (damageApplied)
@@ -240,6 +248,62 @@ public class Bullet : NetworkBehaviour
         }
 
         DespawnOrDestroy();
+    }
+
+    private bool TryReflectAcrossShield(Collision collision)
+    {
+        if (rb == null || collision.contactCount <= 0)
+        {
+            return false;
+        }
+
+        Vector3 incomingVelocity = lastVelocity.sqrMagnitude > 0.0001f ? lastVelocity : rb.linearVelocity;
+
+        if (incomingVelocity.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        ContactPoint contact = collision.GetContact(0);
+        Vector3 normal = contact.normal;
+
+        Vector3 reflectedVelocity = Vector3.Reflect(incomingVelocity, normal);
+
+        float normalComponent = Vector3.Dot(reflectedVelocity, normal);
+        if (normalComponent < minNormalBounce)
+        {
+            Vector3 tangentialVelocity = reflectedVelocity - (normal * normalComponent);
+            reflectedVelocity = tangentialVelocity + (normal * Mathf.Max(normalComponent, minNormalBounce));
+        }
+
+        float incomingSpeed = incomingVelocity.magnitude;
+        float outgoingSpeed = Mathf.Max(incomingSpeed * bounceBounciness, incomingSpeed);
+        reflectedVelocity = reflectedVelocity.normalized * outgoingSpeed;
+
+        bouncesRemaining = Mathf.Max(bouncesRemaining, 1);
+
+        rb.position += normal * 0.05f;
+        rb.linearVelocity = reflectedVelocity;
+
+        if (reflectedVelocity.sqrMagnitude > 0.0001f)
+        {
+            transform.rotation = Quaternion.LookRotation(reflectedVelocity);
+        }
+
+        if (rb != null)
+        {
+            rb.angularVelocity = Random.insideUnitSphere * 15f;
+        }
+
+        if (impactEffectPrefab != null)
+        {
+            Instantiate(impactEffectPrefab, contact.point, Quaternion.LookRotation(normal));
+        }
+
+        launchPosition = rb.position;
+        isGravityDelayed = false;
+        lastVelocity = reflectedVelocity;
+        return true;
     }
 
     private bool TryBounce(Collision collision)

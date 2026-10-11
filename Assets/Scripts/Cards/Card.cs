@@ -50,7 +50,8 @@ public enum CardStatTarget
     MagazineSize,
     StartingBullets,
     ReloadTime,
-    CrosshairPointDistance
+    CrosshairPointDistance,
+    BlockCooldown
 }
 
 public enum CardStatModifierMode

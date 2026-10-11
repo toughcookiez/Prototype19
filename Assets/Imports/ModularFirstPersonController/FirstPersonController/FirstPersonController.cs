@@ -46,6 +46,7 @@ public class FirstPersonController : NetworkBehaviour
         public float sprintSpeed;
         public float sprintDuration;
         public float jumpPower;
+        public float blockCooldown;
     }
 
     private const ulong LocalWeaponSettingsKey = ulong.MaxValue;
@@ -126,6 +127,10 @@ public class FirstPersonController : NetworkBehaviour
     private Vector3 spawnPosition;
     private readonly NetworkVariable<float> currentHealth = new NetworkVariable<float>(
         100f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(
+        false,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
     private VisualElement healthBarProgressElement;
@@ -253,6 +258,21 @@ public class FirstPersonController : NetworkBehaviour
     #endregion
     #endregion
 
+    #region Block Variables
+
+    public bool enableBlock = true;
+    public KeyCode blockKey = KeyCode.Mouse1;
+    public GameObject shieldObject;
+    public float blockDuration = 0.2f;
+    public float blockCooldown = 1f;
+
+    // Internal Variables
+    private bool isBlocking = false;
+    private bool isBlockCooldown = false;
+    private Coroutine blockCoroutine;
+
+    #endregion
+
     #region Shooting Variables
 
     public bool enableShooting = true;
@@ -378,6 +398,20 @@ public class FirstPersonController : NetworkBehaviour
             sprintRemaining = sprintDuration;
             sprintCooldownReset = sprintCooldown;
         }
+
+        if (shieldObject == null)
+        {
+            Transform shieldTransform = transform.Find("ShieldObject");
+            if (shieldTransform != null)
+            {
+                shieldObject = shieldTransform.gameObject;
+            }
+        }
+
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(false);
+        }
     }
 
     void Start()
@@ -461,6 +495,12 @@ public class FirstPersonController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         currentHealth.OnValueChanged += OnCurrentHealthChanged;
+        isShieldActive.OnValueChanged += OnShieldActiveChanged;
+
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(isShieldActive.Value);
+        }
 
         ApplySavedWeaponSettings(true);
         ApplySavedPlayerSettings();
@@ -516,6 +556,7 @@ public class FirstPersonController : NetworkBehaviour
         SaveCurrentWeaponSettings();
         SaveCurrentPlayerSettings();
         currentHealth.OnValueChanged -= OnCurrentHealthChanged;
+        isShieldActive.OnValueChanged -= OnShieldActiveChanged;
         healthBarProgressElement = null;
     }
 
@@ -546,34 +587,13 @@ public class FirstPersonController : NetworkBehaviour
             transform.localEulerAngles = new Vector3(0, yaw, 0);
         }
 
-        #region Camera Zoom
+        #region Block
 
-        if (enableZoom)
+        if (enableBlock && Input.GetKeyDown(blockKey) && Time.time >= nextBlockTime && !isSprinting)
         {
-            if(Input.GetKeyDown(zoomKey) && !holdToZoom && !isSprinting)
+            if (shieldObject != null && !isBlocking)
             {
-                isZoomed = !isZoomed;
-            }
-
-            if(holdToZoom && !isSprinting)
-            {
-                if(Input.GetKeyDown(zoomKey))
-                {
-                    isZoomed = true;
-                }
-                else if(Input.GetKeyUp(zoomKey))
-                {
-                    isZoomed = false;
-                }
-            }
-
-            if(isZoomed)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, zoomFOV, zoomStepTime * Time.deltaTime);
-            }
-            else if(!isZoomed && !isSprinting)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, fov, zoomStepTime * Time.deltaTime);
+                TryBlock();
             }
         }
 
@@ -948,7 +968,8 @@ public class FirstPersonController : NetworkBehaviour
             walkSpeed = walkSpeed,
             sprintSpeed = sprintSpeed,
             sprintDuration = sprintDuration,
-            jumpPower = jumpPower
+            jumpPower = jumpPower,
+            blockCooldown = blockCooldown
         };
     }
 
@@ -1030,6 +1051,7 @@ public class FirstPersonController : NetworkBehaviour
         sprintSpeed = playerSettings.sprintSpeed;
         sprintDuration = playerSettings.sprintDuration;
         jumpPower = playerSettings.jumpPower;
+        blockCooldown = playerSettings.blockCooldown;
         NormalizePlayerSettings();
         UpdateHealthBar(currentHealth.Value);
     }
@@ -1146,7 +1168,7 @@ public class FirstPersonController : NetworkBehaviour
             return;
         }
 
-        ApplyPlayerSettingsOwnerClientRpc(playerSettings.maxHealth, playerSettings.walkSpeed, playerSettings.sprintSpeed, playerSettings.sprintDuration, playerSettings.jumpPower, new ClientRpcParams
+        ApplyPlayerSettingsOwnerClientRpc(playerSettings.maxHealth, playerSettings.walkSpeed, playerSettings.sprintSpeed, playerSettings.sprintDuration, playerSettings.jumpPower, playerSettings.blockCooldown, new ClientRpcParams
         {
             Send = new ClientRpcSendParams
             {
@@ -1156,7 +1178,7 @@ public class FirstPersonController : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void ApplyPlayerSettingsOwnerClientRpc(float maxHealthValue, float walkSpeedValue, float sprintSpeedValue, float sprintDurationValue, float jumpPowerValue, ClientRpcParams clientRpcParams = default)
+    private void ApplyPlayerSettingsOwnerClientRpc(float maxHealthValue, float walkSpeedValue, float sprintSpeedValue, float sprintDurationValue, float jumpPowerValue, float blockCooldownValue, ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner)
         {
@@ -1169,7 +1191,8 @@ public class FirstPersonController : NetworkBehaviour
             walkSpeed = walkSpeedValue,
             sprintSpeed = sprintSpeedValue,
             sprintDuration = sprintDurationValue,
-            jumpPower = jumpPowerValue
+            jumpPower = jumpPowerValue,
+            blockCooldown = blockCooldownValue
         };
 
         ApplyPlayerSettingsLocally(playerSettings);
@@ -1197,6 +1220,7 @@ public class FirstPersonController : NetworkBehaviour
         playerSettings.sprintSpeed = Mathf.Max(0.1f, playerSettings.sprintSpeed);
         playerSettings.sprintDuration = Mathf.Max(0.1f, playerSettings.sprintDuration);
         playerSettings.jumpPower = Mathf.Max(0.1f, playerSettings.jumpPower);
+        playerSettings.blockCooldown = Mathf.Max(0.05f, playerSettings.blockCooldown);
     }
 
     private static bool WeaponSettingsMatch(WeaponSettings first, WeaponSettings second)
@@ -2519,6 +2543,9 @@ public class FirstPersonController : NetworkBehaviour
             case CardStatTarget.CrosshairPointDistance:
                 crosshairPointDistance = ApplyCardStatValue(crosshairPointDistance, stat);
                 break;
+            case CardStatTarget.BlockCooldown:
+                blockCooldown = ApplyCardStatValue(blockCooldown, stat);
+                break;
         }
     }
 
@@ -2540,6 +2567,7 @@ public class FirstPersonController : NetworkBehaviour
         sprintDuration = Mathf.Max(0.1f, sprintDuration);
         sprintRemaining = Mathf.Clamp(sprintRemaining, 0f, sprintDuration);
         jumpPower = Mathf.Max(0.1f, jumpPower);
+        blockCooldown = Mathf.Max(0.05f, blockCooldown);
     }
 
     private void BroadcastCardsUiCardSelection(int cardIndex)
@@ -3209,6 +3237,90 @@ public class FirstPersonController : NetworkBehaviour
         SetAnimatorBool(isGroundedParameter, isGrounded);
         SetAnimatorBool(isCrouchedParameter, isCrouched);
         SetAnimatorBool(isReloadingParameter, isReloading);
+    }
+
+    private float nextBlockTime;
+
+    public bool IsBlocking()
+    {
+        return isBlocking || (IsSpawned && isShieldActive.Value);
+    }
+
+    private void OnShieldActiveChanged(bool previousValue, bool newValue)
+    {
+        isBlocking = newValue;
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(newValue);
+        }
+    }
+
+    public bool IsShieldCollider(Collider col)
+    {
+        if (shieldObject == null || col == null)
+        {
+            return false;
+        }
+
+        return col.transform == shieldObject.transform || col.transform.IsChildOf(shieldObject.transform);
+    }
+
+    private void TryBlock()
+    {
+        if (isBlocking || isBlockCooldown || Time.time < nextBlockTime)
+        {
+            return;
+        }
+
+        nextBlockTime = Time.time + blockCooldown;
+
+        if (IsServer)
+        {
+            StartCoroutine(BlockRoutineServer());
+        }
+        else if (IsSpawned)
+        {
+            RequestBlockServerRpc();
+        }
+        else
+        {
+            if (blockCoroutine != null)
+            {
+                StopCoroutine(blockCoroutine);
+            }
+            blockCoroutine = StartCoroutine(BlockRoutineLocal());
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestBlockServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        StartCoroutine(BlockRoutineServer());
+    }
+
+    private IEnumerator BlockRoutineServer()
+    {
+        isShieldActive.Value = true;
+        yield return new WaitForSeconds(blockDuration);
+        isShieldActive.Value = false;
+    }
+
+    private IEnumerator BlockRoutineLocal()
+    {
+        isBlocking = true;
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(blockDuration);
+
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(false);
+        }
+        isBlocking = false;
+        blockCoroutine = null;
     }
 
     private bool IsAlive()

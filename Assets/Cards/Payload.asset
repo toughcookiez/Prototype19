@@ -27,5 +27,5 @@ MonoBehaviour:
     modifierMode: 1
     amount: -20
   abilities:
-  - description: Bullets trigger an explosion when they hit something.
+  - description: Bullets trigger an explosion on hit.
     abilityName: Payload

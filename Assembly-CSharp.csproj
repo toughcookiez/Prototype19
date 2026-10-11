@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\Networking\LobbyPlayerDisabler.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Networking\MultiplayerLauncher.cs" />
+    <None Include="Assets\Imports\Shield Shader FREE\Pink Material Issue.txt" />
     <None Include="Library\PackageCache\com.unity.ai.navigation@c33a115e9883\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\ReferenceUnlit.shader" />
     <None Include="Library\PackageCache\com.unity.settings-manager@0b8638c5ce86\package.json" />
@@ -208,6 +209,7 @@
     <None Include="Library\PackageCache\com.unity.modules.ui\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\HideVertices.shader" />
+    <None Include="Assets\Imports\Shield Shader FREE\Documentation(Shield hologram shader FREE).txt" />
     <None Include="Library\PackageCache\com.unity.multiplayer.center@f01f4ba8d00a\package.json" />
     <None Include="Assets\UI\PlayerUI.uxml" />
     <Reference Include="UnityEngine">
