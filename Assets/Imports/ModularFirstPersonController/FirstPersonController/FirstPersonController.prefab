@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 4459864850019384740}
   - component: {fileID: 8013814264227788415}
   - component: {fileID: -8936900103008597428}
+  - component: {fileID: 8180689606459440279}
   m_Layer: 0
   m_Name: FirstPersonController
   m_TagString: Player
@@ -209,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2153281172
+  GlobalObjectIdHash: 3319823941
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -331,6 +332,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: deaeb8e52b26c7c498eb6879c57219da, type: 2}
   - {fileID: 11400000, guid: 9848502f7c3a4db4db8188abd62abf51, type: 2}
   - {fileID: 11400000, guid: 2f71a1ec67dd0c94e8a1e57727c79ad3, type: 2}
+  - {fileID: 11400000, guid: 24ba2abfa259a374991b226ef38d6f4e, type: 2}
+  - {fileID: 11400000, guid: 949c84fee907fd844b2066a9953568b5, type: 2}
   enableRagdollOnDeath: 1
   normalCollider: {fileID: 4459864850019384737}
   ragdollRoot: {fileID: 7331321506881327905}
@@ -379,6 +382,11 @@ MonoBehaviour:
   crouchKey: 306
   crouchHeight: 0.75
   speedReduction: 0.5
+  enableBlock: 1
+  blockKey: 324
+  shieldObject: {fileID: 0}
+  blockDuration: 0.2
+  blockCooldown: 1
   enableShooting: 1
   shootKey: 323
   reloadKey: 114
@@ -453,6 +461,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyPlayerDisabler
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &8180689606459440279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4459864850019384750}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 3.71
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &4459864850190357393
 GameObject:
   m_ObjectHideFlags: 0

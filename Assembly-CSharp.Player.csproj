@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Networking\OwnerNetworkTransform.cs" />
+    <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Cards\Card.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyManager.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyCharacterPreview.cs" />

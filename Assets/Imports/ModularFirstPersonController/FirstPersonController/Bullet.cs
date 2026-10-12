@@ -11,6 +11,7 @@ public class Bullet : NetworkBehaviour
     public float selfCollisionGraceTime = .25f;
     public int maxBounces;
     public bool hasPayload;
+    public bool hasBeacon;
     public GameObject explosionPrefab;
     public float explosionRadius = 5f;
     public float explosionForce = 10f;
@@ -228,6 +229,11 @@ public class Bullet : NetworkBehaviour
             }
 
             bool damageApplied = hitPlayer.TryApplyDamage(damage, shooterClientId);
+
+            if (hasBeacon)
+            {
+                hitPlayer.TriggerBeacon();
+            }
 
             if (damageApplied)
             {

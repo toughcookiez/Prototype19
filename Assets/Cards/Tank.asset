@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: Tank
   stats:
-  - description: 'A lot more Health '
+  - description: 'A lot more HP '
     keyword: A lot more
     polarity: 0
     target: 0

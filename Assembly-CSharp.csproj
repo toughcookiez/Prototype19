@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Networking\OwnerNetworkTransform.cs" />
+    <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Cards\Card.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyManager.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyCharacterPreview.cs" />
@@ -107,6 +108,7 @@
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\ScrollHighlight.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\UnlitSolidColor.shader" />
+    <None Include="Assets\QuickOutline\Resources\Shaders\OutlineMask.shader" />
     <None Include="Library\PackageCache\com.unity.film-internal-utilities@8cfa91f65639\package.json" />
     <None Include="Library\PackageCache\com.unity.visualscripting@191c0d7e3b69\package.json" />
     <None Include="Library\PackageCache\com.unity.collab-proxy@e566cd3e7623\package.json" />
@@ -155,6 +157,7 @@
     <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Library\PackageCache\com.unity.transport@6c02b9db76ef\package.json" />
+    <None Include="Assets\QuickOutline\Readme.txt" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\ValidationExceptions.json" />
@@ -192,6 +195,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Library\PackageCache\com.unity.ugui@bb329a87fcdc\PackageConversionData_Assets.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\QuickOutline\Resources\Shaders\OutlineFill.shader" />
     <None Include="Library\PackageCache\com.unity.mathematics@19a9377c4ffa\ValidationExceptions.json" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Library\PackageCache\com.unity.modules.animation\package.json" />

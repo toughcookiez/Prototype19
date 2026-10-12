@@ -291,6 +291,9 @@ public class FirstPersonController : NetworkBehaviour
     public bool hasFlintknock;
     public float flintknockForce = 15f;
     public bool hasPayload;
+    public bool hasBeacon;
+    private Outline playerOutline;
+    private Coroutine beaconCoroutine;
     public GameObject explosionPrefab;
     public float explosionRadius = 5f;
     public float explosionForce = 10f;
@@ -415,6 +418,13 @@ public class FirstPersonController : NetworkBehaviour
             shieldRenderers = shieldObject.GetComponentsInChildren<Renderer>(true);
             shieldObject.SetActive(false);
         }
+
+        playerOutline = GetComponent<Outline>();
+        if (playerOutline == null)
+        {
+            playerOutline = gameObject.AddComponent<Outline>();
+        }
+        playerOutline.enabled = false;
     }
 
     void Start()
@@ -879,6 +889,7 @@ public class FirstPersonController : NetworkBehaviour
             bullet.SetBounces(bulletBounces);
             bullet.SetShooter(shooterClientId, this);
             bullet.hasPayload = hasPayload;
+            bullet.hasBeacon = hasBeacon;
             if (explosionPrefab != null)
             {
                 bullet.explosionPrefab = explosionPrefab;
@@ -2218,6 +2229,20 @@ public class FirstPersonController : NetworkBehaviour
                         });
                     }
                 }
+                else if (ability.abilityName == "Beacon")
+                {
+                    hasBeacon = true;
+                    if (IsSpawned && IsServer)
+                    {
+                        ApplyBeaconAbilityClientRpc(new ClientRpcParams
+                        {
+                            Send = new ClientRpcSendParams
+                            {
+                                TargetClientIds = new[] { OwnerClientId }
+                            }
+                        });
+                    }
+                }
             }
         }
 
@@ -2235,6 +2260,95 @@ public class FirstPersonController : NetworkBehaviour
     private void ApplyPayloadAbilityClientRpc(ClientRpcParams clientRpcParams = default)
     {
         hasPayload = true;
+    }
+
+    [ClientRpc]
+    private void ApplyBeaconAbilityClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        hasBeacon = true;
+    }
+
+    public void TriggerBeacon()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+
+        TriggerBeaconClientRpc();
+    }
+
+    [ClientRpc]
+    private void TriggerBeaconClientRpc()
+    {
+        ApplyOrResetBeacon();
+    }
+
+    private void ApplyOrResetBeacon()
+    {
+        if (playerOutline == null)
+        {
+            playerOutline = GetComponent<Outline>();
+            if (playerOutline == null)
+            {
+                playerOutline = gameObject.AddComponent<Outline>();
+            }
+        }
+
+        if (beaconCoroutine != null)
+        {
+            StopCoroutine(beaconCoroutine);
+        }
+
+        beaconCoroutine = StartCoroutine(BeaconRevealRoutine());
+    }
+
+    private IEnumerator BeaconRevealRoutine()
+    {
+        playerOutline.enabled = true;
+        Color baseColor = playerOutline.OutlineColor;
+        if (baseColor == default || baseColor.a == 0f)
+        {
+            baseColor = Color.white;
+        }
+
+        int totalFlashes = 3;
+        float flashDuration = 1.0f; // 1 second per flash
+        float pauseDuration = 0.5f; // 0.1 second pause between flashes
+
+        for (int i = 0; i < totalFlashes; i++)
+        {
+            float elapsed = 0f;
+            while (elapsed < flashDuration)
+            {
+                float t = elapsed / flashDuration; // 0 to 1
+                float alpha;
+                if (t <= 0.5f)
+                {
+                    alpha = t * 2f; // 0 to 1 (fade in)
+                }
+                else
+                {
+                    alpha = (1f - t) * 2f; // 1 to 0 (fade out)
+                }
+
+                playerOutline.OutlineColor = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            playerOutline.OutlineColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);
+
+            if (i < totalFlashes - 1)
+            {
+                yield return new WaitForSeconds(pauseDuration);
+            }
+        }
+
+        playerOutline.OutlineColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);
+        playerOutline.enabled = false;
+        beaconCoroutine = null;
     }
 
     private void ResetLevelAfterCardPick()
