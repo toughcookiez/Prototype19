@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,8 +19,12 @@ public class LobbyManager : MonoBehaviour
     public event Action OnLobbyEnded;
 
     public bool IsLobbyActive { get; private set; }
+    public string LobbyCode { get; private set; }
 
     private Dictionary<ulong, int> clientSlots = new Dictionary<ulong, int>();
+
+    private const string LobbyCodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const int LobbyCodeLength = 6;
 
     private void Awake()
     {
@@ -54,10 +59,21 @@ public class LobbyManager : MonoBehaviour
         if (NetworkManager.Singleton != null)
         {
             IsLobbyActive = true;
+            LobbyCode = GenerateLobbyCode();
             NetworkManager.Singleton.StartHost();
             OnLobbyStateChanged?.Invoke();
             OnLobbyStarted?.Invoke();
         }
+    }
+
+    private string GenerateLobbyCode()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < LobbyCodeLength; i++)
+        {
+            sb.Append(LobbyCodeChars[UnityEngine.Random.Range(0, LobbyCodeChars.Length)]);
+        }
+        return sb.ToString();
     }
 
     public void StartClientLobby(string ipAddress)

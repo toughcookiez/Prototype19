@@ -26,10 +26,10 @@ MonoBehaviour:
     target: 4
     modifierMode: 0
     amount: 3
-  - description: 'A little less HP '
-    keyword: A little less
+  - description: 'A lot lower HP '
+    keyword: A lot lower
     polarity: 1
     target: 0
-    modifierMode: 0
-    amount: -20
+    modifierMode: 1
+    amount: -50
   abilities: []

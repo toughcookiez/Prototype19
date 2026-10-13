@@ -17,6 +17,12 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private TMP_Text statusText;
+    [SerializeField] private TMP_Text lobbyCodeText;
+    [SerializeField] private Button copyCodeButton;
+
+    [Header("Camera Animation")]
+    [SerializeField] private Camera lobbyCamera;
+    [SerializeField] private float rotationDuration = 0.5f;
 
     private void Start()
     {
@@ -31,6 +37,9 @@ public class LobbyUI : MonoBehaviour
 
         if (leaveLobbyButton != null)
             leaveLobbyButton.onClick.AddListener(OnLeaveLobbyClicked);
+
+        if (copyCodeButton != null)
+            copyCodeButton.onClick.AddListener(OnCopyCodeClicked);
 
         if (ipAddressInputField != null && string.IsNullOrEmpty(ipAddressInputField.text))
             ipAddressInputField.text = "127.0.0.1";
@@ -49,6 +58,7 @@ public class LobbyUI : MonoBehaviour
         if (joinLobbyButton != null) joinLobbyButton.onClick.RemoveListener(OnJoinLobbyClicked);
         if (startGameButton != null) startGameButton.onClick.RemoveListener(OnStartGameClicked);
         if (leaveLobbyButton != null) leaveLobbyButton.onClick.RemoveListener(OnLeaveLobbyClicked);
+        if (copyCodeButton != null) copyCodeButton.onClick.RemoveListener(OnCopyCodeClicked);
 
         if (LobbyManager.Instance != null)
         {
@@ -60,6 +70,7 @@ public class LobbyUI : MonoBehaviour
     {
         if (LobbyManager.Instance != null)
         {
+            RotateCamera();
             LobbyManager.Instance.StartHostLobby();
         }
     }
@@ -68,9 +79,43 @@ public class LobbyUI : MonoBehaviour
     {
         if (LobbyManager.Instance != null)
         {
+            RotateCamera();
             string ip = ipAddressInputField != null ? ipAddressInputField.text : "127.0.0.1";
             LobbyManager.Instance.StartClientLobby(ip);
         }
+    }
+
+    private void OnCopyCodeClicked()
+    {
+        if (LobbyManager.Instance != null && !string.IsNullOrEmpty(LobbyManager.Instance.LobbyCode))
+        {
+            GUIUtility.systemCopyBuffer = LobbyManager.Instance.LobbyCode;
+            Debug.Log("Lobby code copied to clipboard: " + LobbyManager.Instance.LobbyCode);
+        }
+    }
+
+    private void RotateCamera()
+    {
+        Camera targetCam = lobbyCamera != null ? lobbyCamera : Camera.main;
+        if (targetCam != null)
+        {
+            StartCoroutine(LerpCameraRotation(targetCam));
+        }
+    }
+
+    private System.Collections.IEnumerator LerpCameraRotation(Camera targetCam)
+    {
+        Quaternion startRot = targetCam.transform.rotation;
+        Quaternion targetRot = Quaternion.Euler(startRot.eulerAngles.x, startRot.eulerAngles.y + 180f, startRot.eulerAngles.z);
+        float elapsed = 0f;
+
+        while (elapsed < rotationDuration)
+        {
+            targetCam.transform.rotation = Quaternion.Slerp(startRot, targetRot, elapsed / rotationDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        targetCam.transform.rotation = targetRot;
     }
 
     private void OnStartGameClicked()
@@ -113,6 +158,24 @@ public class LobbyUI : MonoBehaviour
             {
                 statusText.text = "Disconnected.";
             }
+        }
+
+        if (lobbyCodeText != null)
+        {
+            if (isConnected && isHost && LobbyManager.Instance != null && !string.IsNullOrEmpty(LobbyManager.Instance.LobbyCode))
+            {
+                lobbyCodeText.gameObject.SetActive(true);
+                lobbyCodeText.text = "Lobby Code: " + LobbyManager.Instance.LobbyCode;
+            }
+            else
+            {
+                lobbyCodeText.gameObject.SetActive(false);
+            }
+        }
+
+        if (copyCodeButton != null)
+        {
+            copyCodeButton.gameObject.SetActive(isConnected && isHost);
         }
     }
 }

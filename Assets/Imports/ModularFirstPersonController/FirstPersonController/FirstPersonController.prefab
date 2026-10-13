@@ -210,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3319823941
+  GlobalObjectIdHash: 2387475061
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -341,7 +341,7 @@ MonoBehaviour:
   ragdollRigidbodies: []
   ragdollColliders: []
   disableAnimatorOnRagdoll: 1
-  mapPoolSceneIndices: 0100000002000000
+  mapPoolSceneIndices: 010000000200000003000000
   playerCamera: {fileID: 4459864851310106426}
   fov: 60
   invertCamera: 0
@@ -401,6 +401,7 @@ MonoBehaviour:
   hasFlintknock: 0
   flintknockForce: 15
   hasPayload: 0
+  hasBeacon: 0
   explosionPrefab: {fileID: 0}
   explosionRadius: 5
   explosionForce: 10
