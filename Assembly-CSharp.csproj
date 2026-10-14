@@ -116,6 +116,7 @@
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestassetbundle\package.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\TransparentOverlay.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\UnlitVertexColor.shader" />
+    <None Include="Assets\UI\MainMenuUI.uxml" />
     <None Include="Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\package.json" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\ValidationConfig.json" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\package.json" />
@@ -158,11 +159,13 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Library\PackageCache\com.unity.transport@6c02b9db76ef\package.json" />
     <None Include="Assets\QuickOutline\Readme.txt" />
+    <None Include="Assets\UI\TextFieldBorder.uss" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.modules.audio\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.physics\package.json" />
+    <None Include="Assets\UI\MenuButtons.uss" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.universal@37e0d4fc2503\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\ProBuilderCG.cginc" />
     <None Include="Library\PackageCache\com.unity.modules.vehicles\package.json" />

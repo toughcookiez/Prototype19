@@ -394,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &72943096
 RectTransform:
   m_ObjectHideFlags: 0
@@ -467,6 +467,7 @@ GameObject:
   - component: {fileID: 106644574}
   - component: {fileID: 106644573}
   - component: {fileID: 106644572}
+  - component: {fileID: 106644577}
   m_Layer: 5
   m_Name: LobbyUI
   m_TagString: Untagged
@@ -486,18 +487,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce08d494332a55d4ba4705c4f864a5de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyUI
-  mainMenuPanel: {fileID: 72943095}
-  waitingRoomPanel: {fileID: 936227340}
-  createLobbyButton: {fileID: 999817062}
-  joinLobbyButton: {fileID: 1492974385}
-  ipAddressInputField: {fileID: 1357947855}
-  startGameButton: {fileID: 60911774}
-  leaveLobbyButton: {fileID: 203278570}
-  statusText: {fileID: 455983651}
-  lobbyCodeText: {fileID: 1101626370}
+  mainMenuPanel: {fileID: 0}
+  waitingRoomPanel: {fileID: 0}
+  createLobbyButton: {fileID: 0}
+  joinLobbyButton: {fileID: 0}
+  ipAddressInputField: {fileID: 0}
+  startGameButton: {fileID: 0}
+  leaveLobbyButton: {fileID: 0}
+  statusText: {fileID: 0}
+  lobbyCodeText: {fileID: 0}
   copyCodeButton: {fileID: 0}
-  lobbyCamera: {fileID: 0}
+  lobbyCamera: {fileID: 484152304}
   rotationDuration: 0.5
+  uiDocument: {fileID: 106644577}
 --- !u!114 &106644573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,6 +585,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &106644577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106644571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 9c0b09925be77a74680906a1ac5a0bbb, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 55e82ba0acea8b742977057c0339f5f9, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!1 &186945145
 GameObject:
   m_ObjectHideFlags: 0

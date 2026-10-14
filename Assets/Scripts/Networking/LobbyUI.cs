@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using TMPro;
+
+using UGUIButton = UnityEngine.UI.Button;
+using UITKButton = UnityEngine.UIElements.Button;
 
 public class LobbyUI : MonoBehaviour
 {
@@ -9,20 +13,33 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private GameObject waitingRoomPanel;
 
     [Header("Main Menu Controls")]
-    [SerializeField] private Button createLobbyButton;
-    [SerializeField] private Button joinLobbyButton;
+    [SerializeField] private UGUIButton createLobbyButton;
+    [SerializeField] private UGUIButton joinLobbyButton;
     [SerializeField] private TMP_InputField ipAddressInputField;
 
     [Header("Waiting Room Controls")]
-    [SerializeField] private Button startGameButton;
-    [SerializeField] private Button leaveLobbyButton;
+    [SerializeField] private UGUIButton startGameButton;
+    [SerializeField] private UGUIButton leaveLobbyButton;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text lobbyCodeText;
-    [SerializeField] private Button copyCodeButton;
+    [SerializeField] private UGUIButton copyCodeButton;
 
     [Header("Camera Animation")]
     [SerializeField] private Camera lobbyCamera;
     [SerializeField] private float rotationDuration = 0.5f;
+
+    [Header("UI Toolkit Root (UIDocument assigned by user)")]
+    [SerializeField] private UIDocument uiDocument;
+
+    private UITKButton toolkitCreateButton;
+    private UITKButton toolkitJoinButton;
+    private UITKButton toolkitStartGameButton;
+    private UITKButton toolkitLeaveLobbyButton;
+    private Label toolkitLobbyCodeLabel;
+    private UITKButton toolkitCopyCodeButton;
+    private Label toolkitStatusText;
+    private VisualElement toolkitMainMenuContainer;
+    private VisualElement toolkitWaitingRoomContainer;
 
     private void Start()
     {
@@ -49,6 +66,11 @@ public class LobbyUI : MonoBehaviour
             LobbyManager.Instance.OnLobbyStateChanged += UpdateUIState;
         }
 
+        if (uiDocument != null)
+        {
+            SetupUIToolkit(uiDocument.rootVisualElement);
+        }
+
         UpdateUIState();
     }
 
@@ -71,6 +93,13 @@ public class LobbyUI : MonoBehaviour
         if (LobbyManager.Instance != null)
         {
             RotateCamera();
+            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+            if (waitingRoomPanel != null) waitingRoomPanel.SetActive(true);
+
+            // UI Toolkit visuals
+            if (toolkitMainMenuContainer != null) toolkitMainMenuContainer.style.display = DisplayStyle.None;
+            if (toolkitWaitingRoomContainer != null) toolkitWaitingRoomContainer.style.display = DisplayStyle.Flex;
+
             LobbyManager.Instance.StartHostLobby();
         }
     }
@@ -80,6 +109,8 @@ public class LobbyUI : MonoBehaviour
         if (LobbyManager.Instance != null)
         {
             RotateCamera();
+            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+            if (waitingRoomPanel != null) waitingRoomPanel.SetActive(true);
             string ip = ipAddressInputField != null ? ipAddressInputField.text : "127.0.0.1";
             LobbyManager.Instance.StartClientLobby(ip);
         }
@@ -177,5 +208,71 @@ public class LobbyUI : MonoBehaviour
         {
             copyCodeButton.gameObject.SetActive(isConnected && isHost);
         }
+        UpdateUIToolkitState();
     }
+
+    public void SetupUIToolkit(VisualElement root)
+    {
+        if (root == null) return;
+
+        toolkitCreateButton = root.Query<UITKButton>("CreateLobby");
+        toolkitJoinButton = root.Query<UITKButton>("JoinLobby");
+        toolkitStartGameButton = root.Query<UITKButton>("StartGame");
+        toolkitLeaveLobbyButton = root.Query<UITKButton>("LeaveLobby");
+        toolkitLobbyCodeLabel = root.Query<Label>("LobbyCode");
+        toolkitCopyCodeButton = root.Query<UITKButton>("CopyLobbyCode");
+        toolkitStatusText = root.Query<Label>("Status");
+        toolkitMainMenuContainer = root.Query<VisualElement>("MainMenu");
+        if (toolkitMainMenuContainer == null) toolkitMainMenuContainer = root.Query<VisualElement>("MainMenuPanel");
+        toolkitWaitingRoomContainer = root.Query<VisualElement>("WaitingRoom");
+        if (toolkitWaitingRoomContainer == null) toolkitWaitingRoomContainer = root.Query<VisualElement>("WaitingRoomPanel");
+
+        if (toolkitCreateButton != null)
+            toolkitCreateButton.clicked += () => OnCreateLobbyClicked();
+        if (toolkitJoinButton != null)
+            toolkitJoinButton.clicked += () => OnJoinLobbyClicked();
+        if (toolkitStartGameButton != null)
+            toolkitStartGameButton.clicked += () => OnStartGameClicked();
+        if (toolkitLeaveLobbyButton != null)
+            toolkitLeaveLobbyButton.clicked += () => OnLeaveLobbyClicked();
+        if (toolkitCopyCodeButton != null)
+            toolkitCopyCodeButton.clicked += () => OnCopyCodeClicked();
+
+        UpdateUIToolkitState();
+    }
+
+    private void UpdateUIToolkitState()
+    {
+        bool isConnected = LobbyManager.Instance != null && LobbyManager.Instance.IsConnected;
+        bool isHost = LobbyManager.Instance != null && LobbyManager.Instance.IsHost;
+
+        if (toolkitMainMenuContainer != null)
+            toolkitMainMenuContainer.style.display = !isConnected ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (toolkitWaitingRoomContainer != null)
+            toolkitWaitingRoomContainer.style.display = isConnected ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (toolkitStatusText != null)
+        {
+            toolkitStatusText.text = isConnected ? (isHost ? "Hosting Lobby... Waiting for players." : "Joined Lobby! Waiting for host to start.") : "Disconnected.";
+        }
+
+        if (toolkitLobbyCodeLabel != null)
+        {
+            bool show = isConnected && isHost && LobbyManager.Instance != null && !string.IsNullOrEmpty(LobbyManager.Instance.LobbyCode);
+            toolkitLobbyCodeLabel.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            if (show) toolkitLobbyCodeLabel.text = "Lobby Code: " + LobbyManager.Instance.LobbyCode;
+        }
+
+        if (toolkitCopyCodeButton != null)
+        {
+            toolkitCopyCodeButton.style.display = (isConnected && isHost) ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        if (toolkitStartGameButton != null)
+        {
+            toolkitStartGameButton.style.display = isHost ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+    }
+
 }
