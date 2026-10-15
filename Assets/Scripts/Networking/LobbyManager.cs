@@ -42,6 +42,7 @@ public class LobbyManager : MonoBehaviour
         {
             NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+            NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         }
     }
 
@@ -51,13 +52,28 @@ public class LobbyManager : MonoBehaviour
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+            // ConnectionApprovalCallback is a property, not an event, so we can't -= in the same way.
+            // But we can set it to null if needed, or leave it if the NetworkManager handles it.
         }
+    }
+
+    private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
+    {
+        string receivedCode = Encoding.UTF8.GetString(request.Payload);
+        bool approved = !string.IsNullOrEmpty(LobbyCode) && string.Equals(receivedCode, LobbyCode, StringComparison.OrdinalIgnoreCase);
+
+        response.Approved = approved;
+        response.CreatePlayerObject = true;
+        response.Pending = false;
+
+        Debug.Log($"Lobby code validation for client {request.ClientNetworkId}: {(approved ? "APPROVED" : "REJECTED")}");
     }
 
     public void StartHostLobby()
     {
         if (NetworkManager.Singleton != null)
         {
+            NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
             IsLobbyActive = true;
             LobbyCode = GenerateLobbyCode();
             NetworkManager.Singleton.StartHost();
@@ -76,20 +92,29 @@ public class LobbyManager : MonoBehaviour
         return sb.ToString();
     }
 
-    public void StartClientLobby(string ipAddress)
+    public void StartClientLobby(string lobbyCode)
     {
         if (NetworkManager.Singleton != null)
         {
             var transport = NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>();
-            if (transport != null && !string.IsNullOrEmpty(ipAddress))
-            {
-                transport.ConnectionData.Address = ipAddress;
-            }
+            PendingLobbyCode = lobbyCode;
+
+            // Store the lobby code in connection data so the server can validate it
+            NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(lobbyCode);
             IsLobbyActive = true;
             NetworkManager.Singleton.StartClient();
-            OnLobbyStateChanged?.Invoke();
-            OnLobbyStarted?.Invoke();
         }
+    }
+
+    public string PendingLobbyCode { get; private set; }
+
+    public bool TryValidateLobbyCode(string clientCode)
+    {
+        if (string.IsNullOrEmpty(PendingLobbyCode))
+            return false;
+
+        // Codes must exactly match
+        return string.Equals(clientCode, PendingLobbyCode, StringComparison.OrdinalIgnoreCase);
     }
 
     public void LeaveLobby()
@@ -125,10 +150,23 @@ public class LobbyManager : MonoBehaviour
         Debug.Log($"Client connected: {clientId}, assigned to slot {assignedSlot}");
         OnPlayerJoinedSlot?.Invoke(clientId);
         OnLobbyStateChanged?.Invoke();
+
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsClient && clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            OnLobbyStarted?.Invoke();
+        }
     }
 
     private void HandleClientDisconnected(ulong clientId)
     {
+        if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            IsLobbyActive = false;
+            PendingLobbyCode = null;
+            OnLobbyStateChanged?.Invoke();
+            OnLobbyEnded?.Invoke();
+        }
+
         if (clientSlots.ContainsKey(clientId))
         {
             clientSlots.Remove(clientId);
@@ -144,5 +182,6 @@ public class LobbyManager : MonoBehaviour
     }
 
     public bool IsHost => NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-    public bool IsConnected => NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+    public bool IsConnected => NetworkManager.Singleton != null &&
+        (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsConnectedClient);
 }

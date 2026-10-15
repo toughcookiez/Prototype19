@@ -40,6 +40,8 @@ public class LobbyUI : MonoBehaviour
     private Label toolkitStatusText;
     private VisualElement toolkitMainMenuContainer;
     private VisualElement toolkitWaitingRoomContainer;
+    private TextField toolkitLobbyCodeInput;
+    private bool hasRotatedCamera = false;
 
     private void Start()
     {
@@ -92,27 +94,47 @@ public class LobbyUI : MonoBehaviour
     {
         if (LobbyManager.Instance != null)
         {
-            RotateCamera();
-            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-            if (waitingRoomPanel != null) waitingRoomPanel.SetActive(true);
-
-            // UI Toolkit visuals
-            if (toolkitMainMenuContainer != null) toolkitMainMenuContainer.style.display = DisplayStyle.None;
-            if (toolkitWaitingRoomContainer != null) toolkitWaitingRoomContainer.style.display = DisplayStyle.Flex;
-
             LobbyManager.Instance.StartHostLobby();
         }
     }
 
+    private bool IsValidLobbyCode(string code)
+    {
+        if (string.IsNullOrEmpty(code) || code.Length != 6)
+            return false;
+
+        foreach (char c in code)
+        {
+            if (!char.IsLetterOrDigit(c))
+                return false;
+        }
+        return true;
+    }
+
     private void OnJoinLobbyClicked()
     {
+        string codeOrIp = string.Empty;
+        if (ipAddressInputField != null && !string.IsNullOrEmpty(ipAddressInputField.text) && ipAddressInputField.text != "127.0.0.1")
+        {
+            codeOrIp = ipAddressInputField.text.Trim();
+        }
+        else if (toolkitLobbyCodeInput != null && !string.IsNullOrEmpty(toolkitLobbyCodeInput.value))
+        {
+            codeOrIp = toolkitLobbyCodeInput.value.Trim().ToUpper();
+        }
+
+        bool isValidIp = !string.IsNullOrEmpty(codeOrIp) && System.Net.IPAddress.TryParse(codeOrIp, out _);
+        bool isValidCode = IsValidLobbyCode(codeOrIp);
+
+        if (!isValidIp && !isValidCode)
+        {
+            Debug.LogWarning("Cannot join lobby: Please enter a valid 6-character lobby code or IP address.");
+            return;
+        }
+
         if (LobbyManager.Instance != null)
         {
-            RotateCamera();
-            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-            if (waitingRoomPanel != null) waitingRoomPanel.SetActive(true);
-            string ip = ipAddressInputField != null ? ipAddressInputField.text : "127.0.0.1";
-            LobbyManager.Instance.StartClientLobby(ip);
+            LobbyManager.Instance.StartClientLobby(codeOrIp);
         }
     }
 
@@ -170,6 +192,16 @@ public class LobbyUI : MonoBehaviour
         bool isConnected = LobbyManager.Instance != null && LobbyManager.Instance.IsConnected;
         bool isHost = LobbyManager.Instance != null && LobbyManager.Instance.IsHost;
 
+        if (isConnected && !hasRotatedCamera)
+        {
+            hasRotatedCamera = true;
+            RotateCamera();
+        }
+        else if (!isConnected)
+        {
+            hasRotatedCamera = false;
+        }
+
         if (mainMenuPanel != null)
             mainMenuPanel.SetActive(!isConnected);
 
@@ -222,6 +254,7 @@ public class LobbyUI : MonoBehaviour
         toolkitLobbyCodeLabel = root.Query<Label>("LobbyCode");
         toolkitCopyCodeButton = root.Query<UITKButton>("CopyLobbyCode");
         toolkitStatusText = root.Query<Label>("Status");
+        toolkitLobbyCodeInput = root.Query<TextField>("LobbyCodeInput");
         toolkitMainMenuContainer = root.Query<VisualElement>("MainMenu");
         if (toolkitMainMenuContainer == null) toolkitMainMenuContainer = root.Query<VisualElement>("MainMenuPanel");
         toolkitWaitingRoomContainer = root.Query<VisualElement>("WaitingRoom");
