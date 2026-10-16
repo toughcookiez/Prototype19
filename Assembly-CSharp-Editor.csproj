@@ -1224,6 +1224,10 @@
       <Project>{bd61ed5b-ffe0-3c80-348b-907fb36900bc}</Project>
       <Name>Unity.ProBuilder</Name>
     </ProjectReference>
+    <ProjectReference Include="com.cqf.urpvolumetricfog.editor.csproj">
+      <Project>{595d20fd-71a9-e3ff-cc45-28a5c8241c06}</Project>
+      <Name>com.cqf.urpvolumetricfog.editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.State.csproj">
       <Project>{7c5b4d10-ebd7-61a8-e8d9-cbbc24f5f982}</Project>
       <Name>Unity.VisualScripting.State</Name>
@@ -1255,6 +1259,10 @@
     <ProjectReference Include="Unity.Settings.Editor.csproj">
       <Project>{7733e683-9452-4a0c-d88d-7d971faaab8e}</Project>
       <Name>Unity.Settings.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.cqf.urpvolumetricfog.runtime.csproj">
+      <Project>{fdbb0933-07d0-99f9-0b2e-e2551037c7d1}</Project>
+      <Name>com.cqf.urpvolumetricfog.runtime</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>

@@ -804,6 +804,10 @@
       <Project>{cbbd7987-bc98-af41-4f84-bcbaa92ba318}</Project>
       <Name>Unity.InputSystem.Player</Name>
     </ProjectReference>
+    <ProjectReference Include="com.cqf.urpvolumetricfog.runtime.Player.csproj">
+      <Project>{eab303a7-8172-9647-1845-8e76cba75c11}</Project>
+      <Name>com.cqf.urpvolumetricfog.runtime.Player</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -88,6 +88,7 @@
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\DiffuseVertexColor.shader" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.assetbundle\package.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\package.json" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Shaders\CoreCopy.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\LineBillboard.shader" />
@@ -136,9 +137,12 @@
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\VertexShader.shader" />
     <None Include="Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.particlesystem\package.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\VolumetricFog.hlsl" />
     <None Include="Library\PackageCache\com.unity.multiplayer.playmode@d8888f6ed6aa\package.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\DepthAwareUpsample.hlsl" />
     <None Include="Library\PackageCache\com.unity.modules.physics2d\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\VolumetricFog.shader" />
     <None Include="Library\PackageCache\com.unity.modules.vr\package.json" />
     <None Include="Library\PackageCache\com.unity.visualscripting@191c0d7e3b69\ValidationExceptions.json" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
@@ -151,6 +155,7 @@
     <None Include="Library\PackageCache\com.unity.modules.wind\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\FacePicker.shader" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\VolumetricShadows.hlsl" />
     <None Include="Assets\UI\CardButton.uss" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Library\PackageCache\com.unity.modules.umbra\package.json" />
@@ -173,11 +178,13 @@
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestwww\package.json" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio\package.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\DeclareDownsampledDepthTexture.hlsl" />
     <None Include="Library\PackageCache\com.unity.modules.hierarchycore\package.json" />
     <None Include="Library\PackageCache\com.unity.ugui@bb329a87fcdc\Editor Resources\Shaders\TMP_SDF_SSD.cginc" />
     <None Include="Library\PackageCache\com.unity.collab-proxy@e566cd3e7623\ValidationConfig.json" />
     <None Include="Library\PackageCache\com.unity.shadergraph@c8830f61858d\GraphTemplates\Subgraphs\CanvasLinearSpaceConversion.hlsl" />
     <None Include="Library\PackageCache\com.unity.ai.navigation@c33a115e9883\package.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\ProjectionUtils.hlsl" />
     <None Include="Library\PackageCache\com.unity.modules.xr\package.json" />
     <None Include="Library\PackageCache\com.unity.ugui@bb329a87fcdc\Editor Resources\Shaders\TMP_Properties.cginc" />
     <None Include="Library\PackageCache\com.unity.modules.adaptiveperformance\package.json" />
@@ -200,6 +207,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\QuickOutline\Resources\Shaders\OutlineFill.shader" />
     <None Include="Library\PackageCache\com.unity.mathematics@19a9377c4ffa\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\DepthAwareGaussianBlur.hlsl" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Library\PackageCache\com.unity.modules.animation\package.json" />
     <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64\Runtime\Newtonsoft.Json.xml" />
@@ -216,6 +224,7 @@
     <None Include="Library\PackageCache\com.unity.modules.ui\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\HideVertices.shader" />
+    <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\DownsampleDepth.shader" />
     <None Include="Assets\Imports\Shield Shader FREE\Documentation(Shield hologram shader FREE).txt" />
     <None Include="Library\PackageCache\com.unity.multiplayer.center@f01f4ba8d00a\package.json" />
     <None Include="Assets\UI\PlayerUI.uxml" />
@@ -1242,6 +1251,10 @@
       <Project>{bd61ed5b-ffe0-3c80-348b-907fb36900bc}</Project>
       <Name>Unity.ProBuilder</Name>
     </ProjectReference>
+    <ProjectReference Include="com.cqf.urpvolumetricfog.editor.csproj">
+      <Project>{595d20fd-71a9-e3ff-cc45-28a5c8241c06}</Project>
+      <Name>com.cqf.urpvolumetricfog.editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.State.csproj">
       <Project>{7c5b4d10-ebd7-61a8-e8d9-cbbc24f5f982}</Project>
       <Name>Unity.VisualScripting.State</Name>
@@ -1273,6 +1286,10 @@
     <ProjectReference Include="Unity.Settings.Editor.csproj">
       <Project>{7733e683-9452-4a0c-d88d-7d971faaab8e}</Project>
       <Name>Unity.Settings.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.cqf.urpvolumetricfog.runtime.csproj">
+      <Project>{fdbb0933-07d0-99f9-0b2e-e2551037c7d1}</Project>
+      <Name>com.cqf.urpvolumetricfog.runtime</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>
