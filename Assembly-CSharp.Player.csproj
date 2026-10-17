@@ -60,6 +60,7 @@
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\Bullet.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyPlayerDisabler.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\FirstPersonController.cs" />
+    <Compile Include="Assets\Scripts\DummyBehaviour.cs" />
     <Compile Include="Assets\Scripts\Networking\MultiplayerLauncher.cs" />
     <Reference Include="UnityEngine">
       <HintPath>E:\Program Files\6000.3.10f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\Variations\mono\Managed\UnityEngine.dll</HintPath>
