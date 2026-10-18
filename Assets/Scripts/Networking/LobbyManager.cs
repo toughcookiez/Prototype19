@@ -16,12 +16,15 @@ public class LobbyManager : MonoBehaviour
     public event Action<ulong> OnPlayerLeftSlot;
     public event Action OnLobbyStateChanged;
     public event Action OnLobbyStarted;
-    public event Action OnLobbyEnded;
+    public event Action OnGameStarted;
+    public event Action OnLobbyLeft;
 
     public bool IsLobbyActive { get; private set; }
     public string LobbyCode { get; private set; }
 
     private Dictionary<ulong, int> clientSlots = new Dictionary<ulong, int>();
+
+    private bool isLeaving = false;
 
     private const string LobbyCodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private const int LobbyCodeLength = 6;
@@ -71,6 +74,7 @@ public class LobbyManager : MonoBehaviour
 
     public void StartHostLobby()
     {
+        isLeaving = false;
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
@@ -94,6 +98,7 @@ public class LobbyManager : MonoBehaviour
 
     public void StartClientLobby(string lobbyCode)
     {
+        isLeaving = false;
         if (NetworkManager.Singleton != null)
         {
             var transport = NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>();
@@ -119,6 +124,7 @@ public class LobbyManager : MonoBehaviour
 
     public void LeaveLobby()
     {
+        isLeaving = true;
         if (NetworkManager.Singleton != null)
         {
             if (NetworkManager.Singleton.IsListening)
@@ -128,8 +134,16 @@ public class LobbyManager : MonoBehaviour
         }
         clientSlots.Clear();
         IsLobbyActive = false;
+        LobbyCode = null;
+        PendingLobbyCode = null;
+
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+
         OnLobbyStateChanged?.Invoke();
-        OnLobbyEnded?.Invoke();
+        OnLobbyLeft?.Invoke();
     }
 
     public void StartGame()
@@ -137,7 +151,7 @@ public class LobbyManager : MonoBehaviour
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
             IsLobbyActive = false;
-            OnLobbyEnded?.Invoke();
+            OnGameStarted?.Invoke();
             NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
         }
     }
@@ -161,10 +175,18 @@ public class LobbyManager : MonoBehaviour
     {
         if (NetworkManager.Singleton != null && clientId == NetworkManager.Singleton.LocalClientId)
         {
+            isLeaving = true;
             IsLobbyActive = false;
+            LobbyCode = null;
             PendingLobbyCode = null;
+
+            if (SceneManager.GetActiveScene().name != "MainMenu")
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+
             OnLobbyStateChanged?.Invoke();
-            OnLobbyEnded?.Invoke();
+            OnLobbyLeft?.Invoke();
         }
 
         if (clientSlots.ContainsKey(clientId))
@@ -182,6 +204,6 @@ public class LobbyManager : MonoBehaviour
     }
 
     public bool IsHost => NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-    public bool IsConnected => NetworkManager.Singleton != null &&
+    public bool IsConnected => !isLeaving && NetworkManager.Singleton != null &&
         (NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsConnectedClient);
 }

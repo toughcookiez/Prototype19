@@ -14,8 +14,8 @@ public class LobbyPlayerDisabler : NetworkBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         if (LobbyManager.Instance != null)
         {
-            LobbyManager.Instance.OnLobbyStarted += DisablePlayerControls;
-            LobbyManager.Instance.OnLobbyEnded += EnablePlayerControls;
+            LobbyManager.Instance.OnGameStarted += EnablePlayerControls;
+            LobbyManager.Instance.OnLobbyLeft += DisablePlayerControls;
         }
     }
 
@@ -24,8 +24,8 @@ public class LobbyPlayerDisabler : NetworkBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
         if (LobbyManager.Instance != null)
         {
-            LobbyManager.Instance.OnLobbyStarted -= DisablePlayerControls;
-            LobbyManager.Instance.OnLobbyEnded -= EnablePlayerControls;
+            LobbyManager.Instance.OnGameStarted -= EnablePlayerControls;
+            LobbyManager.Instance.OnLobbyLeft -= DisablePlayerControls;
         }
     }
 

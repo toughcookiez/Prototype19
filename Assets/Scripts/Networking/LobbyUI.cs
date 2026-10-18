@@ -42,9 +42,18 @@ public class LobbyUI : MonoBehaviour
     private VisualElement toolkitWaitingRoomContainer;
     private TextField toolkitLobbyCodeInput;
     private bool hasRotatedCamera = false;
+    private Quaternion initialCameraRot;
+    private bool hasInitialRot = false;
 
     private void Start()
     {
+        Camera targetCam = lobbyCamera != null ? lobbyCamera : Camera.main;
+        if (targetCam != null)
+        {
+            initialCameraRot = targetCam.transform.rotation;
+            hasInitialRot = true;
+        }
+
         if (createLobbyButton != null)
             createLobbyButton.onClick.AddListener(OnCreateLobbyClicked);
 
@@ -147,19 +156,27 @@ public class LobbyUI : MonoBehaviour
         }
     }
 
-    private void RotateCamera()
+    private void RotateCamera(bool forward)
     {
         Camera targetCam = lobbyCamera != null ? lobbyCamera : Camera.main;
         if (targetCam != null)
         {
-            StartCoroutine(LerpCameraRotation(targetCam));
+            Quaternion targetRot;
+            if (forward)
+            {
+                targetRot = Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, targetCam.transform.rotation.eulerAngles.y + 180f, targetCam.transform.rotation.eulerAngles.z);
+            }
+            else
+            {
+                targetRot = hasInitialRot ? initialCameraRot : Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, targetCam.transform.rotation.eulerAngles.y - 180f, targetCam.transform.rotation.eulerAngles.z);
+            }
+            StartCoroutine(LerpCameraRotation(targetCam, targetRot));
         }
     }
 
-    private System.Collections.IEnumerator LerpCameraRotation(Camera targetCam)
+    private System.Collections.IEnumerator LerpCameraRotation(Camera targetCam, Quaternion targetRot)
     {
         Quaternion startRot = targetCam.transform.rotation;
-        Quaternion targetRot = Quaternion.Euler(startRot.eulerAngles.x, startRot.eulerAngles.y + 180f, startRot.eulerAngles.z);
         float elapsed = 0f;
 
         while (elapsed < rotationDuration)
@@ -195,11 +212,12 @@ public class LobbyUI : MonoBehaviour
         if (isConnected && !hasRotatedCamera)
         {
             hasRotatedCamera = true;
-            RotateCamera();
+            RotateCamera(true);
         }
-        else if (!isConnected)
+        else if (!isConnected && hasRotatedCamera)
         {
             hasRotatedCamera = false;
+            RotateCamera(false);
         }
 
         if (mainMenuPanel != null)

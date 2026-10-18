@@ -46,6 +46,12 @@ public class LobbyCharacterPreview : MonoBehaviour
 
     private void UpdatePreviews()
     {
+        if (LobbyManager.Instance != null && !LobbyManager.Instance.IsConnected)
+        {
+            ClearPreviews();
+            return;
+        }
+
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
         {
             ClearPreviews();
