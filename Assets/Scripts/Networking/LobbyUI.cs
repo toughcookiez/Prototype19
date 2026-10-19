@@ -37,6 +37,7 @@ public class LobbyUI : MonoBehaviour
     private UITKButton toolkitLeaveLobbyButton;
     private Label toolkitLobbyCodeLabel;
     private UITKButton toolkitCopyCodeButton;
+    private UITKButton toolkitInviteFriendsButton;
     private Label toolkitStatusText;
     private VisualElement toolkitMainMenuContainer;
     private VisualElement toolkitWaitingRoomContainer;
@@ -271,6 +272,7 @@ public class LobbyUI : MonoBehaviour
         toolkitLeaveLobbyButton = root.Query<UITKButton>("LeaveLobby");
         toolkitLobbyCodeLabel = root.Query<Label>("LobbyCode");
         toolkitCopyCodeButton = root.Query<UITKButton>("CopyLobbyCode");
+        toolkitInviteFriendsButton = root.Query<UITKButton>("InviteFriends");
         toolkitStatusText = root.Query<Label>("Status");
         toolkitLobbyCodeInput = root.Query<TextField>("LobbyCodeInput");
         toolkitMainMenuContainer = root.Query<VisualElement>("MainMenu");
@@ -288,6 +290,8 @@ public class LobbyUI : MonoBehaviour
             toolkitLeaveLobbyButton.clicked += () => OnLeaveLobbyClicked();
         if (toolkitCopyCodeButton != null)
             toolkitCopyCodeButton.clicked += () => OnCopyCodeClicked();
+        if (toolkitInviteFriendsButton != null)
+            toolkitInviteFriendsButton.clicked += () => LobbyManager.Instance?.InviteFriends();
 
         UpdateUIToolkitState();
     }
@@ -323,6 +327,12 @@ public class LobbyUI : MonoBehaviour
         if (toolkitStartGameButton != null)
         {
             toolkitStartGameButton.style.display = isHost ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        if (toolkitInviteFriendsButton != null)
+        {
+            bool canInvite = isConnected && LobbyManager.Instance != null && LobbyManager.Instance.IsUsingSteam;
+            toolkitInviteFriendsButton.style.display = canInvite ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 
