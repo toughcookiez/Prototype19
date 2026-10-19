@@ -27,7 +27,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\Bin\Debug\Assembly-CSharp\</OutputPath>
-    <DefineConstants>UNITY_6000_3_10;UNITY_6000_3;UNITY_6000;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_2023_2_OR_NEWER;UNITY_2023_3_OR_NEWER;UNITY_6000_0_OR_NEWER;UNITY_6000_1_OR_NEWER;UNITY_6000_2_OR_NEWER;UNITY_6000_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_AUDIO_SCRIPTABLE_PIPELINE;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_UNITY_CONSENT;ENABLE_UNITY_CLOUD_IDENTIFIERS;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_MARSHALLING_TESTS;ENABLE_VIDEO;ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_ACCESSIBILITY_SCREEN_READER;TEXTCORE_1_0_OR_NEWER;EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_NVIDIA;ENABLE_AMD;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER;PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION;PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER;TEXTCORE_FONT_ENGINE_1_6_OR_NEWER;UNITY_PIPELINE_URP;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>UNITY_6000_3_10;UNITY_6000_3;UNITY_6000;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_2023_2_OR_NEWER;UNITY_2023_3_OR_NEWER;UNITY_6000_0_OR_NEWER;UNITY_6000_1_OR_NEWER;UNITY_6000_2_OR_NEWER;UNITY_6000_3_OR_NEWER;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AR;ENABLE_AUDIO;ENABLE_AUDIO_SCRIPTABLE_PIPELINE;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EVENT_QUEUE;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_VIRTUALTEXTURING;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_UNITY_CONSENT;ENABLE_UNITY_CLOUD_IDENTIFIERS;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_MANAGED_UNITYTLS;INCLUDE_DYNAMIC_GI;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_MARSHALLING_TESTS;ENABLE_VIDEO;ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_ACCESSIBILITY_SCREEN_READER;TEXTCORE_1_0_OR_NEWER;EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_NVIDIA;ENABLE_AMD;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP;GFXDEVICE_WAITFOREVENT_MESSAGEPUMP;PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER;PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION;PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER;TEXTCORE_FONT_ENGINE_1_6_OR_NEWER;UNITY_PIPELINE_URP;STEAMWORKS_NET;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169,0649</NoWarn>
@@ -78,6 +78,7 @@
     <None Include="Library\PackageCache\com.unity.test-framework.performance@0840f58e4562\package.json" />
     <None Include="Library\PackageCache\com.unity.film-internal-utilities@8cfa91f65639\Shaders\Include\LensDistortion.cginc" />
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequesttexture\package.json" />
+    <None Include="Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.ai\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
@@ -90,11 +91,13 @@
     <None Include="Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.assetbundle\package.json" />
     <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\package.json" />
+    <None Include="Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\package.json" />
     <None Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Shaders\CoreCopy.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\LineBillboard.shader" />
     <None Include="Library\PackageCache\com.unity.modules.imgui\package.json" />
     <None Include="Library\PackageCache\com.unity.modules.tilemap\package.json" />
+    <None Include="Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\Plugins\Markdig\license.txt" />
     <None Include="Library\PackageCache\com.unity.test-framework.performance@0840f58e4562\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\VertexPicker.shader" />
     <None Include="Library\PackageCache\com.unity.timeline@7f8b2fb101b6\package.json" />
@@ -179,6 +182,7 @@
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestwww\package.json" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Library\PackageCache\com.unity.modules.unitywebrequestaudio\package.json" />
+    <None Include="Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\Plugins\Markdig\Markdig.xml" />
     <None Include="Library\PackageCache\com.cqf.urpvolumetricfog@354ebc5b6ed3\Shaders\DeclareDownsampledDepthTexture.hlsl" />
     <None Include="Library\PackageCache\com.unity.modules.hierarchycore\package.json" />
     <None Include="Library\PackageCache\com.unity.ugui@bb329a87fcdc\Editor Resources\Shaders\TMP_SDF_SSD.cginc" />
@@ -1056,9 +1060,17 @@
       <Project>{9aa49e49-d5b9-f0c3-ac90-32d6f02d8917}</Project>
       <Name>Unity.RenderPipelines.Core.ShaderLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Agent.Dynamic.Extension.Editor.csproj">
+      <Project>{aec11cde-0046-77a5-23de-0d20ba854144}</Project>
+      <Name>Unity.AI.Assistant.Agent.Dynamic.Extension.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualScripting.SettingsProvider.Editor.csproj">
       <Project>{f409e61e-0906-8640-ec60-469214c8b561}</Project>
       <Name>Unity.VisualScripting.SettingsProvider.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.API.Editor.csproj">
+      <Project>{62d431af-8336-d226-200d-39ca5a79cd45}</Project>
+      <Name>Unity.AI.Assistant.API.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Networking.Editor.csproj">
       <Project>{b5c6c6b1-dbeb-b046-6904-173833b7c8b6}</Project>
@@ -1083,6 +1095,10 @@
     <ProjectReference Include="Unity.AI.Navigation.Editor.csproj">
       <Project>{c40a7547-cc58-c504-6939-88a24119abf9}</Project>
       <Name>Unity.AI.Navigation.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Integrations.Profiler.Editor.csproj">
+      <Project>{7da176fe-f87f-47aa-0ac2-1eade2d7cc51}</Project>
+      <Name>Unity.AI.Assistant.Integrations.Profiler.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="PPv2URPConverters.csproj">
       <Project>{185f4819-a254-828b-caa8-a5cf26f251ae}</Project>
@@ -1120,6 +1136,10 @@
       <Project>{29b5cced-d275-36ca-1b8e-af480b975477}</Project>
       <Name>Unity.Burst.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Tools.Editor.csproj">
+      <Project>{303ae3d2-a05b-0f01-b69b-37d2dd82c54f}</Project>
+      <Name>Unity.AI.Assistant.Tools.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Toonshader.Editor.csproj">
       <Project>{e4e6b380-dfc7-3682-bcfc-b475493f409c}</Project>
       <Name>Unity.Toonshader.Editor</Name>
@@ -1132,6 +1152,10 @@
       <Project>{46adb050-58dc-fecc-0b0c-caf02707f727}</Project>
       <Name>Unity.Mathematics.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.AI.MCP.Runtime.csproj">
+      <Project>{4b4c45d8-e307-a0ea-8b0f-a401da66788c}</Project>
+      <Name>Unity.AI.MCP.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.UnifiedRayTracing.Runtime.csproj">
       <Project>{f4b09b13-1fc7-4e2c-c603-1570ad48ae27}</Project>
       <Name>Unity.UnifiedRayTracing.Runtime</Name>
@@ -1143,6 +1167,10 @@
     <ProjectReference Include="Unity.AI.Navigation.Editor.ConversionSystem.csproj">
       <Project>{68f94a9a-3016-8de3-f30f-5a414b1bbe3c}</Project>
       <Name>Unity.AI.Navigation.Editor.ConversionSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Bridge.Editor.csproj">
+      <Project>{c1032e05-21e2-d820-eb16-50ab55968b4e}</Project>
+      <Name>Unity.AI.Assistant.Bridge.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.csproj">
       <Project>{991bb069-ac23-ec07-4301-131cdbdf4451}</Project>
@@ -1160,6 +1188,10 @@
       <Project>{c24466e3-606b-1909-99df-a838bb3141e0}</Project>
       <Name>Unity.TextMeshPro.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Runtime.csproj">
+      <Project>{316ebd1d-db71-4ba3-5d8b-8fda2093c2f5}</Project>
+      <Name>Unity.AI.Assistant.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Netcode.PackageChecker.Editor.csproj">
       <Project>{230194d6-6211-cd9a-4a25-8af655959f81}</Project>
       <Name>Unity.Netcode.PackageChecker.Editor</Name>
@@ -1172,9 +1204,17 @@
       <Project>{ba573fc8-69a8-b5c2-b060-1baca3246030}</Project>
       <Name>Unity.VisualScripting.Flow.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.AI.Assistant.Annotations.Editor.csproj">
+      <Project>{b85177c9-fb60-33b6-9382-723a9e072f62}</Project>
+      <Name>Unity.AI.Assistant.Annotations.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
       <Project>{77d80634-c932-f0d7-aa1f-6dca597aca7a}</Project>
       <Name>Unity.VisualStudio.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Tracing.csproj">
+      <Project>{4766a9b8-bafb-460b-dfbe-02792c021581}</Project>
+      <Name>Unity.AI.Tracing</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.FilmInternalUtilities.Editor.csproj">
       <Project>{e37266b1-3283-5738-2ceb-7509964409b3}</Project>
@@ -1231,6 +1271,10 @@
     <ProjectReference Include="Unity.VisualScripting.Core.Editor.csproj">
       <Project>{cb97d8de-2152-d2e9-b243-aa053a617a6e}</Project>
       <Name>Unity.VisualScripting.Core.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="HFDownloader.csproj">
+      <Project>{7fe8810e-30b1-bef9-9037-ff28fcf93e13}</Project>
+      <Name>HFDownloader</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.InternalAPIEngineBridge.004.csproj">
       <Project>{05267dd7-d566-954d-f4c6-682893011ce2}</Project>
@@ -1295,6 +1339,10 @@
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.MCP.Editor.csproj">
+      <Project>{39de3bef-b683-aaa4-bc99-d10800bd828e}</Project>
+      <Name>Unity.AI.MCP.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
