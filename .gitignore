@@ -20,10 +20,6 @@
 # Visual Studio cache directory
 .vs/
 
-# Unity temporary multiplayer/test files
-.utmp/
-/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
-
 # Gradle cache directory
 .gradle/
 
@@ -44,7 +40,6 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-*.csproj.user
 
 # Unity3D generated meta files
 *.pidb.meta
