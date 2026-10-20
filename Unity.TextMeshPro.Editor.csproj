@@ -556,6 +556,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>E:\Projects\Prototype19\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="AiEditorToolsSdk">
+      <HintPath>E:\Projects\Prototype19\Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\Modules\Unity.AI.Toolkit.Sdk\Editor\AiEditorToolsSdk.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
       <HintPath>E:\Projects\Prototype19\Library\PackageCache\com.unity.visualscripting@191c0d7e3b69\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
     </Reference>
@@ -564,9 +567,6 @@
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>E:\Projects\Prototype19\Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="AiEditorToolsSdk">
-      <HintPath>E:\Projects\Prototype19\Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\Modules\Unity.AI.Toolkit.Sdk\Editor\AiEditorToolsSdk.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>E:\Program Files\6000.3.10f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\mscorlib.dll</HintPath>
@@ -953,13 +953,13 @@
       <Project>{991bb069-ac23-ec07-4301-131cdbdf4451}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{bb29b3b1-bd2e-1d4a-c9fe-49b128d0f89b}</Project>
-      <Name>UnityEngine.UI</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{bb29b3b1-bd2e-1d4a-c9fe-49b128d0f89b}</Project>
+      <Name>UnityEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
       <Project>{0ecd7478-a2cd-045a-c0aa-e47e89956e1d}</Project>

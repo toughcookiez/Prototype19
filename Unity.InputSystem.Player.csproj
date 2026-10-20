@@ -114,10 +114,10 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\InputActionState.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Devices\Precompiled\FastTouchscreen.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\AssetImporter\InputActionAssetEditor.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\Composites\TwoModifiersComposite.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\StickControl.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\UITKAssetEditor\Views\InputActionsTreeViewItem.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Devices\Touchscreen.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\Composites\TwoModifiersComposite.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\Analytics\PlayerInputManagerEditorAnalytic.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Events\DeviceConfigurationEvent.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\InputUpdateType.cs" />
@@ -167,8 +167,8 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Events\InputEventHandledPolicy.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\Steam\SteamSupport.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\InputControlList.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\JsonParser.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\HID\HIDDescriptorWindow.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\JsonParser.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\Processors\AxisDeadzoneProcessor.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\Steam\SteamControllerType.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\Users\InputUserSettings.cs" />
@@ -212,9 +212,9 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\InputMetrics.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\Observables\ForDeviceEventObservable.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\SavedState.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\OneOrMore.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\InputControlScheme.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\InputActionType.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\OneOrMore.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\DelegateHelpers.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\UITKAssetEditor\Views\ViewStateCollection.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\UI\BaseInputOverride.cs" />
@@ -267,8 +267,8 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Events\InputEvent.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\AssetEditor\InputActionAssetManager.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\AssetImporter\IInputActionAssetEditor.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\XR\Devices\Oculus.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\DoubleControl.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Plugins\XR\Devices\Oculus.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\Processors\ScaleVector2Processor.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Devices\Remote\RemoteInputPlayerConnection.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Events\InputEventStream.cs" />
@@ -280,8 +280,8 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\DynamicBitfield.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\UITKAssetEditor\StateContainer.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Actions\Composites\OneModifierComposite.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\PropertyDrawers\InputActionReferenceSearchProviders.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Utilities\DisplayStringFormatAttribute.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\PropertyDrawers\InputActionReferenceSearchProviders.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Controls\Processors\CompensateRotationProcessor.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\Editor\Settings\InputSettingsProvider.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem@57d0e36f6123\InputSystem\State\InputState.cs" />

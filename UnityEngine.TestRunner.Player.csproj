@@ -106,8 +106,8 @@
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Commands\EnumerableMaxTimeCommand.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Commands\EnumerableRepeatedTestCommand.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Commands\TestActionCommand.cs" />
-    <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Runner\CoroutineTestWorkItem.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Commands\UnityTestMethodCommand.cs" />
+    <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Runner\CoroutineTestWorkItem.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\TestRunner\Callbacks\PlayModeRunnerCallback.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\NUnitExtensions\Commands\SetUpTearDownCommand.cs" />
     <Compile Include="Library\PackageCache\com.unity.test-framework@0b7a23ab2e1d\UnityEngine.TestRunner\TestRunner\RemoteHelpers\RemoteTestResultDataWithTestData.cs" />

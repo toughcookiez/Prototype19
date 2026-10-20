@@ -56,11 +56,14 @@
     <Compile Include="Assets\Scripts\Networking\OwnerNetworkAnimator.cs" />
     <Compile Include="Assets\Scripts\Networking\SpawnPoint.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Networking\Steam\SteamNetworkingSocketsTransport.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyUI.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\Bullet.cs" />
     <Compile Include="Assets\Scripts\Networking\LobbyPlayerDisabler.cs" />
     <Compile Include="Assets\Imports\ModularFirstPersonController\FirstPersonController\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\DummyBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Networking\Steam\SteamLobby.cs" />
+    <Compile Include="Assets\Scripts\Networking\Steam\SteamManager.cs" />
     <Compile Include="Assets\Scripts\Networking\MultiplayerLauncher.cs" />
     <Reference Include="UnityEngine">
       <HintPath>E:\Program Files\6000.3.10f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\Variations\mono\Managed\UnityEngine.dll</HintPath>
@@ -733,6 +736,10 @@
       <Project>{ecbdeb6f-8db8-0e4a-4fcd-ad2d41c65c5e}</Project>
       <Name>Unity.UnifiedRayTracing.Runtime.Player</Name>
     </ProjectReference>
+    <ProjectReference Include="com.rlabrecque.steamworks.net.Player.csproj">
+      <Project>{d7ec997a-922c-1b02-4e27-0074d27c65c9}</Project>
+      <Name>com.rlabrecque.steamworks.net.Player</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.Core.Runtime.Player.csproj">
       <Project>{aeb78677-7118-c7ce-ca68-f6d563080bea}</Project>
       <Name>Unity.RenderPipelines.Core.Runtime.Player</Name>
@@ -773,13 +780,13 @@
       <Project>{be4b9fde-acae-8a2e-0182-beed82ae3f45}</Project>
       <Name>Unity.RenderPipelines.Universal.Shaders.Player</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEngine.UI.Player.csproj">
-      <Project>{485a26e6-5a4d-f84c-994b-baa701b7147b}</Project>
-      <Name>UnityEngine.UI.Player</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.Multiplayer.Center.Common.Player.csproj">
       <Project>{ef9e9d8f-546e-20d3-80ce-a2d474faf3c4}</Project>
       <Name>Unity.Multiplayer.Center.Common.Player</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.Player.csproj">
+      <Project>{485a26e6-5a4d-f84c-994b-baa701b7147b}</Project>
+      <Name>UnityEngine.UI.Player</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Burst.Player.csproj">
       <Project>{fef7efbc-c231-b08c-2edf-844f8722232a}</Project>

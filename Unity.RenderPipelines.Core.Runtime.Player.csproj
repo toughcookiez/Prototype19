@@ -187,9 +187,9 @@
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\XR\XRView.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\RenderGraph\IRenderGraphEnabledRenderPipeline.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Common\ListBuffer.cs" />
-    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\RenderPipeline\RenderPipelineGlobalSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Stripping\IStripper.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Debugging\Prefabs\Scripts\DebugUIHandlerGroup.cs" />
+    <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\RenderPipeline\RenderPipelineGlobalSettings.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Lighting\ProbeVolume\ProbeVolumeAsset.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Utilities\BitArray.cs" />
     <Compile Include="Library\PackageCache\com.unity.render-pipelines.core@04ab0eefa0c3\Runtime\Common\DynamicResolutionHandler.cs" />
