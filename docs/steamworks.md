@@ -93,6 +93,10 @@ as `ConnectionData`.
 - its `ConnectionData` matches `LobbyCode` (Steam and code joins), **or** Steam is off and the payload is empty (typed-IP join),
 - **and** there's a free slot (`ConnectedClientsIds.Count < maxPlayers`, default 2).
 
+Both `StartHostLobby` and `StartClient` set `NetworkConfig.ConnectionApproval = true` (the scene default is off).
+The flag is part of NGO's config hash, so if only the host sets it, every client is dropped with
+`NetworkConfig mismatch` before approval even runs.
+
 Rejected clients get `response.Reason` ("Wrong lobby code." / "Lobby is full."), which they log from
 `NetworkManager.DisconnectReason`.
 

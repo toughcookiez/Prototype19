@@ -182,6 +182,9 @@ public class LobbyManager : MonoBehaviour
     {
         PendingLobbyCode = lobbyCode;
 
+        // Must match the host: the flag is part of NGO's config hash, and without it the code isn't sent at all.
+        NetworkManager.Singleton.NetworkConfig.ConnectionApproval = true;
+
         // Store the lobby code in connection data so the server can validate it
         NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(lobbyCode);
         IsLobbyActive = true;

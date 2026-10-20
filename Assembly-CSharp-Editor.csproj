@@ -1199,13 +1199,13 @@
       <Project>{230194d6-6211-cd9a-4a25-8af655959f81}</Project>
       <Name>Unity.Netcode.PackageChecker.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
-      <Project>{ba573fc8-69a8-b5c2-b060-1baca3246030}</Project>
-      <Name>Unity.VisualScripting.Flow.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="com.rlabrecque.steamworks.net.editor.csproj">
       <Project>{4ab45f62-104e-86b1-0cc5-ad6bfb0a3bde}</Project>
       <Name>com.rlabrecque.steamworks.net.editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
+      <Project>{ba573fc8-69a8-b5c2-b060-1baca3246030}</Project>
+      <Name>Unity.VisualScripting.Flow.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
       <Project>{77d80634-c932-f0d7-aa1f-6dca597aca7a}</Project>
