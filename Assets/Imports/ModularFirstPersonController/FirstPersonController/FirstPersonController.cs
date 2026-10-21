@@ -60,6 +60,9 @@ public class FirstPersonController : NetworkBehaviour
     private const string CardsUiStatKeywordGoodClassName = "card-stat-keyword-good";
     private const string CardsUiStatKeywordBadClassName = "card-stat-keyword-bad";
     private const string CardsUiAbilityDescriptionClassName = "card-ability-description";
+    private const string CardsUiPlayerColorLabelName = "PlayerColorLabel";
+    private const string CardsUiPlayerRedText = "RED";
+    private const string CardsUiPlayerBlueText = "BLUE";
     private const string PlayerUiPointsName = "Points";
     private const string PlayerUiPlayer1Name = "Player1";
     private const string PlayerUiPlayer2Name = "Player2";
@@ -73,6 +76,8 @@ public class FirstPersonController : NetworkBehaviour
     private const float CardsUiPickGrowScale = 1.3f;
     private const float CardsUiDismissOthersDuration = .35f;
     private const float CardsUiPostPickDelay = .1f;
+    private static readonly Color CardsUiPlayerRedColor = new Color(1f, 32f / 255f, 0f);
+    private static readonly Color CardsUiPlayerBlueColor = new Color(0f, 150f / 255f, 1f);
     private static readonly Dictionary<ulong, WeaponSettings> savedWeaponSettingsByPlayer = new Dictionary<ulong, WeaponSettings>();
     private static readonly Dictionary<ulong, PlayerSettings> savedPlayerSettingsByPlayer = new Dictionary<ulong, PlayerSettings>();
     private static readonly Dictionary<ulong, int> roundWinsByPlayer = new Dictionary<ulong, int>();
@@ -1842,8 +1847,40 @@ public class FirstPersonController : NetworkBehaviour
         cardsUiDocument.rootVisualElement.pickingMode = PickingMode.Position;
         cardsUiDocument.rootVisualElement.SetEnabled(true);
         SetCardsUiInputBlocked(isActive && !isInteractable);
+        UpdateCardsUiPlayerColorLabel(isActive);
         PopulateCardsUiFromRoundCards();
         cardsUiWasActive = isActive;
+    }
+
+    // Names the player who is choosing a card, colored to match their side.
+    // Player index 0 is RED and index 1 is BLUE, matching the scoreboard in PlayerUI.uxml.
+    private void UpdateCardsUiPlayerColorLabel(bool isActive)
+    {
+        if (cardsUiDocument == null || cardsUiDocument.rootVisualElement == null)
+        {
+            return;
+        }
+
+        Label colorLabel = cardsUiDocument.rootVisualElement.Q<Label>(CardsUiPlayerColorLabelName);
+
+        if (colorLabel == null)
+        {
+            return;
+        }
+
+        if (!isActive)
+        {
+            colorLabel.text = CardsUiPlayerRedText;
+            colorLabel.style.color = CardsUiPlayerRedColor;
+            return;
+        }
+
+        FirstPersonController[] controllers = FindObjectsOfType<FirstPersonController>(true);
+        int chooserIndex = GetScoreboardPlayerIndex(controllers, cardsUiLosingClientId);
+        bool isRed = chooserIndex != 1;
+
+        colorLabel.text = isRed ? CardsUiPlayerRedText : CardsUiPlayerBlueText;
+        colorLabel.style.color = isRed ? CardsUiPlayerRedColor : CardsUiPlayerBlueColor;
     }
 
     private void PopulateCardsUiFromRoundCards()
