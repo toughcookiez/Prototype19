@@ -119,6 +119,8 @@ public class FirstPersonController : NetworkBehaviour
     public UIDocument cardsUiDocument;
     public UIDocument healthUiDocument;
     public Card[] cardPool;
+    [Tooltip("Sprite shown on a card once it has been flipped and its info revealed.")]
+    public Sprite flippedCardSprite;
     public bool enableRagdollOnDeath = true;
     public Collider normalCollider;
     public Transform ragdollRoot;
@@ -157,6 +159,7 @@ public class FirstPersonController : NetworkBehaviour
     private readonly Card[] currentRoundCards = new Card[CardsUiCardsPerRound];
     private readonly HashSet<VisualElement> flippedCardsUiCards = new HashSet<VisualElement>();
     private readonly HashSet<int> flippedCardsUiCardIndexes = new HashSet<int>();
+    private readonly Dictionary<VisualElement, Background> cardsUiCardBackBackgrounds = new Dictionary<VisualElement, Background>();
     private readonly HashSet<int> appliedCardsUiCardIndexes = new HashSet<int>();
     private readonly HashSet<VisualElement> animatingCardsUiCards = new HashSet<VisualElement>();
     private bool isCardsUiPickAnimationPlaying;
@@ -1906,6 +1909,7 @@ public class FirstPersonController : NetworkBehaviour
             SetCardsUiCardScale(cardElement, 1f);
             cardElement.style.display = hasRoundCard ? DisplayStyle.Flex : DisplayStyle.None;
             cardElement.SetEnabled(hasRoundCard);
+            RestoreCardsUiCardBackSprite(cardElement);
 
             if (!hasRoundCard)
             {
@@ -2129,6 +2133,7 @@ public class FirstPersonController : NetworkBehaviour
 
             card.transform.position = Vector3.zero;
             SetCardsUiCardScale(card, 1f);
+            RestoreCardsUiCardBackSprite(card);
 
             VisualElement infoElement = card.Q<VisualElement>(CardsUiInfoElementName);
 
@@ -2968,6 +2973,47 @@ public class FirstPersonController : NetworkBehaviour
             infoElement.style.display = DisplayStyle.Flex;
             infoElement.SetEnabled(true);
         }
+
+        SetCardsUiCardFlippedSprite(card);
+    }
+
+    // Swaps the card artwork to the flipped sprite at the same moment the card info is revealed.
+    private void SetCardsUiCardFlippedSprite(VisualElement card)
+    {
+        if (card == null || flippedCardSprite == null)
+        {
+            return;
+        }
+
+        CacheCardsUiCardBackBackground(card);
+        card.style.backgroundImage = new StyleBackground(Background.FromSprite(flippedCardSprite));
+    }
+
+    // Restores the face-down artwork, used when the cards are repopulated for a new round.
+    private void RestoreCardsUiCardBackSprite(VisualElement card)
+    {
+        if (card == null)
+        {
+            return;
+        }
+
+        if (!cardsUiCardBackBackgrounds.TryGetValue(card, out Background backBackground))
+        {
+            return;
+        }
+
+        card.style.backgroundImage = new StyleBackground(backBackground);
+    }
+
+    private void CacheCardsUiCardBackBackground(VisualElement card)
+    {
+        if (card == null || cardsUiCardBackBackgrounds.ContainsKey(card))
+        {
+            return;
+        }
+
+        // The face-down artwork is set as an inline background image in CardsUI.uxml.
+        cardsUiCardBackBackgrounds.Add(card, card.style.backgroundImage.value);
     }
 
     private void SetCardsUiInputBlocked(bool isBlocked)
@@ -3998,6 +4044,8 @@ public class FirstPersonController : NetworkBehaviour
 
         SerializedProperty cardPoolProperty = SerFPC.FindProperty("cardPool");
         EditorGUILayout.PropertyField(cardPoolProperty, new GUIContent("Card Pool", "Cards that can be randomly drawn for the post-death card round."), true);
+
+        fpc.flippedCardSprite = (Sprite)EditorGUILayout.ObjectField(new GUIContent("Flipped Card Sprite", "Sprite shown on a card once it has been flipped and its info revealed."), fpc.flippedCardSprite, typeof(Sprite), false);
 
         fpc.enableRagdollOnDeath = EditorGUILayout.ToggleLeft(new GUIContent("Enable Ragdoll On Death", "Turns bone rigidbodies non-kinematic, makes ragdoll colliders solid, and disables the normal player collider on death."), fpc.enableRagdollOnDeath);
 

@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 301
+  controlID: 44
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 302
+  controlID: 45
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 303
+  controlID: 46
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -249,11 +249,11 @@ MonoBehaviour:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs:
-      - m_Data: 61798
+      - m_Data: 61802
       m_LastClickedID:
-        m_Data: 61798
+        m_Data: 61802
       m_ExpandedIDs:
-      - m_Data: -1324
+      - m_Data: -1354
       - m_Data: -12
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
   - {fileID: 9}
   - {fileID: 10}
   m_Selected: 0
-  m_LastSelected: 1
+  m_LastSelected: 2
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -509,7 +509,7 @@ MonoBehaviour:
     x: 348
     y: 79
     width: 1019
-    height: 602
+    height: 603
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1200,7 +1200,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.0099322535, y: 0.90525633, z: -0.42634293, w: -0.024356289}
     speed: 2
-    m_Value: {x: -0.009922588, y: 0.90437543, z: -0.42592806, w: -0.024332587}
+    m_Value: {x: -0.0099322535, y: 0.90525633, z: -0.42634293, w: -0.024356289}
   m_Size:
     m_Target: 1.8892547
     speed: 2
@@ -2942,7 +2942,7 @@ MonoBehaviour:
     m_DynamicPanelBehavior: 0
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 61798
+  m_LastSelectedObjectID: 61802
 --- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -2992,7 +2992,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/UI
+    - Assets/Scripts
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -3002,7 +3002,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 53
   m_LastFolders:
-  - Assets/UI
+  - Assets/Scripts
   m_LastFoldersGridSize: 53
   m_LastProjectPath: E:\Projects\Prototype19
   m_LockTracker:
@@ -3011,9 +3011,9 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 94}
     m_SelectedIDs:
-    - m_Data: 63354
+    - m_Data: 63382
     m_LastClickedID:
-      m_Data: 63354
+      m_Data: 63382
     m_ExpandedIDs:
     - m_Data: 0
     - m_Data: 57778
@@ -3051,7 +3051,6 @@ MonoBehaviour:
     m_ExpandedIDs:
     - m_Data: 0
     - m_Data: 57778
-    - m_Data: 1000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3079,9 +3078,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 61798
-    m_LastClickedInstanceID: 61798
-    m_HadKeyboardFocusLastEvent: 1
+    - m_Data: 61802
+    m_LastClickedInstanceID: 61802
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 55342
     - m_Data: 53074

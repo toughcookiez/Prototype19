@@ -462,6 +462,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f71a1ec67dd0c94e8a1e57727c79ad3, type: 2}
   - {fileID: 11400000, guid: 24ba2abfa259a374991b226ef38d6f4e, type: 2}
   - {fileID: 11400000, guid: 949c84fee907fd844b2066a9953568b5, type: 2}
+  flippedCardSprite: {fileID: 21300000, guid: 584cbfec515d1e64a8108091d406ba95, type: 3}
   enableRagdollOnDeath: 1
   normalCollider: {fileID: 4459864850019384737}
   ragdollRoot: {fileID: 7331321506881327905}
