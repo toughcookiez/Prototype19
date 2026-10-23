@@ -184,7 +184,7 @@ public class FirstPersonController : NetworkBehaviour
 
     // Internal Variables
     private float yaw = 0.0f;
-    private float lookValue = 0.0f;
+    private float pitch = 0.0f;
     private Image crosshairObject;
 
     #region Camera Zoom Variables
@@ -601,11 +601,27 @@ public class FirstPersonController : NetworkBehaviour
         if(cameraCanMove)
         {
             yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
-
-            float lookInput = mouseSensitivity * Input.GetAxis("Mouse Y") / maxLookAngle;
-            lookValue = Mathf.Clamp(lookValue + (invertCamera ? lookInput : -lookInput), -1f, 1f);
-
             transform.localEulerAngles = new Vector3(0, yaw, 0);
+
+            float verticalLookInput = 100 * -Input.GetAxis("Mouse Y") / maxLookAngle;
+            float targetPitch = pitch + (invertCamera ? -verticalLookInput : verticalLookInput);
+            float pitchClamp = maxLookAngle;
+
+            if (pitchClamp > 0f)
+            {
+                targetPitch = Mathf.Clamp(targetPitch, -pitchClamp, pitchClamp);
+            }
+
+            float pitchSmoothTime = lookAnimationDampTime;
+            float smoothedPitch = pitchSmoothTime > 0f
+                ? Mathf.Lerp(pitch, targetPitch, 1f - Mathf.Exp(-pitchSmoothTime * Time.deltaTime))
+                : targetPitch;
+            pitch = smoothedPitch;
+
+            if (playerCamera != null)
+            {
+                playerCamera.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+            }
         }
 
         #region Block
@@ -3431,7 +3447,6 @@ public class FirstPersonController : NetworkBehaviour
         SetAnimatorFloat(moveXParameter, moveXInput);
         SetAnimatorFloat(moveYParameter, moveYInput);
         SetAnimatorFloat(speedParameter, horizontalSpeed);
-        SetAnimatorFloat(lookValueParameter, lookValue, lookAnimationDampTime);
         SetAnimatorBool(isMovingParameter, isMovingNow);
         SetAnimatorBool(isSprintingParameter, isSprinting);
         SetAnimatorBool(isGroundedParameter, isGrounded);
@@ -4079,12 +4094,12 @@ public class FirstPersonController : NetworkBehaviour
 
         fpc.playerCamera = (Camera)EditorGUILayout.ObjectField(new GUIContent("Camera", "Camera attached to the controller."), fpc.playerCamera, typeof(Camera), true);
         fpc.fov = EditorGUILayout.Slider(new GUIContent("Field of View", "The camera’s view angle. Changes the player camera directly."), fpc.fov, fpc.zoomFOV, 179f);
-        fpc.cameraCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Look Control", "Determines if mouse look is allowed to rotate the player and drive vertical look animation."), fpc.cameraCanMove);
+        fpc.cameraCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Look Control", "Determines if mouse look is allowed to rotate the camera."), fpc.cameraCanMove);
 
         GUI.enabled = fpc.cameraCanMove;
-        fpc.invertCamera = EditorGUILayout.ToggleLeft(new GUIContent("Invert Vertical Look", "Inverts the up and down movement sent to the look animation value."), fpc.invertCamera);
+        fpc.invertCamera = EditorGUILayout.ToggleLeft(new GUIContent("Invert Vertical Look", "Inverts the up and down camera look direction."), fpc.invertCamera);
         fpc.mouseSensitivity = EditorGUILayout.Slider(new GUIContent("Look Sensitivity", "Determines how sensitive the mouse movement is."), fpc.mouseSensitivity, .1f, 10f);
-        fpc.maxLookAngle = EditorGUILayout.Slider(new GUIContent("Look Value Scale", "Mouse Y movement is divided by this value before being added to LookValue."), fpc.maxLookAngle, 40, 90);
+        fpc.maxLookAngle = EditorGUILayout.Slider(new GUIContent("Look Value Scale", "Mouse Y movement is divided by this value before being applied as vertical camera rotation."), fpc.maxLookAngle, 40, 90);
         GUI.enabled = true;
 
         fpc.lockCursor = EditorGUILayout.ToggleLeft(new GUIContent("Lock and Hide Cursor", "Turns off the cursor visibility and locks it to the middle of the screen."), fpc.lockCursor);
@@ -4269,7 +4284,7 @@ public class FirstPersonController : NetworkBehaviour
         fpc.autoFindAnimator = EditorGUILayout.ToggleLeft(new GUIContent("Auto Find Animator", "Searches for an Animator in this object and children at runtime if one is not assigned."), fpc.autoFindAnimator);
         fpc.characterAnimator = (Animator)EditorGUILayout.ObjectField(new GUIContent("Animator", "Animator to drive. Leave empty to use Auto Find Animator."), fpc.characterAnimator, typeof(Animator), true);
         fpc.animationDampTime = EditorGUILayout.Slider(new GUIContent("Float Damping", "Smoothing time for float animation parameters."), fpc.animationDampTime, 0f, .5f);
-        fpc.lookAnimationDampTime = EditorGUILayout.Slider(new GUIContent("Look Damping", "Smoothing time for LookValue. Set to 0 for immediate vertical look response."), fpc.lookAnimationDampTime, 0f, .5f);
+        fpc.lookAnimationDampTime = EditorGUILayout.Slider(new GUIContent("Look Damping", "Smoothing time for vertical camera look. Set to 0 for immediate vertical look response."), fpc.lookAnimationDampTime, 0f, .5f);
 
         EditorGUILayout.Space();
         GUILayout.Label("Parameter Names", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 12 }, GUILayout.ExpandWidth(true));
