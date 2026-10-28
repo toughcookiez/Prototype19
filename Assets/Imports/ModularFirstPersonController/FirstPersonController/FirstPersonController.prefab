@@ -317,6 +317,8 @@ MonoBehaviour:
   - {fileID: 8400638336936208792}
   - {fileID: 3621137094489778524}
   secondPlayerBodyMaterial: {fileID: 2100000, guid: fbd8eda5df6aafd42b998e3a1766e8c3, type: 2}
+  innerGoober: {fileID: 7995515232231852443}
+  outerGoober: {fileID: 6041783988743111704}
   enablePlayerDamage: 1
   maxHealth: 100
   respawnDelay: 3
@@ -1735,7 +1737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1630794972795428178, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_CastShadows
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1630794972795428178, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_UpdateWhenOffscreen
@@ -1815,7 +1817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5797384429611982230, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_CastShadows
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5797384429611982230, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_AABB.m_Center.x
@@ -3396,7 +3398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1630794972795428178, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_CastShadows
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1630794972795428178, guid: 4e4068fe4452b904399e7e744829dee2, type: 3}
       propertyPath: m_UpdateWhenOffscreen

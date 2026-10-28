@@ -104,6 +104,12 @@ public class FirstPersonController : NetworkBehaviour
     public Renderer[] playerBodyRenderers;
     public Material secondPlayerBodyMaterial;
 
+    [Header("Goober Visuals")]
+    [Tooltip("The inner first-person body used for casting shadows for the local player.")]
+    public GameObject innerGoober;
+    [Tooltip("The outer body visible to other players.")]
+    public GameObject outerGoober;
+
     private ShadowCastingMode[] originalBodyShadowModes;
     private Material[][] originalBodyMaterials;
 
@@ -2593,6 +2599,7 @@ public class FirstPersonController : NetworkBehaviour
             uiDocument.gameObject.SetActive(true);
         }
 
+        ApplySecondPlayerBodyMaterial();
         ApplyBodyShadowMode(true);
 
         if (lockCursor)
@@ -3688,7 +3695,6 @@ public class FirstPersonController : NetworkBehaviour
 
         SetPlayerUiActive(isLocalPlayer);
         SetCardsUiActive(false);
-        ApplySecondPlayerBodyMaterial();
 
         foreach (Canvas canvas in GetComponentsInChildren<Canvas>(true))
         {
@@ -3705,11 +3711,45 @@ public class FirstPersonController : NetworkBehaviour
             uiDocument.gameObject.SetActive(isLocalPlayer);
         }
 
+        ApplySecondPlayerBodyMaterial();
         ApplyBodyShadowMode(isLocalPlayer);
+    }
+
+    private void FindGooberReferences()
+    {
+        Transform searchRoot = bodyRoot != null ? bodyRoot : transform;
+
+        if (innerGoober == null)
+        {
+            foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name.Trim().Equals("InnerGoober", System.StringComparison.OrdinalIgnoreCase) ||
+                    child.name.Contains("InnerGoober"))
+                {
+                    innerGoober = child.gameObject;
+                    break;
+                }
+            }
+        }
+
+        if (outerGoober == null)
+        {
+            foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name.Trim().Equals("OuterGoober", System.StringComparison.OrdinalIgnoreCase) ||
+                    child.name.Contains("OuterGoober"))
+                {
+                    outerGoober = child.gameObject;
+                    break;
+                }
+            }
+        }
     }
 
     private void CacheBodyRenderers()
     {
+        FindGooberReferences();
+
         if ((playerBodyRenderers == null || playerBodyRenderers.Length == 0) && autoFindBodyRenderers)
         {
             Transform searchRoot = bodyRoot != null ? bodyRoot : transform;
@@ -3784,40 +3824,86 @@ public class FirstPersonController : NetworkBehaviour
 
     private void ApplySecondPlayerBodyMaterial()
     {
-        if (playerBodyRenderers == null)
-        {
-            return;
-        }
-
+        FindGooberReferences();
         bool isSecondPlayer = IsSecondPlayerController();
 
-        for (int i = 0; i < playerBodyRenderers.Length; i++)
+        if (outerGoober != null)
         {
-            Renderer bodyRenderer = playerBodyRenderers[i];
-
-            if (bodyRenderer == null)
+            Renderer outerRenderer = outerGoober.GetComponentInChildren<Renderer>(true);
+            if (outerRenderer != null)
             {
-                continue;
+                if (isSecondPlayer && secondPlayerBodyMaterial != null)
+                {
+                    Material[] materials = outerRenderer.materials;
+                    if (materials != null && materials.Length > 0)
+                    {
+                        materials[0] = secondPlayerBodyMaterial;
+                        outerRenderer.materials = materials;
+                    }
+                }
+                else if (originalBodyMaterials != null && originalBodyMaterials.Length > 1 && originalBodyMaterials[1] != null)
+                {
+                    outerRenderer.materials = originalBodyMaterials[1];
+                }
+            }
+        }
+
+        if (innerGoober != null)
+        {
+            Renderer innerRenderer = innerGoober.GetComponentInChildren<Renderer>(true);
+            if (innerRenderer != null)
+            {
+                if (isSecondPlayer && secondPlayerBodyMaterial != null)
+                {
+                    Material[] materials = innerRenderer.materials;
+                    if (materials != null && materials.Length > 0)
+                    {
+                        materials[0] = secondPlayerBodyMaterial;
+                        innerRenderer.materials = materials;
+                    }
+                }
+                else if (originalBodyMaterials != null && originalBodyMaterials.Length > 0 && originalBodyMaterials[0] != null)
+                {
+                    innerRenderer.materials = originalBodyMaterials[0];
+                }
+            }
+        }
+
+        if (innerGoober == null || outerGoober == null)
+        {
+            if (playerBodyRenderers == null)
+            {
+                return;
             }
 
-            if (isSecondPlayer)
+            for (int i = 0; i < playerBodyRenderers.Length; i++)
             {
-                if (secondPlayerBodyMaterial == null)
+                Renderer bodyRenderer = playerBodyRenderers[i];
+
+                if (bodyRenderer == null)
                 {
                     continue;
                 }
 
-                Material[] materials = bodyRenderer.materials;
-
-                if (materials != null && materials.Length > 0)
+                if (isSecondPlayer)
                 {
-                    materials[0] = secondPlayerBodyMaterial;
-                    bodyRenderer.materials = materials;
+                    if (secondPlayerBodyMaterial == null)
+                    {
+                        continue;
+                    }
+
+                    Material[] materials = bodyRenderer.materials;
+
+                    if (materials != null && materials.Length > 0)
+                    {
+                        materials[0] = secondPlayerBodyMaterial;
+                        bodyRenderer.materials = materials;
+                    }
                 }
-            }
-            else if (originalBodyMaterials != null && i < originalBodyMaterials.Length && originalBodyMaterials[i] != null)
-            {
-                bodyRenderer.materials = originalBodyMaterials[i];
+                else if (originalBodyMaterials != null && i < originalBodyMaterials.Length && originalBodyMaterials[i] != null)
+                {
+                    bodyRenderer.materials = originalBodyMaterials[i];
+                }
             }
         }
     }
@@ -3935,6 +4021,48 @@ public class FirstPersonController : NetworkBehaviour
 
     private void ApplyBodyShadowMode(bool isLocalPlayer)
     {
+        FindGooberReferences();
+
+        if (innerGoober != null && outerGoober != null)
+        {
+            if (isLocalPlayer)
+            {
+                // Local player view:
+                // InnerGoober visible with ShadowCastingMode.On so the local player sees their own body.
+                // OuterGoober inactive so local player doesn't see the outer body.
+                innerGoober.SetActive(true);
+                outerGoober.SetActive(false);
+
+                Renderer[] innerRenderers = innerGoober.GetComponentsInChildren<Renderer>(true);
+                foreach (Renderer r in innerRenderers)
+                {
+                    if (r != null)
+                    {
+                        r.shadowCastingMode = ShadowCastingMode.On;
+                    }
+                }
+            }
+            else
+            {
+                // Remote player view:
+                // InnerGoober inactive (remote players don't need inner first-person body).
+                // OuterGoober active with ShadowCastingMode.On so other players see the outer body.
+                innerGoober.SetActive(false);
+                outerGoober.SetActive(true);
+
+                Renderer[] outerRenderers = outerGoober.GetComponentsInChildren<Renderer>(true);
+                foreach (Renderer r in outerRenderers)
+                {
+                    if (r != null)
+                    {
+                        r.shadowCastingMode = ShadowCastingMode.On;
+                    }
+                }
+            }
+            return;
+        }
+
+        // Fallback if innerGoober or outerGoober is not assigned
         if (playerBodyRenderers == null)
         {
             return;
@@ -3949,9 +4077,33 @@ public class FirstPersonController : NetworkBehaviour
                 continue;
             }
 
-            bodyRenderer.shadowCastingMode = isLocalPlayer && originalBodyShadowModes != null && i < originalBodyShadowModes.Length
-                ? originalBodyShadowModes[i]
-                : ShadowCastingMode.On;
+            bool isOuterGoober = i == 1;
+            GameObject gooberObj = bodyRenderer.gameObject;
+
+            if (isLocalPlayer)
+            {
+                if (isOuterGoober)
+                {
+                    gooberObj.SetActive(false);
+                }
+                else
+                {
+                    gooberObj.SetActive(true);
+                    bodyRenderer.shadowCastingMode = ShadowCastingMode.On;
+                }
+            }
+            else
+            {
+                if (isOuterGoober)
+                {
+                    gooberObj.SetActive(true);
+                    bodyRenderer.shadowCastingMode = ShadowCastingMode.On;
+                }
+                else
+                {
+                    gooberObj.SetActive(false);
+                }
+            }
         }
     }
 
@@ -4033,6 +4185,8 @@ public class FirstPersonController : NetworkBehaviour
         fpc.bodyRoot = (Transform)EditorGUILayout.ObjectField(new GUIContent("Body Root", "Optional root used to find the renderers that should stay Shadows Only locally and become visible for remote players."), fpc.bodyRoot, typeof(Transform), true);
         fpc.autoFindBodyRenderers = EditorGUILayout.ToggleLeft(new GUIContent("Auto Find Body Renderers", "Automatically finds body renderers under Body Root or this player object, excluding camera children."), fpc.autoFindBodyRenderers);
         fpc.secondPlayerBodyMaterial = (Material)EditorGUILayout.ObjectField(new GUIContent("Second Player Material", "Material assigned to the second spawned player on their main body renderer(s)."), fpc.secondPlayerBodyMaterial, typeof(Material), false);
+        fpc.innerGoober = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Inner Goober", "The inner first-person body used for casting shadows for the local player. Automatically resolved from Body Root or found by name if left empty."), fpc.innerGoober, typeof(GameObject), true);
+        fpc.outerGoober = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Outer Goober", "The outer body visible to other players. Automatically resolved from Body Root or found by name if left empty."), fpc.outerGoober, typeof(GameObject), true);
 
         SerializedProperty bodyRenderersProperty = SerFPC.FindProperty("playerBodyRenderers");
         EditorGUILayout.PropertyField(bodyRenderersProperty, new GUIContent("Body Renderers"), true);
