@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1162110628
+  GlobalObjectIdHash: 3187873265
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -345,7 +345,7 @@ MonoBehaviour:
   ragdollRigidbodies: []
   ragdollColliders: []
   disableAnimatorOnRagdoll: 1
-  mapPoolSceneIndices: 010000000200000003000000
+  mapPoolSceneIndices: 01000000020000000300000004000000
   playerCamera: {fileID: 4459864851310106426}
   fov: 60
   invertCamera: 0
@@ -1416,7 +1416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8311683495656113881, guid: 55b1fd5f577255c4a8338b61385780ec, type: 3}
       propertyPath: m_CastShadows
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

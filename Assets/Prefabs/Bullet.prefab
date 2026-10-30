@@ -167,6 +167,7 @@ MonoBehaviour:
   selfCollisionGraceTime: 0.25
   maxBounces: 0
   hasPayload: 0
+  hasBeacon: 0
   explosionPrefab: {fileID: 1742013225946848, guid: b3d8264aa7d2d824a8a503e45291ddf4, type: 3}
   explosionRadius: 1
   explosionForce: 10
@@ -306,7 +307,7 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Time: 0.15
+  m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -316,7 +317,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.05
+        value: 0.037335206
         inSlope: 0
         outSlope: 0
         tangentMode: 0
