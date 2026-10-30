@@ -103,6 +103,7 @@
     <None Include="Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a\Plugins\Markdig\license.txt" />
     <None Include="Library\PackageCache\com.unity.test-framework.performance@0840f58e4562\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\VertexPicker.shader" />
+    <None Include="Assets\Sprites\BaT_v2.0\BaT_v2.0\License.txt" />
     <None Include="Library\PackageCache\com.unity.timeline@7f8b2fb101b6\package.json" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\DiffuseTextureBlend.shader" />
     <None Include="Library\PackageCache\com.unity.probuilder@1f279ab829b7\Content\Shader\LineBillboardMetal.shader" />
