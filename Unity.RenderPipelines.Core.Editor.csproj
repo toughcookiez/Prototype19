@@ -1150,13 +1150,13 @@
       <Project>{1aa4d77c-29df-7a32-156d-8a8ef0fa8da1}</Project>
       <Name>Unity.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>
-      <Name>UnityEditor.UI</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
       <Project>{bb29b3b1-bd2e-1d4a-c9fe-49b128d0f89b}</Project>
       <Name>UnityEngine.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{3542d969-195c-d28e-3b00-588296df7c69}</Project>
+      <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
       <Project>{0ecd7478-a2cd-045a-c0aa-e47e89956e1d}</Project>

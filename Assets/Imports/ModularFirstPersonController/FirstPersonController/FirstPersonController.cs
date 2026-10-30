@@ -866,33 +866,41 @@ public class FirstPersonController : NetworkBehaviour
 
         if (ShouldUseNetworkSpawning())
         {
-            ShootServerRpc(shootDirection, ignoreGravityDistance, bulletsToFire);
+            ShootServerRpc(shootPoint.position, shootDirection, ignoreGravityDistance, bulletsToFire);
             bulletsInMagazine -= bulletsToFire;
             ApplyFlintknock(shootDirection);
             return;
         }
 
-        StartCoroutine(FireBulletBurst(shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, bulletsToFire));
+        StartCoroutine(FireBulletBurst(shootPoint.position, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, bulletsToFire));
         bulletsInMagazine -= bulletsToFire;
         ApplyFlintknock(shootDirection);
     }
 
-    private IEnumerator FireBulletBurst(Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
+    private IEnumerator FireBulletBurst(Vector3 shootPosition, Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
     {
         int clampedBulletsToFire = Mathf.Max(1, bulletsToFire);
 
         for (int i = 0; i < clampedBulletsToFire; i++)
         {
-            if (bulletPrefab == null || shootPoint == null)
+            if (bulletPrefab == null)
             {
                 yield break;
             }
 
-            Vector3 currentCrosshairPoint = GetCrosshairPoint();
-            Vector3 currentShootDirection = GetShootDirection(currentCrosshairPoint);
-            float currentIgnoreGravityDistance = Vector3.Distance(shootPoint.position, currentCrosshairPoint);
+            Vector3 currentSpawnPosition = shootPosition;
+            Vector3 currentShootDirection = initialShootDirection;
+            float currentIgnoreGravityDistance = initialIgnoreGravityDistance;
 
-            SpawnBullet(shootPoint.position, currentShootDirection, currentIgnoreGravityDistance, shooterClientId);
+            if (HasInputAuthority() && shootPoint != null)
+            {
+                Vector3 currentCrosshairPoint = GetCrosshairPoint();
+                currentShootDirection = GetShootDirection(currentCrosshairPoint);
+                currentIgnoreGravityDistance = Vector3.Distance(shootPoint.position, currentCrosshairPoint);
+                currentSpawnPosition = shootPoint.position;
+            }
+
+            SpawnBullet(currentSpawnPosition, currentShootDirection, currentIgnoreGravityDistance, shooterClientId);
 
             if (i < clampedBulletsToFire - 1)
             {
@@ -958,14 +966,14 @@ public class FirstPersonController : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void ShootServerRpc(Vector3 shootDirection, float ignoreGravityDistance, int bulletsToFire)
+    private void ShootServerRpc(Vector3 shootPosition, Vector3 shootDirection, float ignoreGravityDistance, int bulletsToFire)
     {
-        if (bulletPrefab == null || shootPoint == null)
+        if (bulletPrefab == null)
         {
             return;
         }
 
-        StartCoroutine(FireBulletBurst(shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, bulletsToFire));
+        StartCoroutine(FireBulletBurst(shootPosition, shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, bulletsToFire));
         ApplyFlintknock(shootDirection.normalized);
     }
 
