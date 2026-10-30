@@ -869,12 +869,14 @@ public class FirstPersonController : NetworkBehaviour
             ShootServerRpc(shootPoint.position, shootDirection, ignoreGravityDistance, bulletsToFire);
             bulletsInMagazine -= bulletsToFire;
             ApplyFlintknock(shootDirection);
+            SetAnimatorTrigger(shootTriggerParameter);
             return;
         }
 
         StartCoroutine(FireBulletBurst(shootPoint.position, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, bulletsToFire));
         bulletsInMagazine -= bulletsToFire;
         ApplyFlintknock(shootDirection);
+        SetAnimatorTrigger(shootTriggerParameter);
     }
 
     private IEnumerator FireBulletBurst(Vector3 shootPosition, Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
