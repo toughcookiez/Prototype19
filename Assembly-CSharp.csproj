@@ -47,24 +47,35 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.3.10f1/Unity.app/Contents/Resources/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Player/Bullet.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.CardsUI.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.RoundFlow.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Block.cs" />
     <Compile Include="Assets/Scripts/Networking/OwnerNetworkTransform.cs" />
     <Compile Include="Assets/QuickOutline/Scripts/Outline.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Body.cs" />
     <Compile Include="Assets/Scripts/Cards/Card.cs" />
     <Compile Include="Assets/Scripts/Networking/LobbyManager.cs" />
     <Compile Include="Assets/Scripts/Networking/LobbyCharacterPreview.cs" />
     <Compile Include="Assets/Scripts/PersistentNetworkManager.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.CardEffects.cs" />
     <Compile Include="Assets/Scripts/Networking/OwnerNetworkAnimator.cs" />
     <Compile Include="Assets/Scripts/Networking/SpawnPoint.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Settings.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Animation.cs" />
     <Compile Include="Assets/Scripts/Networking/Steam/SteamNetworkingSocketsTransport.cs" />
     <Compile Include="Assets/Scripts/Networking/LobbyUI.cs" />
-    <Compile Include="Assets/Imports/ModularFirstPersonController/FirstPersonController/Bullet.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Movement.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Shooting.cs" />
     <Compile Include="Assets/Scripts/Networking/LobbyPlayerDisabler.cs" />
-    <Compile Include="Assets/Imports/ModularFirstPersonController/FirstPersonController/FirstPersonController.cs" />
     <Compile Include="Assets/Scripts/DummyBehaviour.cs" />
     <Compile Include="Assets/Scripts/Networking/Steam/SteamLobby.cs" />
     <Compile Include="Assets/Scripts/Networking/Steam/SteamManager.cs" />
     <Compile Include="Assets/Scripts/Networking/MultiplayerLauncher.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Health.cs" />
+    <Compile Include="Assets/Scripts/Player/FirstPersonController.Editor.cs" />
     <None Include="Assets/Imports/Shield Shader FREE/Pink Material Issue.txt" />
     <None Include="Library/PackageCache/com.unity.ai.navigation@c33a115e9883/ValidationExceptions.json" />
     <None Include="Library/PackageCache/com.unity.probuilder@1f279ab829b7/Content/Shader/ReferenceUnlit.shader" />
