@@ -324,6 +324,9 @@ public class FirstPersonController : NetworkBehaviour
     private bool isReloading;
     private CanvasGroup progressRingCG;
     private float nextShootTime;
+    private int localShotCounter;
+    [Tooltip("Muzzle on the outer (third-person) body's gun. Auto-found by the Shoot Point's name if left empty.")]
+    public Transform outerShootPoint;
     private WeaponSettings lastSavedWeaponSettings;
     private bool hasSavedWeaponSettings;
     private PlayerSettings lastSavedPlayerSettings;
@@ -353,6 +356,12 @@ public class FirstPersonController : NetworkBehaviour
 
     // Internal Variables
     private readonly HashSet<string> animatorParameters = new HashSet<string>();
+    // The outer body is what other players see. It is driven with the same parameters as the
+    // inner body (plus LookValue so its gun aims with the camera) and synced by its OwnerNetworkAnimator.
+    private Animator outerAnimator;
+    private Unity.Netcode.Components.NetworkAnimator outerNetworkAnimator;
+    private readonly HashSet<string> outerAnimatorParameters = new HashSet<string>();
+    private static readonly List<FirstPersonController> spawnedPlayers = new List<FirstPersonController>();
     private float moveXInput;
     private float moveYInput;
 
@@ -521,6 +530,11 @@ public class FirstPersonController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (!spawnedPlayers.Contains(this))
+        {
+            spawnedPlayers.Add(this);
+        }
+
         currentHealth.OnValueChanged += OnCurrentHealthChanged;
         isShieldActive.OnValueChanged += OnShieldActiveChanged;
 
@@ -580,6 +594,7 @@ public class FirstPersonController : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        spawnedPlayers.Remove(this);
         SaveCurrentWeaponSettings();
         SaveCurrentPlayerSettings();
         currentHealth.OnValueChanged -= OnCurrentHealthChanged;
@@ -857,52 +872,46 @@ public class FirstPersonController : NetworkBehaviour
             return;
         }
 
-        Vector3 crosshairPoint = GetCrosshairPoint();
-        Vector3 shootDirection = GetShootDirection(crosshairPoint);
-        float ignoreGravityDistance = Vector3.Distance(shootPoint.position, crosshairPoint);
+        Vector3 shootDirection = GetShootDirection(GetCrosshairPoint());
         nextShootTime = Time.time + (1f / Mathf.Max(.1f, fireRate));
 
         int bulletsToFire = Mathf.Min(Mathf.Max(1, bulletsPerShot), bulletsInMagazine);
 
-        if (ShouldUseNetworkSpawning())
-        {
-            ShootServerRpc(shootPoint.position, shootDirection, ignoreGravityDistance, bulletsToFire);
-            bulletsInMagazine -= bulletsToFire;
-            ApplyFlintknock(shootDirection);
-            SetAnimatorTrigger(shootTriggerParameter);
-            return;
-        }
-
-        StartCoroutine(FireBulletBurst(shootPoint.position, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, bulletsToFire));
+        StartCoroutine(FireBulletBurst(bulletsToFire));
         bulletsInMagazine -= bulletsToFire;
         ApplyFlintknock(shootDirection);
         SetAnimatorTrigger(shootTriggerParameter);
     }
 
-    private IEnumerator FireBulletBurst(Vector3 shootPosition, Vector3 initialShootDirection, float initialIgnoreGravityDistance, ulong shooterClientId, int bulletsToFire)
+    // Runs only on the shooter's own machine. Every bullet in a burst samples the live muzzle position
+    // and aim, so bursts follow the gun while moving. Remote clients send one ServerRpc per bullet and
+    // show a local cosmetic bullet right away so the shot leaves their gun without waiting a round trip.
+    private IEnumerator FireBulletBurst(int bulletsToFire)
     {
         int clampedBulletsToFire = Mathf.Max(1, bulletsToFire);
 
         for (int i = 0; i < clampedBulletsToFire; i++)
         {
-            if (bulletPrefab == null)
+            if (bulletPrefab == null || shootPoint == null || !HasInputAuthority())
             {
                 yield break;
             }
 
-            Vector3 currentSpawnPosition = shootPosition;
-            Vector3 currentShootDirection = initialShootDirection;
-            float currentIgnoreGravityDistance = initialIgnoreGravityDistance;
+            Vector3 crosshairPoint = GetCrosshairPoint();
+            Vector3 shootDirection = GetShootDirection(crosshairPoint);
+            float ignoreGravityDistance = Vector3.Distance(shootPoint.position, crosshairPoint);
+            Vector3 spawnPosition = shootPoint.position;
 
-            if (HasInputAuthority() && shootPoint != null)
+            if (ShouldUseNetworkSpawning())
             {
-                Vector3 currentCrosshairPoint = GetCrosshairPoint();
-                currentShootDirection = GetShootDirection(currentCrosshairPoint);
-                currentIgnoreGravityDistance = Vector3.Distance(shootPoint.position, currentCrosshairPoint);
-                currentSpawnPosition = shootPoint.position;
+                int shotId = ++localShotCounter;
+                ShootServerRpc(spawnPosition, shootDirection, ignoreGravityDistance, shotId);
+                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, OwnerClientId, shotId, true);
             }
-
-            SpawnBullet(currentSpawnPosition, currentShootDirection, currentIgnoreGravityDistance, shooterClientId);
+            else
+            {
+                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, 0, false);
+            }
 
             if (i < clampedBulletsToFire - 1)
             {
@@ -918,13 +927,20 @@ public class FirstPersonController : NetworkBehaviour
         }
     }
 
-    private void SpawnBullet(Vector3 spawnPosition, Vector3 shootDirection, float ignoreGravityDistance, ulong shooterClientId)
+    private void SpawnBullet(Vector3 spawnPosition, Vector3 shootDirection, float ignoreGravityDistance, ulong shooterClientId, int shotId, bool isCosmetic)
     {
         Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
         GameObject spawnedBullet = Instantiate(bulletPrefab, spawnPosition, shootRotation);
 
         if (spawnedBullet.TryGetComponent<Bullet>(out Bullet bullet))
         {
+            bullet.SetShotId(shotId);
+
+            if (isCosmetic)
+            {
+                bullet.MarkAsCosmetic();
+            }
+
             bullet.damage = bulletDamage;
             bullet.SetBounces(bulletBounces);
             bullet.SetShooter(shooterClientId, this);
@@ -938,7 +954,7 @@ public class FirstPersonController : NetworkBehaviour
             bullet.explosionForce = explosionForce;
         }
 
-        if (NetworkManager.Singleton != null && IsServer && spawnedBullet.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+        if (!isCosmetic && NetworkManager.Singleton != null && IsServer && spawnedBullet.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
         {
             networkObject.Spawn();
         }
@@ -960,23 +976,18 @@ public class FirstPersonController : NetworkBehaviour
                 spawnedBullet.AddComponent<BulletGravity>().SetGravity(bulletGravity, ignoreGravityDistance);
             }
         }
-
-        SetAnimatorTrigger(shootTriggerParameter);
-
-        // Trigger shoot animation
-        SetAnimatorTrigger(shootTriggerParameter);
     }
 
+    // One call per bullet; the owning client paces bursts and sends its live muzzle position each time.
     [ServerRpc]
-    private void ShootServerRpc(Vector3 shootPosition, Vector3 shootDirection, float ignoreGravityDistance, int bulletsToFire)
+    private void ShootServerRpc(Vector3 shootPosition, Vector3 shootDirection, float ignoreGravityDistance, int shotId)
     {
-        if (bulletPrefab == null)
+        if (bulletPrefab == null || shootDirection.sqrMagnitude <= 0.0001f)
         {
             return;
         }
 
-        StartCoroutine(FireBulletBurst(shootPosition, shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, bulletsToFire));
-        ApplyFlintknock(shootDirection.normalized);
+        SpawnBullet(shootPosition, shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, shotId, false);
     }
 
     private void ApplyFlintknock(Vector3 shootDirection)
@@ -3402,6 +3413,48 @@ public class FirstPersonController : NetworkBehaviour
         {
             animatorParameters.Add(parameter.name);
         }
+
+        CacheOuterAnimator();
+    }
+
+    private void CacheOuterAnimator()
+    {
+        outerAnimatorParameters.Clear();
+        FindGooberReferences();
+
+        if (outerGoober == null)
+        {
+            return;
+        }
+
+        outerAnimator = outerGoober.GetComponentInChildren<Animator>(true);
+        outerNetworkAnimator = outerGoober.GetComponentInChildren<Unity.Netcode.Components.NetworkAnimator>(true);
+
+        if (outerAnimator == characterAnimator)
+        {
+            outerAnimator = null;
+            outerNetworkAnimator = null;
+        }
+
+        if (outerAnimator != null)
+        {
+            foreach (AnimatorControllerParameter parameter in outerAnimator.parameters)
+            {
+                outerAnimatorParameters.Add(parameter.name);
+            }
+        }
+
+        if (outerShootPoint == null && shootPoint != null)
+        {
+            foreach (Transform child in outerGoober.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == shootPoint.name)
+                {
+                    outerShootPoint = child;
+                    break;
+                }
+            }
+        }
     }
 
     private bool HasAnimatorParameter(string parameterName)
@@ -3409,12 +3462,14 @@ public class FirstPersonController : NetworkBehaviour
         return !string.IsNullOrEmpty(parameterName) && characterAnimator != null && animatorParameters.Contains(parameterName);
     }
 
+    private bool HasOuterAnimatorParameter(string parameterName)
+    {
+        return !string.IsNullOrEmpty(parameterName) && outerAnimator != null && outerAnimator.isActiveAndEnabled && outerAnimatorParameters.Contains(parameterName);
+    }
+
     private void SetAnimatorFloat(string parameterName, float value)
     {
-        if (HasAnimatorParameter(parameterName))
-        {
-            characterAnimator.SetFloat(parameterName, value, animationDampTime, Time.deltaTime);
-        }
+        SetAnimatorFloat(parameterName, value, animationDampTime);
     }
 
     private void SetAnimatorFloat(string parameterName, float value, float dampTime)
@@ -3422,6 +3477,16 @@ public class FirstPersonController : NetworkBehaviour
         if (HasAnimatorParameter(parameterName))
         {
             characterAnimator.SetFloat(parameterName, value, dampTime, Time.deltaTime);
+        }
+
+        SetOuterAnimatorFloat(parameterName, value, dampTime);
+    }
+
+    private void SetOuterAnimatorFloat(string parameterName, float value, float dampTime)
+    {
+        if (HasOuterAnimatorParameter(parameterName))
+        {
+            outerAnimator.SetFloat(parameterName, value, dampTime, Time.deltaTime);
         }
     }
 
@@ -3431,6 +3496,11 @@ public class FirstPersonController : NetworkBehaviour
         {
             characterAnimator.SetBool(parameterName, value);
         }
+
+        if (HasOuterAnimatorParameter(parameterName))
+        {
+            outerAnimator.SetBool(parameterName, value);
+        }
     }
 
     private void SetAnimatorTrigger(string parameterName)
@@ -3439,6 +3509,53 @@ public class FirstPersonController : NetworkBehaviour
         {
             characterAnimator.SetTrigger(parameterName);
         }
+
+        if (HasOuterAnimatorParameter(parameterName))
+        {
+            // Triggers only replicate through NetworkAnimator.SetTrigger.
+            if (outerNetworkAnimator != null && IsSpawned && IsOwner)
+            {
+                outerNetworkAnimator.SetTrigger(parameterName);
+            }
+            else
+            {
+                outerAnimator.SetTrigger(parameterName);
+            }
+        }
+    }
+
+    public static FirstPersonController FindSpawnedPlayer(ulong clientId)
+    {
+        foreach (FirstPersonController player in spawnedPlayers)
+        {
+            if (player != null && player.IsSpawned && player.OwnerClientId == clientId)
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    // Muzzle of whichever gun this machine is actually rendering for this player.
+    public bool TryGetVisibleMuzzlePosition(out Vector3 position)
+    {
+        Renderer outerRenderer = outerGoober != null ? outerGoober.GetComponentInChildren<Renderer>() : null;
+
+        if (outerShootPoint != null && outerRenderer != null && outerRenderer.enabled && outerShootPoint.gameObject.activeInHierarchy)
+        {
+            position = outerShootPoint.position;
+            return true;
+        }
+
+        if (shootPoint != null && shootPoint.gameObject.activeInHierarchy)
+        {
+            position = shootPoint.position;
+            return true;
+        }
+
+        position = default;
+        return false;
     }
 
     private void UpdateAnimator()
@@ -3469,6 +3586,9 @@ public class FirstPersonController : NetworkBehaviour
         SetAnimatorBool(isGroundedParameter, isGrounded);
         SetAnimatorBool(isCrouchedParameter, isCrouched);
         SetAnimatorBool(isReloadingParameter, isReloading);
+
+        // Only the outer body needs LookValue: the inner body is parented to the camera and already pitches with it.
+        SetOuterAnimatorFloat(lookValueParameter, Mathf.InverseLerp(-maxLookAngle, maxLookAngle, pitch), 0f);
     }
 
     private float nextBlockTime;
@@ -4029,6 +4149,30 @@ public class FirstPersonController : NetworkBehaviour
         }
     }
 
+    private void SetOuterGooberPresence(bool isPresent)
+    {
+        if (outerGoober == null)
+        {
+            return;
+        }
+
+        foreach (Renderer outerRenderer in outerGoober.GetComponentsInChildren<Renderer>(true))
+        {
+            if (outerRenderer != null)
+            {
+                outerRenderer.enabled = isPresent;
+            }
+        }
+
+        foreach (Collider outerCollider in outerGoober.GetComponentsInChildren<Collider>(true))
+        {
+            if (outerCollider != null)
+            {
+                outerCollider.enabled = isPresent;
+            }
+        }
+    }
+
     private void ApplyBodyShadowMode(bool isLocalPlayer)
     {
         FindGooberReferences();
@@ -4039,9 +4183,11 @@ public class FirstPersonController : NetworkBehaviour
             {
                 // Local player view:
                 // InnerGoober visible with ShadowCastingMode.On so the local player sees their own body.
-                // OuterGoober inactive so local player doesn't see the outer body.
+                // OuterGoober stays active but hidden (no renderers/colliders) so its Animator keeps running
+                // and its OwnerNetworkAnimator can sync the pose other players see.
                 innerGoober.SetActive(true);
-                outerGoober.SetActive(false);
+                outerGoober.SetActive(true);
+                SetOuterGooberPresence(false);
 
                 Renderer[] innerRenderers = innerGoober.GetComponentsInChildren<Renderer>(true);
                 foreach (Renderer r in innerRenderers)
@@ -4059,6 +4205,7 @@ public class FirstPersonController : NetworkBehaviour
                 // OuterGoober active with ShadowCastingMode.On so other players see the outer body.
                 innerGoober.SetActive(false);
                 outerGoober.SetActive(true);
+                SetOuterGooberPresence(true);
 
                 Renderer[] outerRenderers = outerGoober.GetComponentsInChildren<Renderer>(true);
                 foreach (Renderer r in outerRenderers)
@@ -4395,6 +4542,7 @@ public class FirstPersonController : NetworkBehaviour
         fpc.shootKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Shoot Key", "Determines what key is used to shoot."), fpc.shootKey);
         fpc.reloadKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Reload Key", "Determines what key is used to reload."), fpc.reloadKey);
         fpc.shootPoint = (Transform)EditorGUILayout.ObjectField(new GUIContent("Shoot Point", "Transform used as spawn point and direction for bullets."), fpc.shootPoint, typeof(Transform), true);
+        fpc.outerShootPoint = (Transform)EditorGUILayout.ObjectField(new GUIContent("Outer Shoot Point", "Muzzle on the outer (third-person) gun. Other players see bullets start here. Auto-found by the Shoot Point's name if empty."), fpc.outerShootPoint, typeof(Transform), true);
         fpc.bulletPrefab = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Bullet Prefab", "Prefab spawned when shooting. Should contain a Rigidbody."), fpc.bulletPrefab, typeof(GameObject), false);
         fpc.bulletDamage = EditorGUILayout.Slider(new GUIContent("Bullet Damage", "Damage assigned to each spawned bullet."), fpc.bulletDamage, .1f, 500f);
         fpc.crosshairPointDistance = EditorGUILayout.Slider(new GUIContent("Crosshair Point Distance", "Distance from the camera where the screen-center crosshair point is placed. Bullet gravity is ignored until the projectile reaches this distance from the muzzle."), fpc.crosshairPointDistance, 0.1f, 500f);

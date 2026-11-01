@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -21,6 +22,29 @@ public class Bullet : NetworkBehaviour
     public float bounceBounciness = 1.0f;
     public float minNormalBounce = 3.0f;
 
+    [Header("Visual Alignment")]
+    [Tooltip("Child holding the mesh and trail. It is offset so the bullet appears to leave the gun the viewer sees, then blends onto the real path.")]
+    public Transform visualRoot;
+    [Tooltip("Seconds for the visual to blend from the visible muzzle onto the simulated bullet path.")]
+    public float visualConvergeTime = .15f;
+    [Tooltip("How long the shooter's own server bullet stays hidden after its local cosmetic copy is gone (covers network round trip).")]
+    public float ownerRevealGraceTime = .3f;
+
+    // Cosmetic bullets the local client fired and is still waiting to pair with the server's bullet.
+    private static readonly Dictionary<int, Bullet> pendingCosmeticBullets = new Dictionary<int, Bullet>();
+
+    private int shotId;
+    private bool isCosmetic;
+    private Bullet pairedCosmetic;
+    private Bullet pairedNetworkBullet;
+    private bool isHiddenForOwner;
+    private float revealTime = float.MaxValue;
+    private Vector3 visualOffset;
+    private float visualOffsetStartTime;
+    private bool hasVisualOffset;
+    private Renderer[] visualRenderers;
+    private TrailRenderer[] visualTrails;
+
     private Rigidbody rb;
     private float gravityForce = 9.81f;
     private float gravityDelayDistance;
@@ -36,7 +60,219 @@ public class Bullet : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         if (bounceBounciness <= 0f) bounceBounciness = 1.2f;
         if (minNormalBounce <= 0f) minNormalBounce = 3.0f;
+        Transform visualSearchRoot = visualRoot != null ? visualRoot : transform;
+        visualRenderers = visualSearchRoot.GetComponentsInChildren<Renderer>(true);
+        visualTrails = visualSearchRoot.GetComponentsInChildren<TrailRenderer>(true);
         IgnoreOtherBullets();
+    }
+
+    public void SetShotId(int id)
+    {
+        shotId = id;
+    }
+
+    // A client-only copy shown to the shooter immediately. It never deals damage or spawns effects;
+    // the server bullet is authoritative and stays hidden for the shooter while this copy is alive.
+    public void MarkAsCosmetic()
+    {
+        isCosmetic = true;
+        pendingCosmeticBullets[shotId] = this;
+    }
+
+    protected override void OnSynchronize<T>(ref BufferSerializer<T> serializer)
+    {
+        serializer.SerializeValue(ref shooterClientId);
+        serializer.SerializeValue(ref shotId);
+        base.OnSynchronize(ref serializer);
+    }
+
+    private void ConfigureNetworkVisuals()
+    {
+        if (shooterClientId == ulong.MaxValue || NetworkManager == null)
+        {
+            return;
+        }
+
+        if (shooterClientId == NetworkManager.LocalClientId)
+        {
+            // A host's own bullets already spawn at its muzzle with no delay.
+            if (IsServer)
+            {
+                return;
+            }
+
+            SetVisualsVisible(false);
+            isHiddenForOwner = true;
+
+            if (pendingCosmeticBullets.TryGetValue(shotId, out Bullet cosmetic) && cosmetic != null)
+            {
+                pendingCosmeticBullets.Remove(shotId);
+                pairedCosmetic = cosmetic;
+                cosmetic.pairedNetworkBullet = this;
+            }
+            else
+            {
+                revealTime = Time.time + ownerRevealGraceTime;
+            }
+
+            return;
+        }
+
+        FirstPersonController shooter = FirstPersonController.FindSpawnedPlayer(shooterClientId);
+
+        if (visualRoot != null && shooter != null && shooter.TryGetVisibleMuzzlePosition(out Vector3 muzzlePosition))
+        {
+            visualOffset = muzzlePosition - transform.position;
+            hasVisualOffset = visualOffset.sqrMagnitude > 0.000001f;
+            visualOffsetStartTime = Time.time;
+            ApplyVisualOffset();
+            ClearTrails();
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (hasVisualOffset)
+        {
+            ApplyVisualOffset();
+        }
+
+        if (isHiddenForOwner && pairedCosmetic == null && Time.time >= revealTime)
+        {
+            isHiddenForOwner = false;
+            SetVisualsVisible(true);
+        }
+    }
+
+    private void ApplyVisualOffset()
+    {
+        if (visualRoot == null)
+        {
+            hasVisualOffset = false;
+            return;
+        }
+
+        float t = visualConvergeTime > 0f ? Mathf.Clamp01((Time.time - visualOffsetStartTime) / visualConvergeTime) : 1f;
+
+        if (t >= 1f)
+        {
+            visualRoot.localPosition = Vector3.zero;
+            hasVisualOffset = false;
+            return;
+        }
+
+        float weight = 1f - (t * t * (3f - 2f * t));
+        visualRoot.position = transform.position + visualOffset * weight;
+    }
+
+    private void SetVisualsVisible(bool isVisible)
+    {
+        if (visualRenderers != null)
+        {
+            foreach (Renderer visualRenderer in visualRenderers)
+            {
+                if (visualRenderer != null)
+                {
+                    visualRenderer.enabled = isVisible;
+                }
+            }
+        }
+
+        ClearTrails();
+
+        if (visualTrails != null)
+        {
+            foreach (TrailRenderer trail in visualTrails)
+            {
+                if (trail != null)
+                {
+                    trail.emitting = isVisible;
+                }
+            }
+        }
+    }
+
+    private void ClearTrails()
+    {
+        if (visualTrails == null)
+        {
+            return;
+        }
+
+        foreach (TrailRenderer trail in visualTrails)
+        {
+            if (trail != null)
+            {
+                trail.Clear();
+            }
+        }
+    }
+
+    private void OnCosmeticGone()
+    {
+        pairedCosmetic = null;
+        revealTime = Time.time + ownerRevealGraceTime;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        // The server bullet is done; drop the local prediction so it can't outlive the real shot.
+        if (pairedCosmetic != null)
+        {
+            Bullet cosmetic = pairedCosmetic;
+            pairedCosmetic = null;
+            cosmetic.pairedNetworkBullet = null;
+            Destroy(cosmetic.gameObject);
+        }
+
+        base.OnNetworkDespawn();
+    }
+
+    public override void OnDestroy()
+    {
+        if (isCosmetic)
+        {
+            if (pendingCosmeticBullets.TryGetValue(shotId, out Bullet pending) && pending == this)
+            {
+                pendingCosmeticBullets.Remove(shotId);
+            }
+
+            if (pairedNetworkBullet != null)
+            {
+                pairedNetworkBullet.OnCosmeticGone();
+                pairedNetworkBullet = null;
+            }
+        }
+
+        base.OnDestroy();
+    }
+
+    private void HandleCosmeticCollision(Collision collision)
+    {
+        if (collision.collider.GetComponentInParent<Bullet>() != null)
+        {
+            return;
+        }
+
+        FirstPersonController hitPlayer = collision.collider.GetComponentInParent<FirstPersonController>();
+
+        if (hitPlayer != null)
+        {
+            if (isIgnoringShooter && hitPlayer.IsSpawned && hitPlayer.OwnerClientId == shooterClientId)
+            {
+                return;
+            }
+
+            Destroy(gameObject);
+            return;
+        }
+
+        if (TryBounce(collision))
+        {
+            return;
+        }
+
+        Destroy(gameObject);
     }
 
     private void IgnoreOtherBullets()
@@ -93,6 +329,8 @@ public class Bullet : NetworkBehaviour
         {
             StartCoroutine(DespawnAfterLifetime());
         }
+
+        ConfigureNetworkVisuals();
     }
 
     private IEnumerator DespawnAfterLifetime()
@@ -201,6 +439,12 @@ public class Bullet : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (isCosmetic)
+        {
+            HandleCosmeticCollision(collision);
+            return;
+        }
+
         if (NetworkManager.Singleton != null && IsSpawned && !IsServer)
         {
             return;
