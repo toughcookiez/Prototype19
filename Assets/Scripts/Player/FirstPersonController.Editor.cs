@@ -47,6 +47,11 @@ using UnityEditor;
         fpc.secondPlayerBodyMaterial = (Material)EditorGUILayout.ObjectField(new GUIContent("Second Player Material", "Material assigned to the second spawned player on their main body renderer(s)."), fpc.secondPlayerBodyMaterial, typeof(Material), false);
         fpc.innerGoober = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Inner Goober", "The inner first-person body used for casting shadows for the local player. Automatically resolved from Body Root or found by name if left empty."), fpc.innerGoober, typeof(GameObject), true);
         fpc.outerGoober = (GameObject)EditorGUILayout.ObjectField(new GUIContent("Outer Goober", "The outer body visible to other players. Automatically resolved from Body Root or found by name if left empty."), fpc.outerGoober, typeof(GameObject), true);
+        fpc.syncOuterArmsToInner = EditorGUILayout.ToggleLeft(new GUIContent("Sync Outer Arms To Inner", "Bend the outer (third-person) arms each frame so its hands match the inner (first-person) hands the owner sees. Other players then see the gun where the shooter does."), fpc.syncOuterArmsToInner);
+        GUI.enabled = fpc.syncOuterArmsToInner;
+        fpc.syncOuterLeftArm = EditorGUILayout.ToggleLeft(new GUIContent("Sync Outer Left Arm", "Also match the left hand. The right (gun) hand is always matched when syncing is on."), fpc.syncOuterLeftArm);
+        fpc.outerArmSyncSharpness = EditorGUILayout.Slider(new GUIContent("Outer Arm Sync Sharpness", "How fast remote copies blend toward the latest hand pose received from the owner (higher = snappier, lower = smoother between network ticks)."), fpc.outerArmSyncSharpness, 1f, 100f);
+        GUI.enabled = true;
 
         SerializedProperty bodyRenderersProperty = SerFPC.FindProperty("playerBodyRenderers");
         EditorGUILayout.PropertyField(bodyRenderersProperty, new GUIContent("Body Renderers"), true);

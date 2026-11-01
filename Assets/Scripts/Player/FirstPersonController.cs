@@ -109,6 +109,12 @@ public partial class FirstPersonController : NetworkBehaviour
     public GameObject innerGoober;
     [Tooltip("The outer body visible to other players.")]
     public GameObject outerGoober;
+    [Tooltip("Bend the outer (third-person) arms each frame so its hands match the inner (first-person) hands the owner sees. Other players then see the gun where the shooter does.")]
+    public bool syncOuterArmsToInner = true;
+    [Tooltip("Also match the left hand (the right hand holds the gun and is always matched when syncing is on).")]
+    public bool syncOuterLeftArm = true;
+    [Tooltip("How fast remote copies blend toward the latest hand pose received from the owner (higher = snappier, lower = smoother between network ticks).")]
+    public float outerArmSyncSharpness = 30f;
 
     private ShadowCastingMode[] originalBodyShadowModes;
     private Material[][] originalBodyMaterials;
@@ -142,6 +148,11 @@ public partial class FirstPersonController : NetworkBehaviour
         100f,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
+    // Inner (first-person) hand poses written by the owner; other machines bend the outer arms onto them.
+    private readonly NetworkVariable<InnerHandPose> innerHandPose = new NetworkVariable<InnerHandPose>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
     private readonly NetworkVariable<bool> isShieldActive = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
@@ -841,6 +852,8 @@ public partial class FirstPersonController : NetworkBehaviour
 
     private void LateUpdate()
     {
+        // Runs after both Animators have evaluated this frame.
+        SyncOuterArmsToInner();
         SaveCurrentWeaponSettingsIfChanged();
     }
 }

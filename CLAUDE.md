@@ -27,6 +27,7 @@ Prototype19 is a Unity **6000.3.10f1** (URP) online 2-player first-person shoote
   - `.CardEffects.cs`: `ApplyPickedCard`, ability RPCs (Flintknock/Payload/Beacon), `ApplyCardStatModifier(s)`.
   - `.Block.cs`: block/shield. `.Movement.cs`: ground check, jump, crouch, head bob. `.Animation.cs`: animator parameter helpers, `UpdateAnimator`.
   - `.Body.cs`: ragdoll, local-view setup, body renderers/materials (`IsSecondPlayerController`, `ApplySecondPlayerBodyMaterial`), shadow mode.
+  - `.ArmSync.cs`: InnerGoober (first-person, parented to the camera) is the reference and is never modified. The owner publishes its inner hand poses in the `innerHandPose` NetworkVariable (root-relative, unscaled). In `LateUpdate`, every machine bends the OuterGoober arms (pitched by `LookLayer`) onto them with two-bone IK, so the outer muzzle sits on the shooter's `shootPoint`.
   - `.Editor.cs`: the custom inspector (`FirstPersonControllerEditor`, `#if UNITY_EDITOR`).
 - `Assets/Scripts/Player/Bullet.cs` is the networked projectile. Most gameplay changes go into `FirstPersonController.*.cs` and `Bullet.cs`.
 - `Assets/Scripts/Networking/` contains the lobby (`LobbyManager`, `LobbyUI`, `LobbyPlayerDisabler`, `LobbyCharacterPreview`), `SpawnPoint`, and owner-authoritative `OwnerNetworkTransform`/`OwnerNetworkAnimator`.
