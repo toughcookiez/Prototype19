@@ -26,7 +26,7 @@ public class LobbyUI : MonoBehaviour
 
     [Header("Camera Animation")]
     [SerializeField] private Camera lobbyCamera;
-    [SerializeField] private float rotationDuration = 0.5f;
+    [SerializeField] private float rotationAndPositionDuration = 0.5f;
 
     [Header("UI Toolkit Root (UIDocument assigned by user)")]
     [SerializeField] private UIDocument uiDocument;
@@ -44,7 +44,9 @@ public class LobbyUI : MonoBehaviour
     private TextField toolkitLobbyCodeInput;
     private bool hasRotatedCamera = false;
     private Quaternion initialCameraRot;
+    private Vector3 initialCameraPos;
     private bool hasInitialRot = false;
+    private bool hasInitialPos = false;
 
     private void Start()
     {
@@ -53,6 +55,8 @@ public class LobbyUI : MonoBehaviour
         {
             initialCameraRot = targetCam.transform.rotation;
             hasInitialRot = true;
+            initialCameraPos = targetCam.transform.position;
+            hasInitialPos = true;
         }
 
         if (createLobbyButton != null)
@@ -162,31 +166,49 @@ public class LobbyUI : MonoBehaviour
         Camera targetCam = lobbyCamera != null ? lobbyCamera : Camera.main;
         if (targetCam != null)
         {
+            //disable the rotation script if it exists
+            MainMenuCameraBehaviour cameraBehaviour = targetCam.GetComponentInParent<MainMenuCameraBehaviour>();
+            if (cameraBehaviour != null)
+            {
+                cameraBehaviour.shouldRotate = false;
+            }
+            
             Quaternion targetRot;
+            Vector3 targetPos;
             if (forward)
             {
-                targetRot = Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, targetCam.transform.rotation.eulerAngles.y + 180f, targetCam.transform.rotation.eulerAngles.z);
+                targetRot = Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, targetCam.transform.rotation.eulerAngles.y + 180f, 
+                    targetCam.transform.rotation.eulerAngles.z);
+                targetPos = new Vector3(targetCam.transform.position.x, targetCam.transform.position.y, targetCam.transform.position.z);
             }
             else
             {
-                targetRot = hasInitialRot ? initialCameraRot : Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, targetCam.transform.rotation.eulerAngles.y - 180f, targetCam.transform.rotation.eulerAngles.z);
+                targetRot = hasInitialRot ? initialCameraRot : Quaternion.Euler(targetCam.transform.rotation.eulerAngles.x, 
+                    targetCam.transform.rotation.eulerAngles.y - 180f, targetCam.transform.rotation.eulerAngles.z);
+                
+                targetPos = hasInitialPos ? initialCameraPos : new Vector3(targetCam.transform.position.x,
+                    targetCam.transform.position.y, targetCam.transform.position.z);
             }
-            StartCoroutine(LerpCameraRotation(targetCam, targetRot));
+            StartCoroutine(LerpCameraRotationAndPosition(targetCam, targetRot, targetPos));
         }
     }
 
-    private System.Collections.IEnumerator LerpCameraRotation(Camera targetCam, Quaternion targetRot)
+    private System.Collections.IEnumerator LerpCameraRotationAndPosition(Camera targetCam, Quaternion targetRot, Vector3 targetpos)
     {
         Quaternion startRot = targetCam.transform.rotation;
+        
+        Vector3 startPos = targetCam.transform.position;
         float elapsed = 0f;
 
-        while (elapsed < rotationDuration)
+        while (elapsed < rotationAndPositionDuration)
         {
-            targetCam.transform.rotation = Quaternion.Slerp(startRot, targetRot, elapsed / rotationDuration);
+            targetCam.transform.rotation = Quaternion.Slerp(startRot, targetRot, elapsed / rotationAndPositionDuration);
+            targetCam.transform.position = Vector3.Lerp(startPos, targetpos, elapsed / rotationAndPositionDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }
         targetCam.transform.rotation = targetRot;
+        targetCam.transform.position = targetpos;
     }
 
     private void OnStartGameClicked()
