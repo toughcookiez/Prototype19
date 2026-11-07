@@ -53,7 +53,17 @@ public partial class FirstPersonController
         }
 
         healthBarProgressElement = healthUiDocument.rootVisualElement.Q<VisualElement>("BarProgress");
+
+        if (healthBarProgressElement != null)
+        {
+            // Animate width changes so the bar glides to its new value instead of snapping.
+            healthBarProgressElement.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("width") };
+            healthBarProgressElement.style.transitionDuration = new List<TimeValue> { new TimeValue(HealthBarTransitionSeconds, TimeUnit.Second) };
+            healthBarProgressElement.style.transitionTimingFunction = new List<EasingFunction> { new EasingFunction(EasingMode.EaseOut) };
+        }
     }
+
+    private const float HealthBarTransitionSeconds = 0.3f;
 
     private void OnCurrentHealthChanged(float previousValue, float newValue)
     {
