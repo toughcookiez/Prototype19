@@ -76,9 +76,9 @@ public class LobbyPlayerDisabler : NetworkBehaviour
                     rb.isKinematic = true;
                     transform.position = spawnPos;
                     transform.rotation = spawnRot;
+                    rb.isKinematic = false;
                     rb.linearVelocity = Vector3.zero;
                     rb.angularVelocity = Vector3.zero;
-                    rb.isKinematic = false;
                 }
                 else
                 {

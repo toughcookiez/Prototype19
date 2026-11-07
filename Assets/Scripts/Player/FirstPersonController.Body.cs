@@ -276,24 +276,34 @@ public partial class FirstPersonController
 
     private bool IsSecondPlayerController()
     {
-        if (!IsSpawned || NetworkManager.Singleton == null || secondPlayerBodyMaterial == null)
+        // The host (server) is always player 1; any other owner is the second player.
+        // This is known on every machine as soon as the object spawns, so it doesn't
+        // depend on the other player's object having spawned yet.
+        if (!IsSpawned || NetworkManager == null || secondPlayerBodyMaterial == null)
         {
             return false;
         }
 
-        FirstPersonController[] controllers = FindObjectsOfType<FirstPersonController>();
-        List<FirstPersonController> spawnedControllers = new List<FirstPersonController>();
+        return OwnerClientId != NetworkManager.ServerClientId;
+    }
 
-        foreach (FirstPersonController controller in controllers)
+    private Material[] GetOriginalMaterials(Renderer renderer)
+    {
+        if (renderer == null)
         {
-            if (controller != null && controller.IsSpawned)
+            return null;
+        }
+
+        if (playerBodyRenderers != null && originalBodyMaterials != null)
+        {
+            int index = System.Array.IndexOf(playerBodyRenderers, renderer);
+            if (index >= 0 && index < originalBodyMaterials.Length)
             {
-                spawnedControllers.Add(controller);
+                return originalBodyMaterials[index];
             }
         }
 
-        spawnedControllers.Sort((first, second) => first.OwnerClientId.CompareTo(second.OwnerClientId));
-        return spawnedControllers.Count >= 2 && spawnedControllers[1] == this;
+        return null;
     }
 
     private void ApplySecondPlayerBodyMaterial()
@@ -301,82 +311,36 @@ public partial class FirstPersonController
         FindGooberReferences();
         bool isSecondPlayer = IsSecondPlayerController();
 
-        if (outerGoober != null)
+        ApplyGooberBodyMaterial(outerGoober, isSecondPlayer);
+        ApplyGooberBodyMaterial(innerGoober, isSecondPlayer);
+    }
+
+    // Only the skinned meshes (Body/Arms) are recoloured. The goober also contains the gun's
+    // MeshRenderers, which must keep their own material. Slot 0 is the body colour.
+    private void ApplyGooberBodyMaterial(GameObject goober, bool isSecondPlayer)
+    {
+        if (goober == null)
         {
-            Renderer outerRenderer = outerGoober.GetComponentInChildren<Renderer>(true);
-            if (outerRenderer != null)
-            {
-                if (isSecondPlayer && secondPlayerBodyMaterial != null)
-                {
-                    Material[] materials = outerRenderer.materials;
-                    if (materials != null && materials.Length > 0)
-                    {
-                        materials[0] = secondPlayerBodyMaterial;
-                        outerRenderer.materials = materials;
-                    }
-                }
-                else if (originalBodyMaterials != null && originalBodyMaterials.Length > 1 && originalBodyMaterials[1] != null)
-                {
-                    outerRenderer.materials = originalBodyMaterials[1];
-                }
-            }
+            return;
         }
 
-        if (innerGoober != null)
+        foreach (SkinnedMeshRenderer skinned in goober.GetComponentsInChildren<SkinnedMeshRenderer>(true))
         {
-            Renderer innerRenderer = innerGoober.GetComponentInChildren<Renderer>(true);
-            if (innerRenderer != null)
+            if (isSecondPlayer && secondPlayerBodyMaterial != null)
             {
-                if (isSecondPlayer && secondPlayerBodyMaterial != null)
+                Material[] materials = skinned.sharedMaterials;
+                if (materials != null && materials.Length > 0)
                 {
-                    Material[] materials = innerRenderer.materials;
-                    if (materials != null && materials.Length > 0)
-                    {
-                        materials[0] = secondPlayerBodyMaterial;
-                        innerRenderer.materials = materials;
-                    }
-                }
-                else if (originalBodyMaterials != null && originalBodyMaterials.Length > 0 && originalBodyMaterials[0] != null)
-                {
-                    innerRenderer.materials = originalBodyMaterials[0];
+                    materials[0] = secondPlayerBodyMaterial;
+                    skinned.sharedMaterials = materials;
                 }
             }
-        }
-
-        if (innerGoober == null || outerGoober == null)
-        {
-            if (playerBodyRenderers == null)
+            else
             {
-                return;
-            }
-
-            for (int i = 0; i < playerBodyRenderers.Length; i++)
-            {
-                Renderer bodyRenderer = playerBodyRenderers[i];
-
-                if (bodyRenderer == null)
+                Material[] original = GetOriginalMaterials(skinned);
+                if (original != null)
                 {
-                    continue;
-                }
-
-                if (isSecondPlayer)
-                {
-                    if (secondPlayerBodyMaterial == null)
-                    {
-                        continue;
-                    }
-
-                    Material[] materials = bodyRenderer.materials;
-
-                    if (materials != null && materials.Length > 0)
-                    {
-                        materials[0] = secondPlayerBodyMaterial;
-                        bodyRenderer.materials = materials;
-                    }
-                }
-                else if (originalBodyMaterials != null && i < originalBodyMaterials.Length && originalBodyMaterials[i] != null)
-                {
-                    bodyRenderer.materials = originalBodyMaterials[i];
+                    skinned.sharedMaterials = original;
                 }
             }
         }
