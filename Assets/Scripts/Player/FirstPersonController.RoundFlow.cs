@@ -648,6 +648,7 @@ public partial class FirstPersonController
 
         ApplyRespawnPosition(spawnPosition);
         ClearCardsUiRoundState();
+        ResetAnimatorPlaybackSpeed();
 
         if (IsSpawned)
         {
@@ -671,6 +672,7 @@ public partial class FirstPersonController
         ApplyRespawnPosition(resetPosition);
         ApplyRagdollState(false);
         ClearCardsUiRoundState();
+        ResetAnimatorPlaybackSpeed();
         ConfigureLocalView();
 
         if (!enableMultiplayerAuthority || !IsSpawned || IsOwner)

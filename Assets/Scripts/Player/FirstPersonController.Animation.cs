@@ -167,6 +167,66 @@ public partial class FirstPersonController
         animator.SetLayerWeight(layer, Mathf.MoveTowards(current, target, Time.deltaTime / .15f));
     }
 
+    // Scales walk animation playback with actual movement speed (only while moving, so other clips keep normal speed).
+    private void UpdateAnimatorPlaybackSpeed(float horizontalSpeed, bool isMovingNow)
+    {
+        float target = 1f;
+
+        if (isMovingNow && animationReferenceSpeed > .01f)
+        {
+            target = Mathf.Clamp(horizontalSpeed / animationReferenceSpeed, animationSpeedRange.x, animationSpeedRange.y);
+        }
+
+        if (characterAnimator != null)
+        {
+            characterAnimator.speed = Mathf.MoveTowards(characterAnimator.speed, target, Time.deltaTime * 8f);
+        }
+
+        if (outerAnimator != null)
+        {
+            outerAnimator.speed = Mathf.MoveTowards(outerAnimator.speed, target, Time.deltaTime * 8f);
+        }
+    }
+
+    // Non-owners don't run UpdateAnimator, so derive playback speed from the Speed/IsMoving parameters
+    // that OwnerNetworkAnimator replicates (Animator.speed itself isn't relied on to replicate).
+    private void UpdateRemoteAnimatorPlaybackSpeed()
+    {
+        if (!enableAnimations)
+        {
+            return;
+        }
+
+        if (outerAnimator == null)
+        {
+            CacheOuterAnimator();
+        }
+
+        if (outerAnimator == null || !outerAnimator.isActiveAndEnabled
+            || !outerAnimatorParameters.Contains(speedParameter) || !outerAnimatorParameters.Contains(isMovingParameter))
+        {
+            return;
+        }
+
+        float speed = outerAnimator.GetFloat(speedParameter);
+        bool moving = outerAnimator.GetBool(isMovingParameter);
+        UpdateAnimatorPlaybackSpeed(speed, moving);
+    }
+
+    // Called at round start: stats may have changed from a card and the player is stationary again.
+    private void ResetAnimatorPlaybackSpeed()
+    {
+        if (characterAnimator != null)
+        {
+            characterAnimator.speed = 1f;
+        }
+
+        if (outerAnimator != null)
+        {
+            outerAnimator.speed = 1f;
+        }
+    }
+
     private void UpdateAnimator()
     {
         if (!enableAnimations)
@@ -195,6 +255,8 @@ public partial class FirstPersonController
         SetAnimatorBool(isGroundedParameter, isGrounded);
         SetAnimatorBool(isCrouchedParameter, isCrouched);
         SetAnimatorBool(isReloadingParameter, isReloading);
+
+        UpdateAnimatorPlaybackSpeed(horizontalSpeed, isMovingNow);
 
         UpdateLookLayerWeight(characterAnimator);
         UpdateLookLayerWeight(outerAnimator);

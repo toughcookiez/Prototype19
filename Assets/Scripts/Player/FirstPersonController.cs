@@ -354,6 +354,9 @@ public partial class FirstPersonController : NetworkBehaviour
     public Animator characterAnimator;
     public float animationDampTime = .1f;
     public float lookAnimationDampTime = 0f;
+    [Tooltip("Horizontal speed at which animations play at normal (1x) speed.")]
+    public float animationReferenceSpeed = 5f;
+    public Vector2 animationSpeedRange = new Vector2(.5f, 2.5f);
 
     public string moveXParameter = "MoveX";
     public string moveYParameter = "MoveY";
@@ -623,6 +626,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
         if (!HasInputAuthority())
         {
+            UpdateRemoteAnimatorPlaybackSpeed();
             return;
         }
 
