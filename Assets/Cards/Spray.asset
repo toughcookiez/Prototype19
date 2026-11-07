@@ -19,7 +19,7 @@ MonoBehaviour:
     polarity: 0
     target: 9
     modifierMode: 0
-    amount: 50
+    amount: 30
   - description: +12 AMMO
     keyword: +12
     polarity: 0
@@ -32,10 +32,10 @@ MonoBehaviour:
     target: 5
     modifierMode: 1
     amount: -75
-  - description: +0.25s reload time
-    keyword: +0.25s
+  - description: +0.5s reload time
+    keyword: +0.5s
     polarity: 1
     target: 13
     modifierMode: 0
-    amount: 0.25
+    amount: 0.5
   abilities: []

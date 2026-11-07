@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3187873265
+  GlobalObjectIdHash: 1162110628
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -415,8 +415,10 @@ MonoBehaviour:
   holdToFireRateThreshold: 7
   bulletsPerShot: 1
   bulletBurstInterval: 0.03
-  magazineSize: 12
-  startingBullets: 12
+  magazineSize: 4
+  startingBullets: 4
+  ammoDotsPerRow: 4
+  ammoDotSize: 30
   reloadTime: 1
   progressRing: {fileID: 4163220153710493686}
   outerShootPoint: {fileID: 0}

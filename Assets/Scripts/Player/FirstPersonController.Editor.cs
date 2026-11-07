@@ -263,6 +263,8 @@ using UnityEditor;
         fpc.bulletBurstInterval = EditorGUILayout.Slider(new GUIContent("Bullet Burst Interval", "Delay in seconds between bullets when Bullets Per Shot is greater than 1."), fpc.bulletBurstInterval, 0f, .2f);
         fpc.magazineSize = EditorGUILayout.IntSlider(new GUIContent("Magazine Size", "Maximum bullets before reloading."), fpc.magazineSize, 1, 100);
         fpc.startingBullets = EditorGUILayout.IntSlider(new GUIContent("Starting Bullets", "Bullets loaded in the magazine at start."), fpc.startingBullets, 1, fpc.magazineSize);
+        fpc.ammoDotsPerRow = EditorGUILayout.IntSlider(new GUIContent("Ammo Dots Per Row", "Ammo bar dots per row. Extra dots stack in new rows above."), fpc.ammoDotsPerRow, 1, 30);
+        fpc.ammoDotSize = EditorGUILayout.Slider(new GUIContent("Ammo Dot Size", "Size in pixels of each ammo bar dot. Spacing scales with it."), fpc.ammoDotSize, 6f, 60f);
         fpc.reloadTime = EditorGUILayout.Slider(new GUIContent("Reload Time", "Time in seconds to refill the magazine."), fpc.reloadTime, .1f, 5f);
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel(new GUIContent("Progress Ring", "Image used to show reload progress."));

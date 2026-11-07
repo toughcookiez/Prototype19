@@ -327,6 +327,8 @@ public partial class FirstPersonController : NetworkBehaviour
     public float bulletBurstInterval = .03f;
     public int magazineSize = 12;
     public int startingBullets = 12;
+    public int ammoDotsPerRow = 6;
+    public float ammoDotSize = 22f;
     public float reloadTime = 1f;
     public Image progressRing;
 
@@ -623,6 +625,8 @@ public partial class FirstPersonController : NetworkBehaviour
         {
             return;
         }
+
+        UpdateAmmoBar();
 
         moveXInput = Input.GetAxis("Horizontal");
         moveYInput = Input.GetAxis("Vertical");
