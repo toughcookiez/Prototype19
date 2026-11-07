@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1162110628
+  GlobalObjectIdHash: 2231394948
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -427,6 +427,8 @@ MonoBehaviour:
   characterAnimator: {fileID: 7188428999058365477}
   animationDampTime: 0.1
   lookAnimationDampTime: 0
+  animationReferenceSpeed: 5
+  animationSpeedRange: {x: 0.5, y: 2.5}
   moveXParameter: MoveX
   moveYParameter: MoveY
   speedParameter: Speed

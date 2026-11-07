@@ -25,7 +25,7 @@ MonoBehaviour:
     polarity: 1
     target: 3
     modifierMode: 1
-    amount: -20
+    amount: -30
   abilities:
   - description: Bullets trigger an explosion on hit.
     abilityName: Payload

@@ -68,6 +68,57 @@ public partial class FirstPersonController
     private void OnCurrentHealthChanged(float previousValue, float newValue)
     {
         UpdateHealthBar(newValue);
+
+        if (IsOwner && newValue < previousValue && newValue > 0f)
+        {
+            FlashDamageOverlay();
+        }
+    }
+
+    private const float DamageFlashPeakOpacity = 0.4f;
+    private const float DamageFlashFadeSeconds = 0.35f;
+    private VisualElement damageFlashElement;
+
+    // Blinks a full-screen red overlay (added to the PlayerUI root) once: instant on, then fades out.
+    private void FlashDamageOverlay()
+    {
+        if (healthUiDocument == null || healthUiDocument.rootVisualElement == null)
+        {
+            ResolveHealthUi();
+        }
+
+        VisualElement root = healthUiDocument != null ? healthUiDocument.rootVisualElement : null;
+        if (root == null || root.panel == null)
+        {
+            return;
+        }
+
+        if (damageFlashElement == null || damageFlashElement.panel != root.panel)
+        {
+            damageFlashElement = new VisualElement { name = "DamageFlash", pickingMode = PickingMode.Ignore };
+            damageFlashElement.style.position = Position.Absolute;
+            damageFlashElement.style.left = 0;
+            damageFlashElement.style.top = 0;
+            damageFlashElement.style.right = 0;
+            damageFlashElement.style.bottom = 0;
+            damageFlashElement.style.backgroundColor = new Color(1f, 0f, 0f, 1f);
+            damageFlashElement.style.opacity = 0f;
+            root.Add(damageFlashElement);
+        }
+
+        VisualElement flash = damageFlashElement;
+        flash.BringToFront();
+
+        // Snap on with no transition, then enable the fade on the next frame so it animates back to 0.
+        flash.style.transitionDuration = new List<TimeValue> { new TimeValue(0f, TimeUnit.Second) };
+        flash.style.opacity = DamageFlashPeakOpacity;
+        flash.schedule.Execute(() =>
+        {
+            flash.style.transitionProperty = new List<StylePropertyName> { new StylePropertyName("opacity") };
+            flash.style.transitionDuration = new List<TimeValue> { new TimeValue(DamageFlashFadeSeconds, TimeUnit.Second) };
+            flash.style.transitionTimingFunction = new List<EasingFunction> { new EasingFunction(EasingMode.EaseOut) };
+            flash.style.opacity = 0f;
+        }).ExecuteLater(50);
     }
 
     private void UpdateHealthBar(float healthValue)

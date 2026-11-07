@@ -17,13 +17,13 @@ MonoBehaviour:
   - description: +2 Bullets
     keyword: +2
     polarity: 0
-    target: 9
+    target: 10
     modifierMode: 0
     amount: 2
   - description: +3 AMMO
     keyword: +3
     polarity: 0
-    target: 10
+    target: 11
     modifierMode: 0
     amount: 3
   - description: Lower DMG
