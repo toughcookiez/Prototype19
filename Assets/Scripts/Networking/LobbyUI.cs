@@ -250,7 +250,10 @@ public class LobbyUI : MonoBehaviour
             waitingRoomPanel.SetActive(isConnected);
 
         if (startGameButton != null)
+        {
             startGameButton.gameObject.SetActive(isHost);
+            startGameButton.interactable = LobbyManager.Instance != null && LobbyManager.Instance.HasEnoughPlayersToStart;
+        }
 
         if (statusText != null)
         {
@@ -322,6 +325,7 @@ public class LobbyUI : MonoBehaviour
     {
         bool isConnected = LobbyManager.Instance != null && LobbyManager.Instance.IsConnected;
         bool isHost = LobbyManager.Instance != null && LobbyManager.Instance.IsHost;
+        bool canStart = LobbyManager.Instance != null && LobbyManager.Instance.HasEnoughPlayersToStart;
 
         if (toolkitMainMenuContainer != null)
             toolkitMainMenuContainer.style.display = !isConnected ? DisplayStyle.Flex : DisplayStyle.None;
@@ -338,7 +342,7 @@ public class LobbyUI : MonoBehaviour
         {
             bool show = isConnected && isHost && LobbyManager.Instance != null && !string.IsNullOrEmpty(LobbyManager.Instance.LobbyCode);
             toolkitLobbyCodeLabel.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
-            if (show) toolkitLobbyCodeLabel.text = "Lobby Code: " + LobbyManager.Instance.LobbyCode;
+            if (show) toolkitLobbyCodeLabel.text = "<size=20><color=#EE831A>LOBBY CODE</color></size>\n<size=64>" + LobbyManager.Instance.LobbyCode + "</size>";
         }
 
         if (toolkitCopyCodeButton != null)
@@ -349,6 +353,8 @@ public class LobbyUI : MonoBehaviour
         if (toolkitStartGameButton != null)
         {
             toolkitStartGameButton.style.display = isHost ? DisplayStyle.Flex : DisplayStyle.None;
+            toolkitStartGameButton.SetEnabled(canStart);
+            toolkitStartGameButton.style.opacity = canStart ? 1f : 0.5f;
         }
 
         if (toolkitInviteFriendsButton != null)

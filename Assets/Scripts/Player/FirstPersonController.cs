@@ -679,7 +679,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
         #region Shooting
 
-        if (enableShooting)
+        if (enableShooting && !IsInMainMenuScene())
         {
             bool canHoldToShoot = fireRate >= holdToFireRateThreshold;
             bool isTryingToShoot = canHoldToShoot ? Input.GetKey(shootKey) : Input.GetKeyDown(shootKey);

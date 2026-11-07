@@ -11,9 +11,14 @@ using Image = UnityEngine.UI.Image;
 
 public partial class FirstPersonController
 {
+    private static bool IsInMainMenuScene()
+    {
+        return UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu";
+    }
+
     private void TryShoot()
     {
-        if (!HasInputAuthority())
+        if (!HasInputAuthority() || IsInMainMenuScene())
         {
             return;
         }
@@ -197,7 +202,7 @@ public partial class FirstPersonController
 
     private void TryStartReload()
     {
-        if (isReloading)
+        if (isReloading || IsInMainMenuScene())
         {
             return;
         }

@@ -301,8 +301,21 @@ public class LobbyManager : MonoBehaviour
         OnLobbyLeft?.Invoke();
     }
 
+    public const int RequiredPlayersToStart = 2;
+
+    public bool HasEnoughPlayersToStart =>
+        NetworkManager.Singleton != null &&
+        NetworkManager.Singleton.IsServer &&
+        NetworkManager.Singleton.ConnectedClientsIds.Count >= RequiredPlayersToStart;
+
     public void StartGame()
     {
+        if (!HasEnoughPlayersToStart)
+        {
+            Debug.LogWarning($"Cannot start game: need {RequiredPlayersToStart} players in the lobby.");
+            return;
+        }
+
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
         {
             IsLobbyActive = false;

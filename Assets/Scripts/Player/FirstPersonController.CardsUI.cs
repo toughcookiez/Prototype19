@@ -15,6 +15,12 @@ public partial class FirstPersonController
     {
         ResolveMatchUiDocuments();
 
+        // The match HUD never belongs in the main menu (lobby) scene.
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            isActive = false;
+        }
+
         if (playerUiDocument != null)
         {
             playerUiDocument.gameObject.SetActive(isActive);
