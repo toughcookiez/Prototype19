@@ -145,6 +145,28 @@ public partial class FirstPersonController
         }
     }
 
+    // LookLayer sits above UpperBody and its LookUp/LookDown clips key the whole right arm (shoulder to hand),
+    // so it overwrites the right arm of the reload clip while the left arm (only LeftArm keyed) still plays it.
+    // Fade the layer out while reloading so UpperBody's reload pose reaches both arms.
+    private void UpdateLookLayerWeight(Animator animator)
+    {
+        if (animator == null || !animator.isActiveAndEnabled)
+        {
+            return;
+        }
+
+        int layer = animator.GetLayerIndex("LookLayer");
+
+        if (layer < 0)
+        {
+            return;
+        }
+
+        float target = isReloading ? 0f : 1f;
+        float current = animator.GetLayerWeight(layer);
+        animator.SetLayerWeight(layer, Mathf.MoveTowards(current, target, Time.deltaTime / .15f));
+    }
+
     private void UpdateAnimator()
     {
         if (!enableAnimations)
@@ -173,6 +195,9 @@ public partial class FirstPersonController
         SetAnimatorBool(isGroundedParameter, isGrounded);
         SetAnimatorBool(isCrouchedParameter, isCrouched);
         SetAnimatorBool(isReloadingParameter, isReloading);
+
+        UpdateLookLayerWeight(characterAnimator);
+        UpdateLookLayerWeight(outerAnimator);
 
         // Only the outer body needs LookValue: the inner body is parented to the camera and already pitches with it.
         SetOuterAnimatorFloat(lookValueParameter, Mathf.InverseLerp(-maxLookAngle, maxLookAngle, pitch), 0f);
