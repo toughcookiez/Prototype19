@@ -164,8 +164,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8952276716275553656}
   - {fileID: 4459864851508666808}
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2231394948
+  GlobalObjectIdHash: 1162110628
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -401,7 +401,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6126835359889001351, guid: b76116ff1dad4ec4aa026a142fc964eb, type: 3}
   bulletDamage: 25
   crosshairPointDistance: 5
-  bulletSpeed: 20
+  bulletSpeed: 25
   bulletGravity: 10
   bulletBounces: 0
   fireRate: 2
