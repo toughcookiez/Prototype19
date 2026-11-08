@@ -84,6 +84,9 @@ public partial class FirstPersonController : NetworkBehaviour
     private static int scoreboardPlayer1Score;
     private static int scoreboardPlayer2Score;
 
+    /// <summary>1-based number of the round about to be played, derived from the synced scoreboard.</summary>
+    public static int CurrentRoundNumber => scoreboardPlayer1Score + scoreboardPlayer2Score + 1;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetSavedSettingsForPlayMode()
     {

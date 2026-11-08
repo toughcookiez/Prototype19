@@ -294,7 +294,7 @@ public class LobbyManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
-            SceneManager.LoadScene("MainMenu");
+            TransitionManager.LoadScene("MainMenu");
         }
 
         OnLobbyStateChanged?.Invoke();
@@ -321,7 +321,19 @@ public class LobbyManager : MonoBehaviour
             IsLobbyActive = false;
             SteamManager.Lobby?.SetJoinable(false);
             OnGameStarted?.Invoke();
-            NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
+            // Cover first; clients cover themselves when the networked Load event reaches them.
+            TransitionManager.CoverThenNetworked(() =>
+            {
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer
+                    && NetworkManager.Singleton.SceneManager != null)
+                {
+                    NetworkManager.Singleton.SceneManager.LoadScene(gameplaySceneName, LoadSceneMode.Single);
+                }
+                else
+                {
+                    TransitionManager.Reveal();
+                }
+            });
         }
     }
 
@@ -357,7 +369,7 @@ public class LobbyManager : MonoBehaviour
 
             if (SceneManager.GetActiveScene().name != "MainMenu")
             {
-                SceneManager.LoadScene("MainMenu");
+                TransitionManager.LoadScene("MainMenu");
             }
 
             OnLobbyStateChanged?.Invoke();

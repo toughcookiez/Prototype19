@@ -581,6 +581,11 @@ public partial class FirstPersonController
         // Wait a frame to ensure respawn state is synced
         yield return null;
 
+        // Sweep the transition over the screen first; clients cover when the networked Load event arrives.
+        bool covered = false;
+        TransitionManager.CoverThenNetworked(() => covered = true);
+        yield return new WaitUntil(() => covered);
+
         Debug.Log($"[MapPool] Switching to scene index {sceneIndex}.", this);
         ClearActiveBullets();
 
@@ -598,12 +603,14 @@ public partial class FirstPersonController
             if (loadStatus != SceneEventProgressStatus.Started)
             {
                 networkSceneManager.OnLoadEventCompleted -= OnMapPoolSceneLoadEventCompleted;
+                TransitionManager.Reveal();
                 ResetAllPlayersForNextRound();
             }
         }
         else
         {
             Debug.LogError($"[MapPool] Failed to get scene name for index {sceneIndex}", this);
+            TransitionManager.Reveal();
             ResetAllPlayersForNextRound();
         }
     }

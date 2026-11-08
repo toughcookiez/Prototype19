@@ -24,7 +24,7 @@
 
 .cards-header-label {
     -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
-    font-size: 80%;
+    font-size: 80px;
     letter-spacing: 3px;
     color: rgb(255, 255, 255);
     -unity-text-outline-width: 6px;
