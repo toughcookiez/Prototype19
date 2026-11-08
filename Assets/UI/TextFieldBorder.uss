@@ -13,8 +13,58 @@
     padding-left: 0;
 }
 
+.menuInput {
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    font-size: 24px;
+    margin: 0;
+}
 
+/* Inset, flat "well" so it reads as an input and not a raised button. */
+.menuInput .unity-base-text-field__input {
+    flex-grow: 1;
+    background-color: rgb(20, 16, 12);
+    color: rgb(255, 200, 120);
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    font-size: 24px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-left;
+    text-overflow: clip;
+    white-space: nowrap;
+    overflow: hidden;
+    border-top-width: 6px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(110, 70, 30);
+    border-bottom-color: rgb(110, 70, 30);
+    border-left-color: rgb(0, 0, 0);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 0 14px;
+}
 
+.menuInput .unity-base-text-field__input--placeholder {
+    color: rgb(130, 110, 90);
+}
 
+.menuInput .unity-base-text-field__input > .unity-text-element {
+    -unity-text-align: middle-left;
+    text-overflow: clip;
+    white-space: nowrap;
+}
 
+.menuInput:hover .unity-base-text-field__input {
+    background-color: rgb(30, 24, 18);
+}
 
+.menuInput .unity-base-text-field__input:focus {
+    background-color: rgb(30, 24, 18);
+    border-right-color: rgb(255, 140, 20);
+    border-bottom-color: rgb(255, 140, 20);
+    border-left-color: rgb(255, 140, 20);
+    border-top-color: rgb(255, 140, 20);
+    border-top-width: 3px;
+}

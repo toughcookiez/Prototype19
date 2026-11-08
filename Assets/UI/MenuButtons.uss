@@ -2,17 +2,58 @@
 }
 
 .menuButton {
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    font-size: 30px;
+    letter-spacing: 3px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+    -unity-font-style: normal;
+
+    background-color: rgb(255, 140, 20);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 10px;
+    border-left-width: 4px;
+    border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-left-color: rgb(0, 0, 0);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    border-bottom-left-radius: 14px;
+    margin: 0;
+    padding: 0;
+
+    rotate: -2deg;
+    transition-property: scale, rotate, background-color, translate;
+    transition-duration: 0.08s;
+    transition-timing-function: ease-out;
 }
 
 .menuButton:hover {
-    scale: 1.1 1.1;
-    transition-duration: 0.05s;
+    scale: 1.08 1.08;
     rotate: 0;
+    background-color: rgb(255, 180, 40);
     color: rgb(255, 255, 255);
 }
 
 .menuButton:active {
-    scale: 0.9 0.9;
+    scale: 0.95 0.95;
+    translate: 0 4px;
+    background-color: rgb(220, 100, 0);
     transition-duration: 0s;
-    opacity: 0.8;
+}
+
+.menuButton:disabled {
+    background-color: rgb(120, 90, 60);
+    opacity: 0.6;
+}
+
+.menuButtonSmall {
+    font-size: 22px;
+    letter-spacing: 1px;
+    white-space: nowrap;
 }
