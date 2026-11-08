@@ -1,0 +1,143 @@
+/* In-game HUD, styled to match MainMenuUI (MenuButtons.uss): chunky black outlines,
+   thick bottom edge, orange accents and a slight tilt. */
+
+/* ---------- Health ---------- */
+
+.hudHealth {
+    position: absolute;
+    left: 28px;
+    top: 24px;
+    width: 360px;
+    height: 40px;
+    rotate: -2deg;
+    transform-origin: left center;
+}
+
+/* Dark inset well with the same thick-bottom border as .menuButton. */
+.hudHealthBack {
+    flex-grow: 1;
+    background-color: rgb(20, 16, 12);
+    overflow: hidden;
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 8px;
+    border-left-width: 4px;
+    border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-left-color: rgb(0, 0, 0);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+/* Width is driven (and animated) from FirstPersonController.Health.cs. */
+.hudHealthFill {
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    background-color: rgb(80, 220, 40);
+    border-right-width: 3px;
+    border-right-color: rgb(30, 110, 15);
+    border-top-width: 4px;
+    border-top-color: rgb(170, 255, 110);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+/* ---------- Ammo ---------- */
+
+.hudAmmo {
+    position: absolute;
+    left: 28px;
+    bottom: 28px;
+    flex-direction: row;
+    align-items: center;
+    rotate: -2deg;
+    transform-origin: left center;
+}
+
+/* ---------- Scoreboard ---------- */
+
+.hudPoints {
+    position: absolute;
+    right: 28px;
+    top: 24px;
+    align-items: flex-end;
+    padding: 10px 14px 14px 14px;
+    background-color: rgba(18, 18, 22, 0.88);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-top-color: rgb(238, 131, 26);
+    border-right-color: rgb(238, 131, 26);
+    border-bottom-color: rgb(238, 131, 26);
+    border-left-color: rgb(238, 131, 26);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    border-bottom-left-radius: 14px;
+    rotate: 2deg;
+    transform-origin: right center;
+}
+
+.hudPlayerRow {
+    flex-direction: row;
+}
+
+.hudPlayerRow--second {
+    margin-top: 10px;
+}
+
+/* Empty slot: dark well with the inset borders of .menuInput. */
+.hudPointSlot {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    margin-left: 8px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(20, 16, 12);
+    border-top-width: 4px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 4px;
+    border-top-color: rgb(0, 0, 0);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(110, 70, 30);
+    border-bottom-color: rgb(110, 70, 30);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+/* Won round. FirstPersonController toggles display on this element. */
+.hudPoint {
+    width: 100%;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 4px;
+    border-left-width: 2px;
+    border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-left-color: rgb(0, 0, 0);
+}
+
+.hudPoint--red {
+    background-color: rgb(255, 50, 40);
+}
+
+.hudPoint--blue {
+    background-color: rgb(40, 160, 255);
+}

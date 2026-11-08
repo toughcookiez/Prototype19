@@ -8,8 +8,8 @@ public partial class FirstPersonController
     // Spacing scales with ammoDotSize so the bar keeps its proportions at any size.
     private const float AmmoDotSpacingRatio = 0.3f;
     private const float AmmoRowSpacingRatio = 0.65f;
-    private static readonly Color AmmoDotLitColor = new Color(1f, 0.85f, 0.1f, 1f);
-    private static readonly Color AmmoDotSpentColor = new Color(0.32f, 0.27f, 0.05f, 1f);
+    private static readonly Color AmmoDotLitColor = new Color(1f, 0.55f, 0.08f, 1f);
+    private static readonly Color AmmoDotSpentColor = new Color(0.08f, 0.063f, 0.047f, 1f);
 
     private VisualElement ammoBarElement;
     private readonly List<VisualElement> ammoDots = new List<VisualElement>();
@@ -143,6 +143,16 @@ public partial class FirstPersonController
             dot.style.borderTopRightRadius = dotSize * 0.5f;
             dot.style.borderBottomLeftRadius = dotSize * 0.5f;
             dot.style.borderBottomRightRadius = dotSize * 0.5f;
+            // Black outline to match the menu button style.
+            float outline = Mathf.Max(2f, dotSize * 0.15f);
+            dot.style.borderTopWidth = outline;
+            dot.style.borderRightWidth = outline;
+            dot.style.borderLeftWidth = outline;
+            dot.style.borderBottomWidth = outline * 1.6f;
+            dot.style.borderTopColor = Color.black;
+            dot.style.borderRightColor = Color.black;
+            dot.style.borderBottomColor = Color.black;
+            dot.style.borderLeftColor = Color.black;
             row.Add(dot);
             ammoDots.Add(dot);
         }
