@@ -64,7 +64,94 @@ public partial class FirstPersonController
         SetCardsUiInputBlocked(isActive && !isInteractable);
         UpdateCardsUiPlayerColorLabel(isActive);
         PopulateCardsUiFromRoundCards();
+
+        if (cardsUiIntroRoutine != null)
+        {
+            StopCoroutine(cardsUiIntroRoutine);
+            cardsUiIntroRoutine = null;
+        }
+
+        if (isActive && !cardsUiWasActive)
+        {
+            cardsUiIntroRoutine = StartCoroutine(AnimateCardsUiIntro());
+        }
+
         cardsUiWasActive = isActive;
+    }
+
+    private Coroutine cardsUiIntroRoutine;
+
+    // Menu-style entrance: header drops in, then the cards pop up one after another.
+    private IEnumerator AnimateCardsUiIntro()
+    {
+        VisualElement root = cardsUiDocument != null ? cardsUiDocument.rootVisualElement : null;
+
+        if (root == null)
+        {
+            yield break;
+        }
+
+        VisualElement header = root.Q<VisualElement>("CardsHeader");
+        List<VisualElement> cards = root.Query<VisualElement>(className: CardsUiCardClassName).ToList();
+        const float slideDistance = 140f;
+        const float cardDuration = 0.28f;
+        const float stagger = 0.07f;
+        const float headerDuration = 0.25f;
+        float total = headerDuration + stagger * cards.Count + cardDuration;
+
+        if (header != null)
+        {
+            header.style.opacity = 0f;
+        }
+
+        foreach (VisualElement card in cards)
+        {
+            card.style.opacity = 0f;
+        }
+
+        float elapsed = 0f;
+
+        while (elapsed < total)
+        {
+            elapsed += Time.unscaledDeltaTime;
+
+            if (header != null)
+            {
+                float h = Mathf.Clamp01(elapsed / headerDuration);
+                header.style.opacity = h;
+                header.transform.position = new Vector3(0f, -40f * (1f - EaseOutCubic(h)), 0f);
+            }
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                float t = Mathf.Clamp01((elapsed - headerDuration * 0.5f - stagger * i) / cardDuration);
+                float eased = EaseOutCubic(t);
+                cards[i].style.opacity = t;
+                cards[i].transform.position = new Vector3(0f, slideDistance * (1f - eased), 0f);
+            }
+
+            yield return null;
+        }
+
+        if (header != null)
+        {
+            header.style.opacity = 1f;
+            header.transform.position = Vector3.zero;
+        }
+
+        foreach (VisualElement card in cards)
+        {
+            card.style.opacity = 1f;
+            card.transform.position = Vector3.zero;
+        }
+
+        cardsUiIntroRoutine = null;
+    }
+
+    private static float EaseOutCubic(float t)
+    {
+        float inv = 1f - t;
+        return 1f - inv * inv * inv;
     }
 
     // Names the player who is choosing a card, colored to match their side.
@@ -200,7 +287,7 @@ public partial class FirstPersonController
             string textAfterKeyword = description.Substring(keywordIndex + keyword.Length);
 
             // Determine color based on polarity (convert RGB to hex)
-            string colorHex = stat.polarity == CardStatPolarity.Good ? "#229640" : "#be2a2a";
+            string colorHex = stat.polarity == CardStatPolarity.Good ? "#50DC28" : "#FF503C";
 
             // Build rich text string
             string richText = $"{textBeforeKeyword}<color={colorHex}><b>{keyword}</b></color>{textAfterKeyword}";
@@ -675,7 +762,9 @@ public partial class FirstPersonController
                 continue;
             }
 
-            SetCardsUiCardScale(card, i == selectedCardsUiCardIndex ? CardsUiSelectedScale : 1f);
+            bool isSelected = i == selectedCardsUiCardIndex;
+            SetCardsUiCardScale(card, isSelected ? CardsUiSelectedScale : 1f);
+            card.EnableInClassList("card-selected", isSelected);
         }
     }
 
@@ -733,13 +822,12 @@ public partial class FirstPersonController
     // Swaps the card artwork to the flipped sprite at the same moment the card info is revealed.
     private void SetCardsUiCardFlippedSprite(VisualElement card)
     {
-        if (card == null || flippedCardSprite == null)
+        if (card == null)
         {
             return;
         }
 
-        CacheCardsUiCardBackBackground(card);
-        card.style.backgroundImage = new StyleBackground(Background.FromSprite(flippedCardSprite));
+        card.AddToClassList("card-flipped");
     }
 
     // Restores the face-down artwork, used when the cards are repopulated for a new round.
@@ -750,12 +838,8 @@ public partial class FirstPersonController
             return;
         }
 
-        if (!cardsUiCardBackBackgrounds.TryGetValue(card, out Background backBackground))
-        {
-            return;
-        }
-
-        card.style.backgroundImage = new StyleBackground(backBackground);
+        card.RemoveFromClassList("card-flipped");
+        card.RemoveFromClassList("card-selected");
     }
 
     private void CacheCardsUiCardBackBackground(VisualElement card)

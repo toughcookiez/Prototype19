@@ -1,3 +1,6 @@
+/* Card-pick screen, styled to match MainMenuUI / PlayerUI: Varsity font, chunky black outlines,
+   thick bottom edge, orange accents and a slight tilt. */
+
 :root {
 }
 
@@ -8,36 +11,114 @@
     justify-content: center;
 }
 
+.cards-row {
+    position: absolute;
+    left: 3%;
+    right: 3%;
+    top: 30%;
+    height: 56%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.cards-header-label {
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    font-size: 80%;
+    letter-spacing: 3px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 6px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+}
+
+/* ---------- Card (face-down: orange like .menuButton) ---------- */
+
 .CardButton {
-    width: 118px;
-    height: 190px;
-    margin-right: 32px;
-    background-color: rgb(255, 255, 255);
+    width: 18%;
+    height: 100%;
+    margin: 0;
+    padding: 12px;
+    background-color: rgb(255, 140, 20);
     background-image: none;
-    border-top-left-radius: 18px;
-    border-top-right-radius: 18px;
-    border-bottom-right-radius: 18px;
-    border-bottom-left-radius: 18px;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 12px;
+    border-left-width: 4px;
     border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
     border-bottom-color: rgb(0, 0, 0);
-    padding-right: 6px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 6px;
+    border-left-color: rgb(0, 0, 0);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     transform-origin: center;
+    rotate: -2deg;
+    transition-property: rotate, background-color, border-color;
+    transition-duration: 0.08s;
+    transition-timing-function: ease-out;
+}
+
+.card-tilt-right {
+    rotate: 2deg;
 }
 
 .CardButton:hover {
+    rotate: 0;
+    background-color: rgb(255, 180, 40);
 }
 
+.card-selected {
+    rotate: 0;
+    background-color: rgb(255, 180, 40);
+}
+
+/* Face-up: dark panel with an orange frame, like the HUD scoreboard. */
+.card-flipped,
+.card-flipped:hover {
+    rotate: 0;
+    background-color: rgba(18, 18, 22, 0.95);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 12px;
+    border-left-width: 4px;
+    border-top-color: rgb(238, 131, 26);
+    border-right-color: rgb(238, 131, 26);
+    border-left-color: rgb(238, 131, 26);
+}
+
+.card-flipped.card-selected {
+    border-top-color: rgb(255, 225, 120);
+    border-right-color: rgb(255, 225, 120);
+    border-left-color: rgb(255, 225, 120);
+}
+
+.card-back-mark {
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 120px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 8px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    -unity-text-align: middle-center;
+}
+
+.card-flipped .card-back-mark {
+    display: none;
+}
+
+/* ---------- Card face (info) ---------- */
+
 .card-info {
-    width: 95%;
+    width: 100%;
     height: 85%;
     flex-shrink: 0;
     align-items: stretch;
@@ -49,45 +130,54 @@
 }
 
 .card-title {
-    color: rgb(10, 10, 10);
-    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    color: rgb(255, 170, 20);
     font-size: 180%;
-    margin-bottom: 5.8%;
+    letter-spacing: 2px;
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    margin-bottom: 6%;
+    padding-bottom: 6%;
     width: 100%;
     -unity-text-align: middle-center;
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(110, 70, 30);
 }
 
 .card-stat-row {
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    margin-bottom: 3.8%;
+    margin-bottom: 4%;
     width: 100%;
 }
 
 .card-stat-text {
-    color: rgb(20, 20, 20);
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    color: rgb(255, 255, 255);
     font-size: 138%;
     white-space: normal;
     flex-grow: 1;
     flex-shrink: 0;
+    -unity-text-align: upper-center;
 }
 
 .card-stat-keyword-good {
-    color: rgb(34, 150, 64);
-    -unity-font-style: bold;
+    color: rgb(80, 220, 40);
     margin-right: 2%;
 }
 
 .card-stat-keyword-bad {
-    color: rgb(190, 42, 42);
-    -unity-font-style: bold;
+    color: rgb(255, 80, 60);
     margin-right: 2%;
 }
 
 .card-ability-description {
-    color: rgb(35, 35, 35);
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/VarsityTeam-Bold.otf?fileID=12800000&guid=d17a1f7ca61d45645aed92c3fcd5f57b&type=3#VarsityTeam-Bold");
+    color: rgb(255, 200, 120);
     font-size: 138%;
     white-space: normal;
     width: 100%;
+    margin-bottom: 4%;
+    -unity-text-align: upper-center;
 }
