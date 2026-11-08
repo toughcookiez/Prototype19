@@ -173,6 +173,10 @@ public class LobbyManager : MonoBehaviour
         }
         else
         {
+            // Without Steam a code can't locate a host; we can only try the transport's configured address (default 127.0.0.1).
+            Debug.LogWarning("[Steam] Steam is not initialized, so lobby code '" + lobbyCode + "' can't be looked up. " +
+                             "Trying the transport address instead; this only works if a host is running on this machine. " +
+                             "Enable Tools > Steam > Use Steam In Editor (and run Steam), or type the host's IP address.");
             SelectTransport(useSteam: false);
             StartClient(lobbyCode);
         }
