@@ -5,7 +5,13 @@
             <ui:VisualElement name="BarProgress" picking-mode="Ignore" class="hudHealthFill"/>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="AmmoBar" picking-mode="Ignore" class="hudAmmo"/>
+    <ui:VisualElement name="BottomLeft" picking-mode="Ignore" class="hudBottomLeft">
+        <ui:VisualElement name="AmmoBar" picking-mode="Ignore" class="hudAmmo"/>
+        <ui:VisualElement name="BlockIndicator" picking-mode="Ignore" class="hudBlock">
+            <ui:VisualElement name="BlockFill" picking-mode="Ignore" class="hudBlockFill"/>
+            <ui:Label name="BlockKey" picking-mode="Ignore" class="hudBlockKey" text="RMB"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
     <ui:VisualElement name="Points" picking-mode="Ignore" class="hudPoints">
         <ui:VisualElement name="Player1" picking-mode="Ignore" class="hudPlayerRow">
             <ui:VisualElement name="PointBackground" picking-mode="Ignore" class="hudPointSlot">

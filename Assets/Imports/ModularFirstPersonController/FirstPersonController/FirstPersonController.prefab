@@ -392,8 +392,8 @@ MonoBehaviour:
   enableBlock: 1
   blockKey: 324
   shieldObject: {fileID: 0}
-  blockDuration: 0.2
-  blockCooldown: 1
+  blockDuration: 0.35
+  blockCooldown: 3
   enableShooting: 1
   shootKey: 323
   reloadKey: 114

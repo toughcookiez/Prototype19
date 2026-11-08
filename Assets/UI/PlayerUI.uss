@@ -50,14 +50,63 @@
 
 /* ---------- Ammo ---------- */
 
-.hudAmmo {
+/* Ammo dots and the block cooldown share one tilted corner container. */
+.hudBottomLeft {
     position: absolute;
     left: 28px;
     bottom: 28px;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-end;
     rotate: -2deg;
-    transform-origin: left center;
+    transform-origin: left bottom;
+}
+
+.hudAmmo {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 16px;
+}
+
+/* ---------- Block cooldown ---------- */
+
+.hudBlock {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    background-color: rgb(20, 16, 12);
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-top-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-left-color: rgb(0, 0, 0);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+/* Height is driven from FirstPersonController.BlockUI.cs; it rises while the block recharges. */
+.hudBlockFill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    background-color: rgb(120, 200, 255);
+}
+
+.hudBlockKey {
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+    text-shadow: 1px 1px 0 rgb(0, 0, 0);
 }
 
 /* ---------- Scoreboard ---------- */

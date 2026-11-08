@@ -23,6 +23,11 @@ public partial class FirstPersonController
             return false;
         }
 
+        if (isShieldActive.Value)
+        {
+            return false;
+        }
+
         currentHealth.Value = Mathf.Max(0f, currentHealth.Value - Mathf.Max(0f, damageAmount));
 
         Debug.Log($"Player {OwnerClientId} hit by player {shooterClientId} for {damageAmount}. Health: {currentHealth.Value}/{maxHealth}", this);

@@ -464,12 +464,17 @@ public class Bullet : NetworkBehaviour
 
         if (hitPlayer != null)
         {
-            if (hitPlayer.IsBlocking() && hitPlayer.IsShieldCollider(collision.collider))
+            if (hitPlayer.IsBlocking())
             {
-                if (TryReflectAcrossShield(collision))
+                // ROUNDS-style block: the bullet is simply destroyed, no damage.
+                if (impactEffectPrefab != null && collision.contactCount > 0)
                 {
-                    return;
+                    ContactPoint blockContact = collision.GetContact(0);
+                    Instantiate(impactEffectPrefab, blockContact.point, Quaternion.LookRotation(blockContact.normal));
                 }
+
+                DespawnOrDestroy();
+                return;
             }
 
             bool damageApplied = hitPlayer.TryApplyDamage(damage, shooterClientId);

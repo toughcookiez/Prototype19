@@ -290,16 +290,15 @@ public partial class FirstPersonController : NetworkBehaviour
 
     public bool enableBlock = true;
     public KeyCode blockKey = KeyCode.Mouse1;
-    public GameObject shieldObject;
-    public float blockDuration = 5f;
-    public float blockCooldown = 1f;
+    [Tooltip("Seconds the block window lasts (invulnerable, bullets are destroyed).")]
+    public float blockDuration = 0.35f;
+    [Tooltip("Seconds to recharge after the block window ends.")]
+    public float blockCooldown = 3f;
 
     // Internal Variables
     private bool isBlocking = false;
     private bool isBlockCooldown = false;
     private Coroutine blockCoroutine;
-    private Renderer[] shieldRenderers;
-    private Coroutine shieldOpacityCoroutine;
 
     #endregion
 
@@ -446,19 +445,11 @@ public partial class FirstPersonController : NetworkBehaviour
             sprintCooldownReset = sprintCooldown;
         }
 
-        if (shieldObject == null)
+        // The old shield mesh is no longer used (block is a ring effect now); keep it hidden if still in the prefab.
+        Transform legacyShield = transform.Find("ShieldObject");
+        if (legacyShield != null)
         {
-            Transform shieldTransform = transform.Find("ShieldObject");
-            if (shieldTransform != null)
-            {
-                shieldObject = shieldTransform.gameObject;
-            }
-        }
-
-        if (shieldObject != null)
-        {
-            shieldRenderers = shieldObject.GetComponentsInChildren<Renderer>(true);
-            shieldObject.SetActive(false);
+            legacyShield.gameObject.SetActive(false);
         }
 
         playerOutline = GetComponent<Outline>();
@@ -557,11 +548,6 @@ public partial class FirstPersonController : NetworkBehaviour
         currentHealth.OnValueChanged += OnCurrentHealthChanged;
         isShieldActive.OnValueChanged += OnShieldActiveChanged;
 
-        if (shieldObject != null)
-        {
-            shieldObject.SetActive(isShieldActive.Value);
-        }
-
         ApplySavedWeaponSettings(true);
         ApplySavedPlayerSettings();
 
@@ -634,6 +620,7 @@ public partial class FirstPersonController : NetworkBehaviour
         }
 
         UpdateAmmoBar();
+        UpdateBlockUi();
 
         moveXInput = Input.GetAxis("Horizontal");
         moveYInput = Input.GetAxis("Vertical");
@@ -671,7 +658,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
         if (enableBlock && Input.GetKeyDown(blockKey) && Time.time >= nextBlockTime && !isSprinting)
         {
-            if (shieldObject != null && !isBlocking)
+            if (!isBlocking)
             {
                 TryBlock();
             }
