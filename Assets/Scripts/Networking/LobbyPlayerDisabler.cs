@@ -160,5 +160,11 @@ public class LobbyPlayerDisabler : NetworkBehaviour
         // Lock cursor for gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Turn the HUD back on (it is forced off while in the MainMenu scene)
+        if (fpController != null && SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            fpController.RefreshLocalViewAfterLobby();
+        }
     }
 }

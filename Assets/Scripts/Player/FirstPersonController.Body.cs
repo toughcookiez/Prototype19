@@ -148,6 +148,23 @@ public partial class FirstPersonController
         return hasAuthority && IsAlive() && !controlsDisabledAfterDeath;
     }
 
+    /// <summary>
+    /// Re-applies the local view (camera + HUD) after leaving the lobby / loading a gameplay scene.
+    /// The player object persists across the load, so OnNetworkSpawn does not run again.
+    /// </summary>
+    public void RefreshLocalViewAfterLobby()
+    {
+        ConfigureLocalView();
+
+        if (HasInputAuthority())
+        {
+            SetPlayerUiActive(true);
+            SetCardsUiActive(false);
+            ResolveHealthUi();
+            UpdateHealthBar(currentHealth.Value);
+        }
+    }
+
     private void ConfigureLocalView()
     {
         bool isLocalPlayer = HasInputAuthority();
