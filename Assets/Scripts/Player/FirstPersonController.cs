@@ -496,6 +496,9 @@ public partial class FirstPersonController : NetworkBehaviour
         {
             progressRingCG = progressRing.transform.parent != null ? progressRing.transform.parent.GetComponent<CanvasGroup>() : null;
             progressRing.fillAmount = 0f;
+            // Replaced by the UI Toolkit reload ring (UpdateReloadRing in FirstPersonController.AmmoUI.cs).
+            // The image is only disabled (not deactivated) because it still marks where the new ring is placed.
+            progressRing.enabled = false;
 
             if (progressRingCG != null)
             {
@@ -620,6 +623,7 @@ public partial class FirstPersonController : NetworkBehaviour
         }
 
         UpdateAmmoBar();
+        UpdateReloadRing();
         UpdateBlockUi();
 
         moveXInput = Input.GetAxis("Horizontal");

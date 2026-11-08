@@ -86,6 +86,108 @@ public partial class FirstPersonController
         displayedAmmoCount = bullets;
     }
 
+    // ---------- Reload ring (centered on the crosshair, same dark / orange / black-outline look as the ammo dots) ----------
+
+    private const float ReloadRingSize = 120f;
+    private const float ReloadRingThickness = 12f;
+    private const float ReloadRingOutline = 5f;
+    private VisualElement reloadRing;
+    private float reloadRingProgress;
+    private bool reloadRingWasActive;
+    private float reloadRingStartTime;
+
+    private void UpdateReloadRing()
+    {
+        if (reloadRing == null || reloadRing.panel == null
+            || healthUiDocument == null || healthUiDocument.rootVisualElement == null
+            || reloadRing.panel != healthUiDocument.rootVisualElement.panel)
+        {
+            reloadRing = null;
+
+            if (healthUiDocument == null || !healthUiDocument.gameObject.activeInHierarchy || healthUiDocument.rootVisualElement == null)
+            {
+                return;
+            }
+
+            reloadRing = new VisualElement { pickingMode = PickingMode.Ignore };
+            reloadRing.style.position = Position.Absolute;
+            reloadRing.style.left = Length.Percent(50);
+            reloadRing.style.top = Length.Percent(50);
+            reloadRing.style.width = ReloadRingSize;
+            reloadRing.style.height = ReloadRingSize;
+            reloadRing.style.marginLeft = -ReloadRingSize * 0.5f;
+            reloadRing.style.marginTop = -ReloadRingSize * 0.5f;
+            reloadRing.style.display = DisplayStyle.None;
+            reloadRing.generateVisualContent += DrawReloadRing;
+            healthUiDocument.rootVisualElement.Add(reloadRing);
+        }
+
+        DisplayStyle wanted = isReloading ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (reloadRing.style.display != wanted)
+        {
+            reloadRing.style.display = wanted;
+        }
+
+        if (!isReloading)
+        {
+            reloadRingWasActive = false;
+            return;
+        }
+
+        if (!reloadRingWasActive)
+        {
+            reloadRingWasActive = true;
+            reloadRingStartTime = Time.time;
+        }
+
+        // Sit exactly where the old uGUI ring was.
+        if (progressRing != null)
+        {
+            Canvas canvas = progressRing.canvas;
+            Camera uiCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            Vector2 screen = RectTransformUtility.WorldToScreenPoint(uiCamera, progressRing.rectTransform.position);
+            Vector2 panelPos = RuntimePanelUtils.ScreenToPanel(reloadRing.panel, new Vector2(screen.x, Screen.height - screen.y));
+            reloadRing.style.left = panelPos.x;
+            reloadRing.style.top = panelPos.y;
+        }
+
+        reloadRingProgress = Mathf.Clamp01((Time.time - reloadRingStartTime) / Mathf.Max(.01f, reloadTime));
+        reloadRing.MarkDirtyRepaint();
+    }
+
+    private void DrawReloadRing(MeshGenerationContext mgc)
+    {
+        Painter2D p = mgc.painter2D;
+        Vector2 center = new Vector2(ReloadRingSize * 0.5f, ReloadRingSize * 0.5f);
+        float radius = ReloadRingSize * 0.5f - ReloadRingOutline - ReloadRingThickness * 0.5f;
+
+        p.lineCap = LineCap.Butt;
+
+        // Black outline behind everything.
+        p.strokeColor = Color.black;
+        p.lineWidth = ReloadRingThickness + ReloadRingOutline * 2f;
+        p.BeginPath();
+        p.Arc(center, radius, 0f, 360f);
+        p.Stroke();
+
+        // Dark empty track.
+        p.strokeColor = AmmoDotSpentColor;
+        p.lineWidth = ReloadRingThickness;
+        p.BeginPath();
+        p.Arc(center, radius, 0f, 360f);
+        p.Stroke();
+
+        if (reloadRingProgress > 0.001f)
+        {
+            // Orange fill, clockwise from 12 o'clock.
+            p.strokeColor = AmmoDotLitColor;
+            p.BeginPath();
+            p.Arc(center, radius, -90f, -90f + 360f * reloadRingProgress);
+            p.Stroke();
+        }
+    }
+
     private void ResolveAmmoBar()
     {
         ammoBarElement = null;
