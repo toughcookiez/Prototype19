@@ -466,11 +466,10 @@ public class Bullet : NetworkBehaviour
         {
             if (hitPlayer.IsBlocking())
             {
-                // ROUNDS-style block: the bullet is simply destroyed, no damage.
-                if (impactEffectPrefab != null && collision.contactCount > 0)
+                // Block reflects the bullet back at the shooter; no damage to the blocker.
+                if (TryReflectOffBlock(hitPlayer, collision))
                 {
-                    ContactPoint blockContact = collision.GetContact(0);
-                    Instantiate(impactEffectPrefab, blockContact.point, Quaternion.LookRotation(blockContact.normal));
+                    return;
                 }
 
                 DespawnOrDestroy();
@@ -505,54 +504,48 @@ public class Bullet : NetworkBehaviour
         DespawnOrDestroy();
     }
 
-    private bool TryReflectAcrossShield(Collision collision)
+    // Block sends the bullet straight back at whoever fired it, and the blocker gets credit for it.
+    private bool TryReflectOffBlock(FirstPersonController blocker, Collision collision)
     {
-        if (rb == null || collision.contactCount <= 0)
+        if (rb == null)
         {
             return false;
         }
 
         Vector3 incomingVelocity = lastVelocity.sqrMagnitude > 0.0001f ? lastVelocity : rb.linearVelocity;
-
         if (incomingVelocity.sqrMagnitude <= 0.0001f)
         {
             return false;
         }
 
-        ContactPoint contact = collision.GetContact(0);
-        Vector3 normal = contact.normal;
+        Vector3 contactPoint = collision.contactCount > 0 ? collision.GetContact(0).point : rb.position;
+        Vector3 returnDirection = -incomingVelocity.normalized;
 
-        Vector3 reflectedVelocity = Vector3.Reflect(incomingVelocity, normal);
-
-        float normalComponent = Vector3.Dot(reflectedVelocity, normal);
-        if (normalComponent < minNormalBounce)
+        FirstPersonController originalShooter = FirstPersonController.FindSpawnedPlayer(shooterClientId);
+        if (originalShooter != null)
         {
-            Vector3 tangentialVelocity = reflectedVelocity - (normal * normalComponent);
-            reflectedVelocity = tangentialVelocity + (normal * Mathf.Max(normalComponent, minNormalBounce));
+            Vector3 toShooter = (originalShooter.transform.position + Vector3.up * 1.2f) - contactPoint;
+            if (toShooter.sqrMagnitude > 0.01f)
+            {
+                returnDirection = toShooter.normalized;
+            }
         }
 
-        float incomingSpeed = incomingVelocity.magnitude;
-        float outgoingSpeed = Mathf.Max(incomingSpeed * bounceBounciness, incomingSpeed);
-        reflectedVelocity = reflectedVelocity.normalized * outgoingSpeed;
+        float speed = Mathf.Max(incomingVelocity.magnitude, 1f);
+        Vector3 reflectedVelocity = returnDirection * speed;
 
+        shooterClientId = blocker.OwnerClientId;
+        isIgnoringShooter = false;
         bouncesRemaining = Mathf.Max(bouncesRemaining, 1);
 
-        rb.position += normal * 0.05f;
+        rb.position = contactPoint + returnDirection * 0.5f;
         rb.linearVelocity = reflectedVelocity;
-
-        if (reflectedVelocity.sqrMagnitude > 0.0001f)
-        {
-            transform.rotation = Quaternion.LookRotation(reflectedVelocity);
-        }
-
-        if (rb != null)
-        {
-            rb.angularVelocity = Random.insideUnitSphere * 15f;
-        }
+        rb.angularVelocity = Vector3.zero;
+        transform.rotation = Quaternion.LookRotation(returnDirection);
 
         if (impactEffectPrefab != null)
         {
-            Instantiate(impactEffectPrefab, contact.point, Quaternion.LookRotation(normal));
+            Instantiate(impactEffectPrefab, contactPoint, Quaternion.LookRotation(returnDirection));
         }
 
         launchPosition = rb.position;
