@@ -73,6 +73,8 @@
     width: 46px;
     height: 46px;
     flex-shrink: 0;
+    /* Center on the bottom row of ammo dots (22px default dot): (22 - 46) / 2 */
+    margin-bottom: -12px;
     background-color: rgb(20, 16, 12);
     overflow: hidden;
     justify-content: center;
@@ -102,6 +104,13 @@
 }
 
 .hudBlockKey {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
     font-size: 13px;
     -unity-font-style: bold;
     color: rgb(255, 255, 255);
