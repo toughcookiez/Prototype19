@@ -15,6 +15,8 @@ public partial class FirstPersonController
     private static Material blockRingMaterialTemplate;
 
     private float nextBlockTime;
+    // Counter Slug: set when a block starts, consumed by the next bullet fired.
+    private bool counterSlugArmed;
     private float blockStartTime = -999f;
     // Server-side guard so a client cannot spam RequestBlockServerRpc. Slightly lenient to absorb latency.
     private float serverNextBlockTime;
@@ -35,12 +37,13 @@ public partial class FirstPersonController
 
     private void TryBlock()
     {
-        if (isBlocking || isBlockCooldown || Time.time < nextBlockTime)
+        if (isBlocking || isBlockCooldown || IsStunned || Time.time < nextBlockTime)
         {
             return;
         }
 
         blockStartTime = Time.time;
+        counterSlugArmed = hasCounterSlug;
         // The cooldown starts counting once the block window has ended.
         nextBlockTime = Time.time + blockDuration + blockCooldown;
 
@@ -68,6 +71,7 @@ public partial class FirstPersonController
         nextBlockTime = 0f;
         serverNextBlockTime = 0f;
         blockStartTime = -999f;
+        counterSlugArmed = false;
     }
 
     [ServerRpc(RequireOwnership = false)]

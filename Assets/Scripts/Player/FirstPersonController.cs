@@ -319,6 +319,16 @@ public partial class FirstPersonController : NetworkBehaviour
     public float flintknockForce = 15f;
     public bool hasPayload;
     public bool hasBeacon;
+    [Header("Card Abilities")]
+    public bool hasChillyShells;
+    public float chillyStunDuration = 1f;
+    public bool hasDimsighted;
+    public float dimsightedDuration = 4f;
+    public int bulletPierceCount;
+    public bool hasCounterSlug;
+    public float counterSlugDamageMultiplier = 1.4f;
+    public bool hasLegsGoBrrr;
+    public float legsGoBrrrSpeedMultiplier = 2f;
     private Outline playerOutline;
     private Coroutine beaconCoroutine;
     public GameObject explosionPrefab;
@@ -625,14 +635,15 @@ public partial class FirstPersonController : NetworkBehaviour
         UpdateAmmoBar();
         UpdateReloadRing();
         UpdateBlockUi();
+        UpdateStatusEffects();
 
-        moveXInput = Input.GetAxis("Horizontal");
-        moveYInput = Input.GetAxis("Vertical");
+        moveXInput = IsStunned ? 0f : Input.GetAxis("Horizontal");
+        moveYInput = IsStunned ? 0f : Input.GetAxis("Vertical");
 
         #region Camera
 
         // Control camera movement
-        if(cameraCanMove)
+        if(cameraCanMove && !IsStunned)
         {
             yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
             transform.localEulerAngles = new Vector3(0, yaw, 0);
@@ -739,7 +750,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
         #region Jump
 
-        if(enableJump && Input.GetKeyDown(jumpKey) && isGrounded)
+        if(enableJump && Input.GetKeyDown(jumpKey) && isGrounded && !IsStunned)
         {
             Jump();
         }
@@ -790,6 +801,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
         if (playerCanMove)
         {
+            float speedMultiplier = hasLegsGoBrrr && isReloading ? legsGoBrrrSpeedMultiplier : 1f;
             Vector3 targetVelocity = new Vector3(moveXInput, 0, moveYInput);
 
             if ((targetVelocity.x != 0 || targetVelocity.z != 0) && isGrounded)
@@ -803,7 +815,7 @@ public partial class FirstPersonController : NetworkBehaviour
 
             if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
             {
-                targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
+                targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed * speedMultiplier;
 
                 Vector3 velocity = rb.linearVelocity;
                 Vector3 velocityChange = (targetVelocity - velocity);
@@ -837,7 +849,7 @@ public partial class FirstPersonController : NetworkBehaviour
                     sprintBarCG.alpha -= 3 * Time.deltaTime;
                 }
 
-                targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
+                targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed * speedMultiplier;
 
                 Vector3 velocity = rb.linearVelocity;
                 Vector3 velocityChange = (targetVelocity - velocity);

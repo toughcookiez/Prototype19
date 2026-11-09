@@ -17,7 +17,7 @@ MonoBehaviour:
   - description: -0.5s reload time
     keyword: -0.5s
     polarity: 0
-    target: 0
+    target: 13
     modifierMode: 0
     amount: -0.5
   abilities: []

@@ -644,6 +644,7 @@ public partial class FirstPersonController
         sprintRemaining = sprintDuration;
         bulletsInMagazine = magazineSize;
         ResetBlockState();
+        ClearStatusEffects();
         currentHealth.Value = Mathf.Max(1f, maxHealth);
         SetRagdollState(false);
 
@@ -678,6 +679,7 @@ public partial class FirstPersonController
         sprintRemaining = sprintDuration;
         bulletsInMagazine = magazineSize;
         ResetBlockState();
+        ClearStatusEffects();
         ApplyRespawnPosition(resetPosition);
         ApplyRagdollState(false);
         ClearCardsUiRoundState();

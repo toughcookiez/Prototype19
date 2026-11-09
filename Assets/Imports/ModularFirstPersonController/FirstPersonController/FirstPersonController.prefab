@@ -340,6 +340,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2f71a1ec67dd0c94e8a1e57727c79ad3, type: 2}
   - {fileID: 11400000, guid: 24ba2abfa259a374991b226ef38d6f4e, type: 2}
   - {fileID: 11400000, guid: 949c84fee907fd844b2066a9953568b5, type: 2}
+  - {fileID: 11400000, guid: f4317c79fc9a49f09613989ec175d9c1, type: 2}
+  - {fileID: 11400000, guid: 7ec76a6574454042a57b8537d6266554, type: 2}
+  - {fileID: 11400000, guid: 5df3a527b76a4b5fa9ca314ad9bd5e3f, type: 2}
+  - {fileID: 11400000, guid: d313a0f14862462996c5115fac39a3d2, type: 2}
+  - {fileID: 11400000, guid: 1516f8529945478cafc87f97e5545821, type: 2}
   flippedCardSprite: {fileID: 21300000, guid: 584cbfec515d1e64a8108091d406ba95, type: 3}
   enableRagdollOnDeath: 1
   normalCollider: {fileID: 4459864850019384737}

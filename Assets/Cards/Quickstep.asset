@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: Quickstep
   stats:
-  - description: A lot more SPD
-    keyword: 'A lot more '
+  - description: A huge amount of SPD
+    keyword: A huge amount of
     polarity: 0
     target: 1
     modifierMode: 0
-    amount: 5
+    amount: 8
   - description: 'A lot lower HP '
     keyword: A lot lower
     polarity: 1
     target: 0
     modifierMode: 1
-    amount: -40
+    amount: -30
   abilities: []

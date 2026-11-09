@@ -13,6 +13,10 @@ public class Bullet : NetworkBehaviour
     public int maxBounces;
     public bool hasPayload;
     public bool hasBeacon;
+    [Tooltip("Seconds a player hit by this bullet is stunned (Chilly Shells). 0 = none.")]
+    public float stunDuration;
+    [Tooltip("Seconds a player hit by this bullet is nearsighted (Dimsighted). 0 = none.")]
+    public float nearsightDuration;
     public GameObject explosionPrefab;
     public float explosionRadius = 5f;
     public float explosionForce = 10f;
@@ -53,6 +57,9 @@ public class Bullet : NetworkBehaviour
     private ulong shooterClientId = ulong.MaxValue;
     private bool isIgnoringShooter;
     private int bouncesRemaining;
+    private int piercesRemaining;
+    private bool isCounterSlug;
+    private static readonly Color CounterSlugColor = new Color(1f, 0.1f, 0.1f, 1f);
     private Vector3 lastVelocity;
 
     private void Awake()
@@ -83,6 +90,7 @@ public class Bullet : NetworkBehaviour
     {
         serializer.SerializeValue(ref shooterClientId);
         serializer.SerializeValue(ref shotId);
+        serializer.SerializeValue(ref isCounterSlug);
         base.OnSynchronize(ref serializer);
     }
 
@@ -267,7 +275,7 @@ public class Bullet : NetworkBehaviour
             return;
         }
 
-        if (TryBounce(collision))
+        if (TryPierce(collision) || TryBounce(collision))
         {
             return;
         }
@@ -330,6 +338,11 @@ public class Bullet : NetworkBehaviour
             StartCoroutine(DespawnAfterLifetime());
         }
 
+        if (isCounterSlug)
+        {
+            ApplyCounterSlugTint();
+        }
+
         ConfigureNetworkVisuals();
     }
 
@@ -363,6 +376,60 @@ public class Bullet : NetworkBehaviour
         isGravityDelayed = !Mathf.Approximately(gravityForce, 0f) && gravityDelayDistance > 0f;
         rb.useGravity = false;
         rb.linearVelocity = direction.normalized * speed;
+    }
+
+    // Counter Slug shot: tint the bullet and its trail red. Must be set before the bullet is network-spawned
+    // so remote clients receive it in OnSynchronize.
+    public void SetCounterSlug(bool value)
+    {
+        isCounterSlug = value;
+        if (value)
+        {
+            ApplyCounterSlugTint();
+        }
+    }
+
+    private void ApplyCounterSlugTint()
+    {
+        MaterialPropertyBlock block = new MaterialPropertyBlock();
+
+        if (visualRenderers != null)
+        {
+            foreach (Renderer visualRenderer in visualRenderers)
+            {
+                if (visualRenderer == null || visualRenderer is TrailRenderer)
+                {
+                    continue;
+                }
+
+                visualRenderer.GetPropertyBlock(block);
+                block.SetColor("_BaseColor", CounterSlugColor);
+                block.SetColor("_Color", CounterSlugColor);
+                block.SetColor("_EmissionColor", CounterSlugColor * 2f);
+                visualRenderer.SetPropertyBlock(block);
+            }
+        }
+
+        if (visualTrails != null)
+        {
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new[] { new GradientColorKey(CounterSlugColor, 0f), new GradientColorKey(CounterSlugColor, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+
+            foreach (TrailRenderer trail in visualTrails)
+            {
+                if (trail != null)
+                {
+                    trail.colorGradient = gradient;
+                }
+            }
+        }
+    }
+
+    public void SetPierces(int pierceCount)
+    {
+        piercesRemaining = Mathf.Max(0, pierceCount);
     }
 
     public void SetBounces(int bounceCount)
@@ -485,6 +552,8 @@ public class Bullet : NetworkBehaviour
 
             if (damageApplied)
             {
+                hitPlayer.ApplyStunServer(stunDuration);
+                hitPlayer.ApplyNearsightServer(nearsightDuration);
                 Debug.Log($"Bullet from player {shooterClientId} hit {hitPlayer.name} for {damage} damage.", this);
             }
             else
@@ -496,12 +565,48 @@ public class Bullet : NetworkBehaviour
             return;
         }
 
-        if (TryBounce(collision))
+        if (TryPierce(collision) || TryBounce(collision))
         {
             return;
         }
 
         DespawnOrDestroy();
+    }
+
+    // Piercing: fly straight through one non-player object by ignoring that collider and keeping the
+    // pre-impact velocity (the physics response has already slowed or deflected the bullet by now).
+    private bool TryPierce(Collision collision)
+    {
+        if (piercesRemaining <= 0 || rb == null)
+        {
+            return false;
+        }
+
+        Vector3 incomingVelocity = lastVelocity.sqrMagnitude > 0.0001f ? lastVelocity : rb.linearVelocity;
+        if (incomingVelocity.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        foreach (Collider myCollider in GetComponentsInChildren<Collider>())
+        {
+            if (myCollider != null)
+            {
+                Physics.IgnoreCollision(myCollider, collision.collider, true);
+            }
+        }
+
+        piercesRemaining--;
+        rb.linearVelocity = incomingVelocity;
+        lastVelocity = incomingVelocity;
+
+        if (collision.contactCount > 0 && impactEffectPrefab != null)
+        {
+            ContactPoint contact = collision.GetContact(0);
+            Instantiate(impactEffectPrefab, contact.point, Quaternion.LookRotation(contact.normal));
+        }
+
+        return true;
     }
 
     // Block sends the bullet straight back at whoever fired it, and the blocker gets credit for it.

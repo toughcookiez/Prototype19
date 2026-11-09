@@ -23,7 +23,7 @@ public partial class FirstPersonController
             return;
         }
 
-        if (isReloading)
+        if (isReloading || IsStunned)
         {
             return;
         }
@@ -74,15 +74,20 @@ public partial class FirstPersonController
             float ignoreGravityDistance = Vector3.Distance(shootPoint.position, crosshairPoint);
             Vector3 spawnPosition = shootPoint.position;
 
+            // Counter Slug: the first bullet fired after a block is the boosted one.
+            bool counterSlugShot = counterSlugArmed;
+            counterSlugArmed = false;
+            float damageMultiplier = counterSlugShot && hasCounterSlug ? counterSlugDamageMultiplier : 1f;
+
             if (ShouldUseNetworkSpawning())
             {
                 int shotId = ++localShotCounter;
-                ShootServerRpc(spawnPosition, shootDirection, ignoreGravityDistance, shotId);
-                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, OwnerClientId, shotId, true);
+                ShootServerRpc(spawnPosition, shootDirection, ignoreGravityDistance, shotId, counterSlugShot);
+                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, OwnerClientId, shotId, true, damageMultiplier);
             }
             else
             {
-                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, 0, false);
+                SpawnBullet(spawnPosition, shootDirection, ignoreGravityDistance, IsSpawned ? OwnerClientId : ulong.MaxValue, 0, false, damageMultiplier);
             }
 
             if (i < clampedBulletsToFire - 1)
@@ -99,7 +104,7 @@ public partial class FirstPersonController
         }
     }
 
-    private void SpawnBullet(Vector3 spawnPosition, Vector3 shootDirection, float ignoreGravityDistance, ulong shooterClientId, int shotId, bool isCosmetic)
+    private void SpawnBullet(Vector3 spawnPosition, Vector3 shootDirection, float ignoreGravityDistance, ulong shooterClientId, int shotId, bool isCosmetic, float damageMultiplier = 1f)
     {
         Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
         GameObject spawnedBullet = Instantiate(bulletPrefab, spawnPosition, shootRotation);
@@ -113,7 +118,11 @@ public partial class FirstPersonController
                 bullet.MarkAsCosmetic();
             }
 
-            bullet.damage = bulletDamage;
+            bullet.damage = bulletDamage * damageMultiplier;
+            bullet.SetPierces(bulletPierceCount);
+            bullet.SetCounterSlug(damageMultiplier > 1f && hasCounterSlug);
+            bullet.stunDuration = hasChillyShells ? chillyStunDuration : 0f;
+            bullet.nearsightDuration = hasDimsighted ? dimsightedDuration : 0f;
             bullet.SetBounces(bulletBounces);
             bullet.SetShooter(shooterClientId, this);
             bullet.hasPayload = hasPayload;
@@ -152,14 +161,16 @@ public partial class FirstPersonController
 
     // One call per bullet; the owning client paces bursts and sends its live muzzle position each time.
     [ServerRpc]
-    private void ShootServerRpc(Vector3 shootPosition, Vector3 shootDirection, float ignoreGravityDistance, int shotId)
+    private void ShootServerRpc(Vector3 shootPosition, Vector3 shootDirection, float ignoreGravityDistance, int shotId, bool counterSlugShot)
     {
         if (bulletPrefab == null || shootDirection.sqrMagnitude <= 0.0001f)
         {
             return;
         }
 
-        SpawnBullet(shootPosition, shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, shotId, false);
+        // The server only honors the boost if this player really owns Counter Slug.
+        float damageMultiplier = counterSlugShot && hasCounterSlug ? counterSlugDamageMultiplier : 1f;
+        SpawnBullet(shootPosition, shootDirection.normalized, Mathf.Max(0f, ignoreGravityDistance), OwnerClientId, shotId, false, damageMultiplier);
     }
 
     private void ApplyFlintknock(Vector3 shootDirection)
@@ -202,7 +213,7 @@ public partial class FirstPersonController
 
     private void TryStartReload()
     {
-        if (isReloading || IsInMainMenuScene())
+        if (isReloading || IsStunned || IsInMainMenuScene())
         {
             return;
         }

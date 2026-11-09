@@ -9,6 +9,7 @@ public partial class FirstPersonController
     private const float AmmoDotSpacingRatio = 0.3f;
     private const float AmmoRowSpacingRatio = 0.65f;
     private static readonly Color AmmoDotLitColor = new Color(1f, 0.55f, 0.08f, 1f);
+    private static readonly Color AmmoDotCounterSlugColor = new Color(0.9f, 0.1f, 0.1f, 1f);
     private static readonly Color AmmoDotSpentColor = new Color(0.08f, 0.063f, 0.047f, 1f);
 
     private VisualElement ammoBarElement;
@@ -17,6 +18,7 @@ public partial class FirstPersonController
     private float ammoReloadStartTime;
     private int ammoReloadStartBullets;
     private int displayedAmmoCount = -1;
+    private bool displayedCounterSlug;
     private int displayedMagazineSize = -1;
     private int displayedDotsPerRow = -1;
     private float displayedDotSize = -1f;
@@ -61,7 +63,9 @@ public partial class FirstPersonController
 
         float dotSize = Mathf.Max(1f, ammoDotSize);
 
-        if (magazine == displayedMagazineSize && bullets == displayedAmmoCount
+        bool counterSlugShown = counterSlugArmed && hasCounterSlug;
+
+        if (magazine == displayedMagazineSize && bullets == displayedAmmoCount && counterSlugShown == displayedCounterSlug
             && Mathf.Max(1, ammoDotsPerRow) == displayedDotsPerRow && Mathf.Approximately(dotSize, displayedDotSize))
         {
             return;
@@ -79,8 +83,12 @@ public partial class FirstPersonController
         for (int i = 0; i < ammoDots.Count; i++)
         {
             // Dots fill left to right, so the rightmost lit dot is the first to go dark.
-            ammoDots[i].style.backgroundColor = i < bullets ? AmmoDotLitColor : AmmoDotSpentColor;
+            // With Counter Slug armed, the next bullet to leave the gun is shown in red.
+            bool isNextBullet = counterSlugShown && i == bullets - 1;
+            ammoDots[i].style.backgroundColor = i < bullets ? (isNextBullet ? AmmoDotCounterSlugColor : AmmoDotLitColor) : AmmoDotSpentColor;
         }
+
+        displayedCounterSlug = counterSlugShown;
 
         displayedMagazineSize = magazine;
         displayedAmmoCount = bullets;

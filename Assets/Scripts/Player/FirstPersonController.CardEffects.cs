@@ -66,11 +66,58 @@ public partial class FirstPersonController
                         });
                     }
                 }
+                else if (ability.abilityName == "ChillyShells")
+                {
+                    hasChillyShells = true;
+                }
+                else if (ability.abilityName == "Dimsighted")
+                {
+                    hasDimsighted = true;
+                }
+                else if (ability.abilityName == "Piercing")
+                {
+                    bulletPierceCount++;
+                    SendOwnerAbilityState();
+                }
+                else if (ability.abilityName == "CounterSlug")
+                {
+                    hasCounterSlug = true;
+                    SendOwnerAbilityState();
+                }
+                else if (ability.abilityName == "LegsGoBrrr")
+                {
+                    hasLegsGoBrrr = true;
+                    SendOwnerAbilityState();
+                }
             }
         }
 
         SyncWeaponSettings(GetWeaponSettings(), false);
         SyncPlayerSettings(GetPlayerSettings());
+    }
+
+    // Abilities the owner's machine needs (cosmetic bullets, block/ammo UI, movement). Chilly Shells and
+    // Dimsighted only matter on the server, where bullets are authoritative.
+    private void SendOwnerAbilityState()
+    {
+        if (IsSpawned && IsServer)
+        {
+            ApplyOwnerAbilityStateClientRpc(bulletPierceCount, hasCounterSlug, hasLegsGoBrrr, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { OwnerClientId }
+                }
+            });
+        }
+    }
+
+    [ClientRpc]
+    private void ApplyOwnerAbilityStateClientRpc(int pierceCount, bool counterSlug, bool legsGoBrrr, ClientRpcParams clientRpcParams = default)
+    {
+        bulletPierceCount = pierceCount;
+        hasCounterSlug = counterSlug;
+        hasLegsGoBrrr = legsGoBrrr;
     }
 
     [ClientRpc]
