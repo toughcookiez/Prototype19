@@ -309,6 +309,9 @@ public partial class FirstPersonController : NetworkBehaviour
     public KeyCode reloadKey = KeyCode.R;
     public Transform shootPoint;
     public GameObject bulletPrefab;
+    [Tooltip("Spawned at the muzzle every time a bullet is fired (particle effect, destroys itself after muzzleFlashLifetime).")]
+    public GameObject muzzleFlashPrefab;
+    public float muzzleFlashLifetime = 1f;
     public float bulletDamage = 25f;
     public float crosshairPointDistance = 50f;
     public float bulletSpeed = 30f;

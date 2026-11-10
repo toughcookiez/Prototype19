@@ -128,6 +128,11 @@ public class Bullet : NetworkBehaviour
 
         FirstPersonController shooter = FirstPersonController.FindSpawnedPlayer(shooterClientId);
 
+        if (shooter != null)
+        {
+            shooter.PlayMuzzleFlash();
+        }
+
         if (visualRoot != null && shooter != null && shooter.TryGetVisibleMuzzlePosition(out Vector3 muzzlePosition))
         {
             visualOffset = muzzlePosition - transform.position;

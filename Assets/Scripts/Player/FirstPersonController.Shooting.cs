@@ -79,6 +79,10 @@ public partial class FirstPersonController
             counterSlugArmed = false;
             float damageMultiplier = counterSlugShot && hasCounterSlug ? counterSlugDamageMultiplier : 1f;
 
+            // The shooter sees the flash on their own gun right away. Everyone else gets it from
+            // Bullet.ConfigureNetworkVisuals when the networked bullet spawns on their machine.
+            PlayMuzzleFlash(shootPoint);
+
             if (ShouldUseNetworkSpawning())
             {
                 int shotId = ++localShotCounter;
@@ -284,6 +288,30 @@ public partial class FirstPersonController
         }
 
         return null;
+    }
+
+    // Flash at the muzzle this machine renders for this player (first-person gun for the owner, outer gun for others).
+    public void PlayMuzzleFlash(Transform muzzle = null)
+    {
+        if (muzzleFlashPrefab == null)
+        {
+            return;
+        }
+
+        if (muzzle == null)
+        {
+            Renderer outerRenderer = outerGoober != null ? outerGoober.GetComponentInChildren<Renderer>() : null;
+            bool useOuter = outerShootPoint != null && outerRenderer != null && outerRenderer.enabled && outerShootPoint.gameObject.activeInHierarchy;
+            muzzle = useOuter ? outerShootPoint : shootPoint;
+        }
+
+        if (muzzle == null)
+        {
+            return;
+        }
+
+        GameObject flash = Instantiate(muzzleFlashPrefab, muzzle.position, muzzle.rotation, muzzle);
+        Destroy(flash, Mathf.Max(0.05f, muzzleFlashLifetime));
     }
 
     // Muzzle of whichever gun this machine is actually rendering for this player.

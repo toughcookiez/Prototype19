@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1162110628
+  GlobalObjectIdHash: 2231394948
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -403,6 +403,8 @@ MonoBehaviour:
   reloadKey: 114
   shootPoint: {fileID: 9128110934383879117}
   bulletPrefab: {fileID: 6126835359889001351, guid: b76116ff1dad4ec4aa026a142fc964eb, type: 3}
+  muzzleFlashPrefab: {fileID: 8830472510853821512, guid: b7963c662d1ac4940aa4bc081294c3a5, type: 3}
+  muzzleFlashLifetime: 1
   bulletDamage: 25
   crosshairPointDistance: 5
   bulletSpeed: 25
@@ -413,6 +415,15 @@ MonoBehaviour:
   flintknockForce: 15
   hasPayload: 0
   hasBeacon: 0
+  hasChillyShells: 0
+  chillyStunDuration: 1
+  hasDimsighted: 0
+  dimsightedDuration: 4
+  bulletPierceCount: 0
+  hasCounterSlug: 0
+  counterSlugDamageMultiplier: 1.4
+  hasLegsGoBrrr: 0
+  legsGoBrrrSpeedMultiplier: 2
   explosionPrefab: {fileID: 0}
   explosionRadius: 5
   explosionForce: 10
@@ -1026,6 +1037,37 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!1 &5721791732699486363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4274312718376553700}
+  m_Layer: 0
+  m_Name: muzzleFlash Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4274312718376553700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5721791732699486363}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.67867863, y: 0.19848253, z: 0.1272989, w: 0.6955537}
+  m_LocalPosition: {x: 0.0003, y: 0.051, z: 0.1039}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4673434199192417516}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6107245917525111239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1474,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 634847978797679512, guid: 55b1fd5f577255c4a8338b61385780ec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4274312718376553700}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55b1fd5f577255c4a8338b61385780ec, type: 3}
 --- !u!4 &4673434199192417516 stripped
