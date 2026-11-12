@@ -59,6 +59,7 @@ public class Bullet : NetworkBehaviour
     private int bouncesRemaining;
     private int piercesRemaining;
     private bool isCounterSlug;
+    private float sizeMultiplier = 1f;
     private static readonly Color CounterSlugColor = new Color(1f, 0.1f, 0.1f, 1f);
     private Vector3 lastVelocity;
 
@@ -91,6 +92,7 @@ public class Bullet : NetworkBehaviour
         serializer.SerializeValue(ref shooterClientId);
         serializer.SerializeValue(ref shotId);
         serializer.SerializeValue(ref isCounterSlug);
+        serializer.SerializeValue(ref sizeMultiplier);
         base.OnSynchronize(ref serializer);
     }
 
@@ -348,6 +350,11 @@ public class Bullet : NetworkBehaviour
             ApplyCounterSlugTint();
         }
 
+        if (!IsServer)
+        {
+            ApplySize();
+        }
+
         ConfigureNetworkVisuals();
     }
 
@@ -429,6 +436,21 @@ public class Bullet : NetworkBehaviour
                     trail.colorGradient = gradient;
                 }
             }
+        }
+    }
+
+    // Bigger Bullets: scales mesh, trail and hitbox. Replicated to clients through OnSynchronize.
+    public void SetSizeMultiplier(float multiplier)
+    {
+        sizeMultiplier = Mathf.Max(0.1f, multiplier);
+        ApplySize();
+    }
+
+    private void ApplySize()
+    {
+        if (!Mathf.Approximately(sizeMultiplier, 1f))
+        {
+            transform.localScale = Vector3.one * sizeMultiplier;
         }
     }
 

@@ -89,8 +89,26 @@ public partial class FirstPersonController
 
         serverNextBlockTime = Time.time + blockDuration + Mathf.Max(0f, blockCooldown - 0.15f);
         isShieldActive.Value = true;
+        if (hasQuickSnack && IsAlive())
+        {
+            float healed = Mathf.Min(quickSnackHeal, maxHealth - currentHealth.Value);
+            if (healed > 0f)
+            {
+                currentHealth.Value += healed;
+                QuickSnackHealClientRpc(healed, new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+                });
+            }
+        }
         yield return new WaitForSeconds(blockDuration);
         isShieldActive.Value = false;
+    }
+
+    [ClientRpc]
+    private void QuickSnackHealClientRpc(float amount, ClientRpcParams clientRpcParams = default)
+    {
+        FlashHealOverlay();
     }
 
     private IEnumerator BlockRoutineLocal()

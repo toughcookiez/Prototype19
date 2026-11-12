@@ -331,6 +331,10 @@ public partial class FirstPersonController : NetworkBehaviour
     public bool hasCounterSlug;
     public float counterSlugDamageMultiplier = 1.4f;
     public bool hasLegsGoBrrr;
+    public float bulletSizeMultiplier = 1f;
+    public float biggerBulletsSizeStep = 1.25f;
+    public bool hasQuickSnack;
+    public float quickSnackHeal = 25f;
     public float legsGoBrrrSpeedMultiplier = 2f;
     private Outline playerOutline;
     private Coroutine beaconCoroutine;

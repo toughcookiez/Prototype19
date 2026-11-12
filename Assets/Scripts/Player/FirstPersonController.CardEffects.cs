@@ -84,6 +84,15 @@ public partial class FirstPersonController
                     hasCounterSlug = true;
                     SendOwnerAbilityState();
                 }
+                else if (ability.abilityName == "BiggerBullets")
+                {
+                    bulletSizeMultiplier *= biggerBulletsSizeStep;
+                    SendOwnerAbilityState();
+                }
+                else if (ability.abilityName == "QuickSnack")
+                {
+                    hasQuickSnack = true;
+                }
                 else if (ability.abilityName == "LegsGoBrrr")
                 {
                     hasLegsGoBrrr = true;
@@ -102,7 +111,7 @@ public partial class FirstPersonController
     {
         if (IsSpawned && IsServer)
         {
-            ApplyOwnerAbilityStateClientRpc(bulletPierceCount, hasCounterSlug, hasLegsGoBrrr, new ClientRpcParams
+            ApplyOwnerAbilityStateClientRpc(bulletPierceCount, hasCounterSlug, hasLegsGoBrrr, bulletSizeMultiplier, new ClientRpcParams
             {
                 Send = new ClientRpcSendParams
                 {
@@ -113,11 +122,12 @@ public partial class FirstPersonController
     }
 
     [ClientRpc]
-    private void ApplyOwnerAbilityStateClientRpc(int pierceCount, bool counterSlug, bool legsGoBrrr, ClientRpcParams clientRpcParams = default)
+    private void ApplyOwnerAbilityStateClientRpc(int pierceCount, bool counterSlug, bool legsGoBrrr, float sizeMultiplier, ClientRpcParams clientRpcParams = default)
     {
         bulletPierceCount = pierceCount;
         hasCounterSlug = counterSlug;
         hasLegsGoBrrr = legsGoBrrr;
+        bulletSizeMultiplier = sizeMultiplier;
     }
 
     [ClientRpc]

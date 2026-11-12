@@ -124,6 +124,7 @@ public partial class FirstPersonController
 
             bullet.damage = bulletDamage * damageMultiplier;
             bullet.SetPierces(bulletPierceCount);
+            bullet.SetSizeMultiplier(bulletSizeMultiplier);
             bullet.SetCounterSlug(damageMultiplier > 1f && hasCounterSlug);
             bullet.stunDuration = hasChillyShells ? chillyStunDuration : 0f;
             bullet.nearsightDuration = hasDimsighted ? dimsightedDuration : 0f;
