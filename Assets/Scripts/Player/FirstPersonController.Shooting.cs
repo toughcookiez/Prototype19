@@ -44,7 +44,7 @@ public partial class FirstPersonController
             return;
         }
 
-        Vector3 shootDirection = GetShootDirection(GetCrosshairPoint());
+        Vector3 shootDirection = GetShootDirection(GetShotOrigin(), GetCrosshairPoint());
         nextShootTime = Time.time + (1f / Mathf.Max(.1f, fireRate));
 
         int bulletsToFire = Mathf.Min(Mathf.Max(1, bulletsPerShot), bulletsInMagazine);
@@ -70,9 +70,11 @@ public partial class FirstPersonController
             }
 
             Vector3 crosshairPoint = GetCrosshairPoint();
-            Vector3 shootDirection = GetShootDirection(crosshairPoint);
-            float ignoreGravityDistance = Vector3.Distance(shootPoint.position, crosshairPoint);
-            Vector3 spawnPosition = shootPoint.position;
+            Vector3 spawnPosition = GetShotOrigin();
+            Vector3 shootDirection = GetShootDirection(spawnPosition, crosshairPoint);
+            // The bullet flies straight at what the crosshair is over, and gravity only starts once it has
+            // travelled crosshairPointDistance from the muzzle.
+            float ignoreGravityDistance = Mathf.Max(0f, crosshairPointDistance);
 
             // Counter Slug: the first bullet fired after a block is the boosted one.
             bool counterSlugShot = counterSlugArmed;
@@ -193,27 +195,106 @@ public partial class FirstPersonController
         return enableMultiplayerAuthority && NetworkManager.Singleton != null && IsSpawned && IsOwner && !IsServer;
     }
 
+    private const float AimRayMaxDistance = 500f;
+    private const float MuzzleClearanceRadius = 0.05f;
+    private static readonly RaycastHit[] aimHitBuffer = new RaycastHit[16];
+
+    // True for colliders that belong to this player or to projectiles, which the aim ray must ignore.
+    private bool IsAimIgnoredCollider(Collider hitCollider)
+    {
+        if (hitCollider == null || hitCollider.isTrigger)
+        {
+            return true;
+        }
+
+        Transform hitTransform = hitCollider.transform;
+        return hitTransform.IsChildOf(transform) || hitCollider.GetComponentInParent<Bullet>() != null;
+    }
+
+    // Nearest solid hit along the ray, skipping this player's own colliders, triggers and bullets.
+    private bool TryRaycastAim(Ray ray, float maxDistance, out RaycastHit nearestHit)
+    {
+        nearestHit = default;
+        int hitCount = Physics.RaycastNonAlloc(ray, aimHitBuffer, maxDistance, ~0, QueryTriggerInteraction.Ignore);
+        float nearestDistance = float.MaxValue;
+        bool found = false;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit hit = aimHitBuffer[i];
+
+            if (hit.distance < nearestDistance && !IsAimIgnoredCollider(hit.collider))
+            {
+                nearestDistance = hit.distance;
+                nearestHit = hit;
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    // What the crosshair is over: the first solid thing on the camera's center ray, or a far point on a miss.
     private Vector3 GetCrosshairPoint()
     {
         if (playerCamera == null)
         {
-            return shootPoint.position + shootPoint.forward * Mathf.Max(0.1f, crosshairPointDistance);
+            return shootPoint.position + shootPoint.forward * AimRayMaxDistance;
         }
 
         Ray centerRay = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        return centerRay.GetPoint(Mathf.Max(0.1f, crosshairPointDistance));
+
+        if (TryRaycastAim(centerRay, AimRayMaxDistance, out RaycastHit hit))
+        {
+            return hit.point;
+        }
+
+        return centerRay.GetPoint(AimRayMaxDistance);
     }
 
-    private Vector3 GetShootDirection(Vector3 targetPoint)
+    // The muzzle, unless geometry sits between the camera and the muzzle (gun pushed into a wall);
+    // then the bullet starts at the camera so it can't spawn behind the wall.
+    private Vector3 GetShotOrigin()
     {
-        Vector3 shootDirection = targetPoint - shootPoint.position;
+        if (playerCamera == null)
+        {
+            return shootPoint.position;
+        }
 
-        if (shootDirection.sqrMagnitude <= 0.0001f)
+        Vector3 cameraPosition = playerCamera.transform.position;
+        Vector3 toMuzzle = shootPoint.position - cameraPosition;
+        float muzzleDistance = toMuzzle.magnitude;
+
+        if (muzzleDistance <= 0.001f)
+        {
+            return shootPoint.position;
+        }
+
+        Ray muzzleRay = new Ray(cameraPosition, toMuzzle / muzzleDistance);
+        int hitCount = Physics.SphereCastNonAlloc(muzzleRay, MuzzleClearanceRadius, aimHitBuffer, muzzleDistance, ~0, QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (!IsAimIgnoredCollider(aimHitBuffer[i].collider))
+            {
+                return cameraPosition + playerCamera.transform.forward * 0.1f;
+            }
+        }
+
+        return shootPoint.position;
+    }
+
+    private Vector3 GetShootDirection(Vector3 origin, Vector3 targetPoint)
+    {
+        Vector3 toTarget = targetPoint - origin;
+        float distance = toTarget.magnitude;
+
+        if (distance <= 0.01f)
         {
             return shootPoint.forward;
         }
 
-        return shootDirection.normalized;
+        return toTarget / distance;
     }
 
     private void TryStartReload()

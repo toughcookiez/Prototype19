@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2231394948
+  GlobalObjectIdHash: 1162110628
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -338,7 +338,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: deaeb8e52b26c7c498eb6879c57219da, type: 2}
   - {fileID: 11400000, guid: 9848502f7c3a4db4db8188abd62abf51, type: 2}
   - {fileID: 11400000, guid: 2f71a1ec67dd0c94e8a1e57727c79ad3, type: 2}
-  - {fileID: 11400000, guid: 24ba2abfa259a374991b226ef38d6f4e, type: 2}
   - {fileID: 11400000, guid: 949c84fee907fd844b2066a9953568b5, type: 2}
   - {fileID: 11400000, guid: f4317c79fc9a49f09613989ec175d9c1, type: 2}
   - {fileID: 11400000, guid: 7ec76a6574454042a57b8537d6266554, type: 2}
@@ -356,7 +355,7 @@ MonoBehaviour:
   ragdollRigidbodies: []
   ragdollColliders: []
   disableAnimatorOnRagdoll: 1
-  mapPoolSceneIndices: 01000000020000000300000004000000
+  mapPoolSceneIndices: 0100000002000000030000000400000005000000
   playerCamera: {fileID: 4459864851310106426}
   fov: 60
   invertCamera: 0
@@ -426,6 +425,10 @@ MonoBehaviour:
   hasCounterSlug: 0
   counterSlugDamageMultiplier: 1.4
   hasLegsGoBrrr: 0
+  bulletSizeMultiplier: 1
+  biggerBulletsSizeStep: 1.25
+  hasQuickSnack: 0
+  quickSnackHeal: 25
   legsGoBrrrSpeedMultiplier: 2
   explosionPrefab: {fileID: 0}
   explosionRadius: 5

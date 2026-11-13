@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: Make It Count
   stats:
-  - description: +300% DMG
-    keyword: +300%
+  - description: A huge amount of DMG
+    keyword: A huge amount of
     polarity: 0
     target: 5
     modifierMode: 1
-    amount: 300
+    amount: 200
   - description: Magazine holds only 1 bullet
     keyword: 1 bullet
     polarity: 1
     target: 11
     modifierMode: 0
     amount: -100
-  - description: Slower reload
-    keyword: Slower
+  - description: More reload time
+    keyword: More
     polarity: 1
     target: 13
     modifierMode: 1
