@@ -27,9 +27,9 @@ Material:
     m_Floats:
     - _Contrast: 1.175
     - _DepthThreshold: 1.108
-    - _GlowRadius: 6.12
-    - _GlowStrength: 0.417
-    - _GlowThreshold: 0.458
+    - _GlowRadius: 5.57
+    - _GlowStrength: 0.133
+    - _GlowThreshold: 0.554
     - _LineDarkness: 0.579
     - _LineFadeDistance: 150
     - _LineSoftness: 0.35
