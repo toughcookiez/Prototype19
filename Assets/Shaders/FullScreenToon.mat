@@ -28,9 +28,9 @@ Material:
     - _BandSmoothing: 0.25
     - _Bands: 4
     - _DepthThreshold: 0.817
-    - _NormalThreshold: 0.417
+    - _NormalThreshold: 0.1
     - _OutlineFadeDistance: 150
-    - _OutlineStrength: 0.85
+    - _OutlineStrength: 0.817
     - _OutlineThickness: 1
     - _Saturation: 1.1
     - _ShadowFloor: 0.3
