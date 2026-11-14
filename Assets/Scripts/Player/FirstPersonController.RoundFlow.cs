@@ -39,20 +39,9 @@ public partial class FirstPersonController
             winnerController.ApplyCardsUiRoundCards(roundCardPoolIndexes);
         }
 
-        UpdatePostMatchUiClientRpc(winningClientId, roundCardPoolIndexes, winningScore);
-
-        if (winnerController != null)
-        {
-            winnerController.BroadcastCardsUiCardSelection(0);
-        }
-
-        SwitchToWinnerCameraOwnerClientRpc(winningClientId, new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { OwnerClientId }
-            }
-        });
+        // Slow-motion overhead kill cam on every machine, then the card UI (see FirstPersonController.DeathCam.cs).
+        StartDeathCamClientRpc(DeathCamDuration);
+        StartCoroutine(ShowPostMatchAfterDeathCam(winningClientId, roundCardPoolIndexes, winningScore));
     }
 
     private void DisableAllPlayerControlsAfterDeath()
@@ -255,6 +244,8 @@ public partial class FirstPersonController
     [ClientRpc]
     private void UpdatePostMatchUiClientRpc(ulong winningClientId, int[] roundCardPoolIndexes, int winningScore)
     {
+        EndDeathCam();
+
         FirstPersonController[] controllers = FindObjectsOfType<FirstPersonController>(true);
         bool isLosingClient = NetworkManager.Singleton != null && NetworkManager.Singleton.LocalClientId == OwnerClientId;
         int winningPlayerIndex = GetScoreboardPlayerIndex(controllers, winningClientId);

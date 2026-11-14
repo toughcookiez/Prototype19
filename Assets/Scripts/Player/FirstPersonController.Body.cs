@@ -70,6 +70,12 @@ public partial class FirstPersonController
             characterAnimator.enabled = false;
         }
 
+        // The visible third-person body has its own animator; it must stop too or it overrides the physics bones.
+        if (disableAnimatorOnRagdoll && outerAnimator != null)
+        {
+            outerAnimator.enabled = !isRagdollActive;
+        }
+
         if (ragdollRigidbodies != null)
         {
             foreach (Rigidbody ragdollRigidbody in ragdollRigidbodies)
@@ -375,7 +381,17 @@ public partial class FirstPersonController
             return;
         }
 
-        Transform searchRoot = ragdollRoot != null ? ragdollRoot : bodyRoot != null ? bodyRoot : transform;
+        // The ragdoll must be the visible third-person body (OuterGoober), never the first-person InnerGoober rig.
+        Transform configuredRoot = ragdollRoot;
+
+        if (configuredRoot != null && innerGoober != null && configuredRoot.IsChildOf(innerGoober.transform))
+        {
+            configuredRoot = null;
+        }
+
+        Transform searchRoot = configuredRoot != null ? configuredRoot
+            : outerGoober != null ? outerGoober.transform
+            : bodyRoot != null ? bodyRoot : transform;
 
         if (ragdollRigidbodies == null || ragdollRigidbodies.Length == 0)
         {

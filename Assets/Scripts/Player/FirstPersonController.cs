@@ -620,6 +620,7 @@ public partial class FirstPersonController : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         spawnedPlayers.Remove(this);
+        EndDeathCam();
         SaveCurrentWeaponSettings();
         SaveCurrentPlayerSettings();
         currentHealth.OnValueChanged -= OnCurrentHealthChanged;
