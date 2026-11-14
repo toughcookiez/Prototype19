@@ -35,6 +35,24 @@ using UnityEditor;
         GUILayout.Label("version 1.0.1", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
         EditorGUILayout.Space();
 
+        if (Application.isPlaying)
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            GUILayout.Label("Debug: Give Card (Editor Only)", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
+
+            foreach (string guid in AssetDatabase.FindAssets("t:Card"))
+            {
+                Card card = AssetDatabase.LoadAssetAtPath<Card>(AssetDatabase.GUIDToAssetPath(guid));
+
+                if (card != null && GUILayout.Button(string.IsNullOrEmpty(card.cardName) ? card.name : card.cardName))
+                {
+                    fpc.EditorGiveCard(card);
+                }
+            }
+
+            EditorGUILayout.Space();
+        }
+
         #region Multiplayer Setup
 
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
