@@ -426,7 +426,7 @@ MonoBehaviour:
   counterSlugDamageMultiplier: 1.4
   hasLegsGoBrrr: 0
   bulletSizeMultiplier: 1
-  biggerBulletsSizeStep: 1.25
+  biggerBulletsSizeStep: 2.2
   hasQuickSnack: 0
   quickSnackHeal: 25
   legsGoBrrrSpeedMultiplier: 2

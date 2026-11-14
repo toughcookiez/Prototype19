@@ -62,9 +62,11 @@ public class Bullet : NetworkBehaviour
     private float sizeMultiplier = 1f;
     private static readonly Color CounterSlugColor = new Color(1f, 0.1f, 0.1f, 1f);
     private Vector3 lastVelocity;
+    private Vector3 baseScale = Vector3.one;
 
     private void Awake()
     {
+        baseScale = transform.localScale;
         rb = GetComponent<Rigidbody>();
         if (bounceBounciness <= 0f) bounceBounciness = 1.2f;
         if (minNormalBounce <= 0f) minNormalBounce = 3.0f;
@@ -443,14 +445,13 @@ public class Bullet : NetworkBehaviour
     public void SetSizeMultiplier(float multiplier)
     {
         sizeMultiplier = Mathf.Max(0.1f, multiplier);
-        ApplySize();
-    }
+        ApplySize();    }
 
     private void ApplySize()
     {
         if (!Mathf.Approximately(sizeMultiplier, 1f))
         {
-            transform.localScale = Vector3.one * sizeMultiplier;
+            transform.localScale = baseScale * sizeMultiplier;
         }
     }
 
@@ -507,7 +508,35 @@ public class Bullet : NetworkBehaviour
     private IEnumerator RestoreShooterCollision(Collider[] bulletColliders, Collider[] shooterColliders)
     {
         yield return new WaitForSeconds(selfCollisionGraceTime);
+
+        // Bigger bullets can still overlap the shooter after the fixed grace time; keep ignoring
+        // until they have fully cleared the shooter's colliders (capped so it always ends).
+        float waited = 0f;
+        while (waited < 2f && OverlapsAny(bulletColliders, shooterColliders))
+        {
+            waited += Time.deltaTime;
+            yield return null;
+        }
+
         SetShooterCollisionIgnored(bulletColliders, shooterColliders, false);
+    }
+
+    private static bool OverlapsAny(Collider[] a, Collider[] b)
+    {
+        foreach (Collider ca in a)
+        {
+            if (ca == null) continue;
+
+            foreach (Collider cb in b)
+            {
+                if (cb != null && cb.enabled && ca.bounds.Intersects(cb.bounds))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void SetShooterCollisionIgnored(Collider[] bulletColliders, Collider[] shooterColliders, bool ignored)

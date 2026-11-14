@@ -86,8 +86,7 @@ public partial class FirstPersonController
                 }
                 else if (ability.abilityName == "BiggerBullets")
                 {
-                    bulletSizeMultiplier *= biggerBulletsSizeStep;
-                    SendOwnerAbilityState();
+                    bulletSizeMultiplier = bulletSizeMultiplier * biggerBulletsSizeStep;                    SendOwnerAbilityState();
                 }
                 else if (ability.abilityName == "QuickSnack")
                 {

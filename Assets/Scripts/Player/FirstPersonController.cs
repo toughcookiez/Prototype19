@@ -332,7 +332,7 @@ public partial class FirstPersonController : NetworkBehaviour
     public float counterSlugDamageMultiplier = 1.4f;
     public bool hasLegsGoBrrr;
     public float bulletSizeMultiplier = 1f;
-    public float biggerBulletsSizeStep = 1.25f;
+    public float biggerBulletsSizeStep = 2.2f;
     public bool hasQuickSnack;
     public float quickSnackHeal = 25f;
     public float legsGoBrrrSpeedMultiplier = 2f;
