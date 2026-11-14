@@ -27,12 +27,12 @@ Material:
     m_Floats:
     - _BandSmoothing: 0.25
     - _Bands: 4
-    - _DepthThreshold: 0.817
-    - _NormalThreshold: 0.1
+    - _DepthThreshold: 0.967
+    - _NormalThreshold: 1.675
     - _OutlineFadeDistance: 150
     - _OutlineStrength: 0.817
-    - _OutlineThickness: 1
-    - _Saturation: 1.1
+    - _OutlineThickness: 0.75
+    - _Saturation: 1.242
     - _ShadowFloor: 0.3
     m_Colors:
     - _OutlineColor: {r: 0.12, g: 0.09, b: 0.1, a: 1}
